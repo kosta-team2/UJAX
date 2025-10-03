@@ -17,16 +17,17 @@ repositories {
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
     compileOnly 'jakarta.servlet:jakarta.servlet-api:6.0.0'
 
     implementation 'org.glassfish.web:jakarta.servlet.jsp.jstl:3.0.1'
     compileOnly 'jakarta.servlet.jsp:jakarta.servlet.jsp-api:3.1.0'
 
-    runtimeOnly 'com.mysql:mysql-connector-j'
+//    runtimeOnly 'com.mysql:mysql-connector-j:8.4.0'
 
     implementation 'com.google.code.gson:gson:2.13.2'
+
+    testImplementation platform('org.junit:junit-bom:5.10.0')
+    testImplementation 'org.junit.jupiter:junit-jupiter'
 
 }
 
