@@ -1,3 +1,4 @@
+/*왼쪽 사이드바*/
 .left-sidebar {
     width: 280px;
     flex-shrink: 0;
@@ -15,6 +16,44 @@
     flex-direction: column;
     gap: 0.25rem;
 }
+
+.workspace-toggle {
+    margin-bottom: 0.5rem;
+}
+
+.workspace-name {
+    background: none;
+    border: none;
+    color: #fff;
+    font-weight: 600;
+    font-size: 1rem;
+    width: 100%;
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.workspace-name:hover {
+    background-color: #2e2e4f;
+}
+
+.workspace-name.active {
+    background-color: #343457;
+}
+
+.workspace-menu {
+    display: none;
+    flex-direction: column;
+    margin-top: 0.3rem;
+    padding-left: 0.8rem;
+}
+
+.workspace-menu.open {
+    display: flex;
+}
+
 .nav-btn {
     width: 100%;
     padding: 0.75rem;
@@ -35,6 +74,7 @@
 }
 
 .nav-btn.active {
+
     background: var(--accent);
     color: white;
     transform: translateX(3px);
@@ -45,6 +85,8 @@
     border-top: 1px solid var(--border);
     margin: 0.75rem 0;
 }
+
+/* 오른쪽 사이드 바*/
 
 .right-sidebar {
     width: 280px;

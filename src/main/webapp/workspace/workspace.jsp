@@ -35,6 +35,6 @@
     </div>
 </div>
 
-<script src="script.js" defer></script>
+<script src="js/script.js" defer></script>
 </body>
 </html>

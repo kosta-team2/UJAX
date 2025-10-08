@@ -122,6 +122,31 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+    // 워크스페이스 토글
+    document.querySelectorAll('.workspace-name').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const menu = btn.nextElementSibling;
+            menu.classList.toggle('open');
+            btn.classList.toggle('active');
+        });
+    });
+
+    // 메뉴 클릭 시 페이지 로드
+    document.querySelectorAll('.nav-btn').forEach(btn => {
+        btn.addEventListener('click', async () => {
+            const page = btn.dataset.page;
+            try {
+                const res = await fetch(`${page}.jsp`);
+                const html = await res.text();
+                document.getElementById('mainContent').innerHTML = html;
+            } catch (err) {
+                alert('페이지를 불러올 수 없습니다.');
+            }
+        });
+    });
+});
+
+document.addEventListener('DOMContentLoaded', () => {
     const main = document.getElementById('mainContent');
     const navButtons = document.querySelectorAll('.nav-btn');
     const homeButton = document.querySelector('[data-page="home"]');
@@ -190,76 +215,5 @@ function resetJS() {
     // 정렬 버튼
     document.querySelector('.sort-btn')?.addEventListener('click', () => {
         alert('정렬 기능 실행');
-    });
-
-    // ====== 월간 잔디 ======
-    const monthlyGrass = document.getElementById('monthlyGrass');
-    const monthTitle = document.getElementById('monthTitle');
-    let currentDate = new Date();
-
-// mock 데이터 생성 함수
-    function generateMockData(days) {
-        return Array.from({length: days}, () =>
-            Math.random() < 0.6 ? 0 : Math.ceil(Math.random() * 4)
-        );
-    }
-
-// 월 렌더링
-    function renderMonth(date) {
-        monthlyGrass.innerHTML = '';
-
-        const year = date.getFullYear();
-        const month = date.getMonth();
-        const firstDay = new Date(year, month, 1);
-        const lastDay = new Date(year, month + 1, 0);
-        const totalDays = lastDay.getDate();
-        const startWeekday = firstDay.getDay(); // 일요일 0 ~ 토요일 6
-
-        const mockData = generateMockData(totalDays);
-
-        // 제목 표시
-        monthTitle.textContent = `${year}년 ${month + 1}월`;
-
-        // 공백 채우기 (시작 요일 전)
-        for (let i = 0; i < startWeekday; i++) {
-            const blank = document.createElement('div');
-            monthlyGrass.appendChild(blank);
-        }
-
-        // 날짜별 잔디칸
-        for (let d = 1; d <= totalDays; d++) {
-            const div = document.createElement('div');
-            div.classList.add('grass-day');
-            const level = mockData[d - 1];
-            if (level > 0) div.dataset.level = level;
-            div.dataset.date = `${month + 1}월 ${d}일`;
-            monthlyGrass.appendChild(div);
-        }
-    }
-
-// 잔디 버튼 이벤트
-    document.getElementById('prevMonth').addEventListener('click', () => {
-        currentDate.setMonth(currentDate.getMonth() - 1);
-        renderMonth(currentDate);
-    });
-    document.getElementById('nextMonth').addEventListener('click', () => {
-        currentDate.setMonth(currentDate.getMonth() + 1);
-        renderMonth(currentDate);
-    });
-
-// 초기 렌더
-    renderMonth(currentDate);
-
-
-
-////////////////////////////////////////////////////////////////////
-
-
-// 난이도별 색 변경
-    document.querySelectorAll('.difficulty-level').forEach((el) => {
-        const firstChar = el.textContent.trim().charAt(0);
-        if (firstChar === 'G') el.classList.add('gold');
-        else if (firstChar === 'S') el.classList.add('silver');
-        else if (firstChar === 'B') el.classList.add('bronze');
     });
 }
