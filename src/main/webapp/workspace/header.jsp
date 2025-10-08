@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<link rel="stylesheet" href="css/header.css">
 <header class="header">
     <div class="logo-section">
         <div class="logo">K</div>

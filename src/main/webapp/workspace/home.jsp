@@ -1,4 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<link rel="stylesheet" href="css/notice.css">
+<link rel="stylesheet" href="css/teamChart.css">
+<link rel="stylesheet" href="css/problem.css">
 <main class="main-content">
     <section class="section notice-section">
         <h2>📢 팀 공지</h2>

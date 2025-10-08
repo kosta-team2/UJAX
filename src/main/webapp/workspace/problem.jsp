@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<link rel="stylesheet" href="css/problem.css">
 <section class="section problem-list-section">
     <div class="problem-header">
         <h3>문제 리스트</h3>

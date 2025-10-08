@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<link rel="stylesheet" href="css/notice.css">
 <section class="section notice-list-section">
 
     <div class="notice-header">
@@ -6,9 +7,7 @@
         <button class="register-btn">공지 등록</button>
     </div>
 
-
     <hr class="section-divider">
-
 
     <div class="notice-controls">
         <div class="search-sort">
@@ -16,7 +15,6 @@
             <button class="sort-btn">정렬 ▾</button>
         </div>
     </div>
-
 
     <div class="notice-grid">
 

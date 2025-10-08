@@ -5,12 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KOSTA - Workspace</title>
-    <link rel="stylesheet" href="css/base.css">
-    <link rel="stylesheet" href="css/header.css">
-    <link rel="stylesheet" href="css/sidebar.css">
-    <link rel="stylesheet" href="css/home.css">
-    <link rel="stylesheet" href="css/notice.css">
-    <link rel="stylesheet" href="css/problem.css">
+    <link rel="stylesheet" href="../common/css/darkmode.css">
+    <link rel="stylesheet" href="css/workspace.css">
     <link rel="stylesheet" href="css/modal.css">
 </head>
 <body>
