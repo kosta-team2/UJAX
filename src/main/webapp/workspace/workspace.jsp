@@ -7,7 +7,7 @@
     <title>KOSTA - Workspace</title>
     <link rel="stylesheet" href="../common/css/darkmode.css">
     <link rel="stylesheet" href="css/workspace.css">
-    <link rel="stylesheet" href="css/modal.css">
+    <link rel="stylesheet" href="css/noticeModal.css">
 </head>
 <body>
 <jsp:include page="header.jsp"/>
@@ -23,7 +23,7 @@
 </div>
 
 <%--공지 modal창--%>
-<div id="noticeModal" class="modal" style="display:none;">
+<div id="noticeModal" class="notice-modal" style="display:none;">
     <div class="modal-content">
         <span class="modal-close">&times;</span>
         <h3 id="modalTitle"></h3>
