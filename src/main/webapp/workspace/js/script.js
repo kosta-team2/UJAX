@@ -217,3 +217,19 @@ function resetJS() {
         alert('정렬 기능 실행');
     });
 }
+
+// 수정 버튼
+document.querySelector('.notice-edit-btn')?.addEventListener('click', () => {
+    const title = document.getElementById('modalTitle').innerText;
+    alert(`🔧 '${title}' 공지를 수정합니다.`);
+});
+
+// 삭제 버튼
+document.querySelector('.notice-delete-btn')?.addEventListener('click', () => {
+    const title = document.getElementById('modalTitle').innerText;
+    const confirmDelete = confirm(`❗ '${title}' 공지를 삭제하시겠습니까?`);
+    if (confirmDelete) {
+        alert('삭제 완료!');
+        closeModal();
+    }
+});
