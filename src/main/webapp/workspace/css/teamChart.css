@@ -1,0 +1,116 @@
+
+
+.chart-grid.chart-grid-3 {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 1rem;
+    align-items: stretch;
+}
+
+/* todo 잔디 ui 변경예정*/
+.grass-wrapper {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.grass-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+#monthTitle {
+    font-weight: bold;
+    font-size: 1.1rem;
+    color: var(--text);
+}
+
+.month-btn {
+    background: var(--surface-sub);
+    border: 1px solid var(--border);
+    border-radius: 0.5rem;
+    padding: 0.25rem 0.75rem;
+    cursor: pointer;
+    font-size: 1rem;
+    color: var(--text);
+}
+
+.month-btn:hover {
+    background: var(--accent2);
+    color: white;
+}
+
+.grass-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    justify-items: center;
+}
+
+.grass-day {
+    width: 16px;
+    height: 16px;
+    border-radius: 3px;
+    background-color: #2C3145;
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.05) inset;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.grass-day[data-level="1"] { background-color: #1E5631; }
+.grass-day[data-level="2"] { background-color: #238636; }
+.grass-day[data-level="3"] { background-color: #2ea043; }
+.grass-day[data-level="4"] { background-color: #3fb950; }
+
+.grass-day:hover {
+    transform: scale(1.4);
+    z-index: 3;
+    box-shadow: 0 0 6px rgba(63,185,80,0.6);
+}
+
+.grass-day::after {
+    content: attr(data-date);
+    position: absolute;
+    bottom: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.8);
+    color: white;
+    font-size: 0.7rem;
+    padding: 2px 6px;
+    border-radius: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+    white-space: nowrap;
+}
+.grass-day:hover::after {
+    opacity: 1;
+}
+
+/*잔디 이외 스탯창*/
+.mini-stat {
+    background: var(--surface-sub);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    padding: 1rem;
+}
+.mini-stat span {
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+.mini-stat strong {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+.mini-stat small {
+    font-size: 0.75rem;
+    color: var(--muted);
+}

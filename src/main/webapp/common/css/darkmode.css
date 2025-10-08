@@ -1,0 +1,12 @@
+/* 기본 색상 변수 (Dark Mode 기준) */
+:root {
+    --bg: #1F2230;
+    --surface: #2A2E3E;
+    --surface-sub: #202433;
+    --border: #3A4059;
+    --text: #E7EAF3;
+    --muted: #A8B3CF;
+    --accent: #5B86E5;
+    --accent2: #2C7BE5;
+    --input: #232739;
+}

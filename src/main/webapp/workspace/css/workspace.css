@@ -1,0 +1,28 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height: calc(100vh - 80px);
+    box-sizing: border-box;
+}
+
+.main-content {
+    flex: 1;
+    min-width: 0;
+    padding: 1.25rem;
+    margin: 0.5rem 0;
+    background: var(--bg);
+    overflow-y: auto;
+    border-radius: 0.75rem;
+    border: 1px solid var(--border);
+}
