@@ -1,49 +1,34 @@
 (function () {
     // ---------------------- CONFIG ----------------------
-    const CURRENT_USER = 'devA';
-    const IS_LEADER = true;           // 리더 권한: 관리 메뉴 노출
-    const NAME_VISIBLE = 5;           // 탭 가시 멤버 수
-    const PAGE_SIZE = 3;              // 댓글 페이징
-    const CTX = (window.CTX || '');   // JSP에서 주입됨
+    // [CHANGE] JSP가 넣어주는 CTX만 사용 (그 외 서버 주입값은 없음)
+    const CTX = (window.CTX || '');
+    const BASE = `${CTX}/mock/solution`; // mock에서만 읽음
 
-    // ---------------------- STATE ----------------------
-    let DATA = null;                  // fetch된 JSON
-    let STATUS = {};
-    let TIME = {};
-    let MEM = {};
-    let COMMENTS = {};
-    let nameOffset = 0;
-    let activeName = '';
-    let likes = {};                   // by name
-    let cPageByName = {};             // 댓글 페이지 by name
-    let commentsOpen = false;
-    let problemDeleted = false;
-
-    // ---------------------- HELPERS ----------------------
-    const $ = (sel) => document.querySelector(sel);
-    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+    // UI 설정
+    const NAME_VISIBLE = 5;
+    const PAGE_SIZE_FALLBACK = 3; // comments 응답에 pageSize 없을 때
     const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
 
-    // 긴 코드(100줄)
-    const LONG_CODE = (() => {
-        let s = '// solve() – 데모용 100줄 코드 스텁\n';
-        s += 'function solve(input){\n';
-        for (let i = 1; i <= 96; i++) s += '  // TODO line ' + i + '\n';
-        s += '  return 42;\n}';
-        return s;
-    })();
+    // ---------------------- STATE ----------------------
+    let SOL = null;                   // solution.json (문제/멤버 목록)
+    let DETAIL_CACHE = new Map();     // detailId -> (100.json 등)
+    let COMMENT_CACHE = new Map();    // `${detailId}:${page}` -> (100c.json 등)
+    let nameOffset = 0;
+    let activeDetailId = null;
+    let activeUserName = '';
+    let commentsOpen = false;
+    let pageByDetailId = {};          // detail별 현재 페이지(댓글)
+    const isLeader = true;            // [CHANGE] 목업용 플래그(원하면 JSP로 주입)
 
-    function makeLongComment(seed) {
-        return '문제 풀이 접근은 우선순위 큐 대신 덱을 사용해 양쪽에서 처리하는 방식이 효율적이었습니다. ' +
-            '엣지 케이스로 동일 시점에 여러 명이 같은 종류를 선호하는 경우를 가정해 충돌을 방지했고, ' +
-            '시간 복잡도는 입력 크기 합에 대해 O(N+M)으로 맞췄습니다. seed=' + seed;
-    }
+    // ---------------------- DOM HELPERS ----------------------
+    const $ = (sel) => document.querySelector(sel);
+    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 
     function renderCodeWithLineNumbers(code, preEl, large = false) {
         preEl.innerHTML = '';
         if (large) preEl.classList.add('code-lg'); else preEl.classList.remove('code-lg');
         const frag = document.createDocumentFragment();
-        const lines = code.split('\n');
+        const lines = (code || '').split('\n');
         lines.forEach((t, idx) => {
             const line = document.createElement('div');
             line.className = 'line';
@@ -60,16 +45,32 @@
         preEl.appendChild(frag);
     }
 
-    // ---------------------- RENDER ----------------------
+    // ---------------------- API (mock 파일 경로만) ----------------------
+    const API = {
+        solution: () => `${BASE}/solution.json`,
+        detail: (id) => `${BASE}/${id}.json`,
+        comments: (id, page) => `${BASE}/${id}c.json?page=${page}` // 쿼리는 무시되어도 OK
+    };
+
+    async function fetchJSON(url) {
+        const res = await fetch(url, {cache: 'no-store'});
+        if (!res.ok) throw new Error(`Fetch failed: ${res.status} ${url}`);
+        return res.json();
+    }
+
+    // ---------------------- RENDER: LEFT ----------------------
     function renderProblem() {
-        $('#pageProblemTitle').textContent = DATA.problem.title;
-        $('#problemTitle').textContent = problemDeleted ? '(삭제됨)' : DATA.problem.title;
+        const p = SOL.problem;
+
+        // [CHANGE] 스키마에 맞춤
+        $('#pageProblemTitle').textContent = p.title;
+        $('#problemTitle').textContent = p.title;
 
         const metaBox = $('#metaChips');
         metaBox.innerHTML = '';
         [
-            {k: '시간 제한', v: DATA.problem.meta.timeLimit},
-            {k: '메모리 제한', v: DATA.problem.meta.memoryLimit}
+            {k: '시간 제한', v: p.meta?.timeLimitRaw || '-'},
+            {k: '메모리 제한', v: p.meta?.memoryLimitRaw || '-'}
         ].forEach(c => {
             const div = document.createElement('div');
             div.className = 'chip';
@@ -77,225 +78,355 @@
             metaBox.appendChild(div);
         });
 
-        const desc = $('#problemDesc');
-        const inputD = $('#inputDesc');
-        const samples = $('#samples');
-        if (problemDeleted) {
-            desc.textContent = '이 문제는 삭제되었습니다. (모의)';
-            inputD.textContent = '';
-            samples.innerHTML = '';
-        } else {
-            desc.textContent = DATA.problem.description;
-            inputD.textContent = DATA.problem.inputDesc;
-            samples.innerHTML = '';
-            DATA.problem.samples.forEach((s, i) => {
-                const wrap = document.createElement('div');
-                wrap.style.display = 'grid';
-                wrap.style.gap = '12px';
-                wrap.style.gridTemplateColumns = '1fr 1fr';
-                const a = document.createElement('div');
-                a.className = 'subcard';
-                a.innerHTML = `<div style="font-weight:600;margin-bottom:6px">예제 입력 ${i + 1}</div><pre class="code" style="margin:0;max-height:none">${s.in}</pre>`;
-                const b = document.createElement('div');
-                b.className = 'subcard';
-                b.innerHTML = `<div style="font-weight:600;margin-bottom:6px">예제 출력 ${i + 1}</div><pre class="code" style="margin:0;max-height:none">${s.out}</pre>`;
-                wrap.appendChild(a);
-                wrap.appendChild(b);
-                samples.appendChild(wrap);
-            });
-        }
-        $('#bojLink').href = problemDeleted ? '#' : (DATA.problem.url || '#');
+        // 본문 (서버에서 sanitize 했다는 가정)
+        $('#problemDesc').innerHTML = p.problem_description || '';
+        $('#inputDesc').innerHTML = p.problem_input || '';
+        $('#outputDesc').innerHTML = p.problem_output || '';
 
-        // 리더 메뉴 표시/숨김
-        const leader = $('#leaderActions');
-        leader.classList.toggle('hidden', !IS_LEADER || problemDeleted);
+        const samples = $('#samples');
+        samples.innerHTML = '';
+        (p.samples || []).forEach(s => {
+            const wrap = document.createElement('div');
+            wrap.style.display = 'grid';
+            wrap.style.gap = '12px';
+            wrap.style.gridTemplateColumns = '1fr 1fr';
+
+            const a = document.createElement('div');
+            a.className = 'subcard';
+            a.innerHTML =
+                `<div style="font-weight:600;margin-bottom:6px">예제 입력 ${s.index}</div>` +
+                `<pre class="code" style="margin:0;max-height:none">${s.input || ''}</pre>`;
+
+            const b = document.createElement('div');
+            b.className = 'subcard';
+            b.innerHTML =
+                `<div style="font-weight:600;margin-bottom:6px">예제 출력 ${s.index}</div>` +
+                `<pre class="code" style="margin:0;max-height:none">${s.output || ''}</pre>`;
+
+            wrap.appendChild(a);
+            wrap.appendChild(b);
+            samples.appendChild(wrap);
+        });
+
+        $('#bojLink').href = p.url || '#';
+
+        // 리더 메뉴
+        $('#leaderActions').classList.toggle('hidden', !isLeader);
     }
 
     function renderNameTabs() {
         const prevBtn = $('#namePrev');
         const nextBtn = $('#nameNext');
         const tabs = $('#nameTabs');
-        const slice = DATA.members.slice(nameOffset, nameOffset + NAME_VISIBLE);
+
+        const total = (SOL.members || []).length;
+        const slice = SOL.members.slice(nameOffset, nameOffset + NAME_VISIBLE);
+
         prevBtn.disabled = nameOffset === 0;
-        nextBtn.disabled = nameOffset + NAME_VISIBLE >= DATA.members.length;
+        nextBtn.disabled = nameOffset + NAME_VISIBLE >= total;
+
         tabs.innerHTML = '';
-        slice.forEach(n => {
+        slice.forEach(m => {
             const b = document.createElement('button');
-            b.className = 'tab' + (n === activeName ? ' active' : '');
-            b.textContent = n;
-            b.onclick = () => {
-                activeName = n;
-                renderRight();
-            };
+            b.className = 'tab' + (m.id === activeDetailId ? ' active' : '');
+            b.textContent = m.user?.name || '(이름없음)';
+            b.onclick = () => setActiveMember(m.id, m.user?.name || '');
             tabs.appendChild(b);
         });
     }
 
+    // ---------------------- RENDER: RIGHT ----------------------
     function renderRight() {
         renderNameTabs();
-        const statusText = (STATUS[activeName] === 'success') ? '성공' : '실패';
-        $('#codeMeta').textContent = `${activeName} · ${statusText} · ${TIME[activeName]}ms / ${MEM[activeName]}MB`;
-        const sig = $('#signal');
-        if (sig) {
-            sig.style.background = (STATUS[activeName] === 'success') ? '#22C55E' : '#EF4444';
+
+        const detail = DETAIL_CACHE.get(activeDetailId);
+        if (!detail) {
+            // 로딩 플레이스홀더
+            $('#signal').style.background = '#6b7280';
+            $('#codeMeta').textContent = '로딩 중…';
+            renderCodeWithLineNumbers('', $('#codeBox'));
+            $('#likeBtn').disabled = true;
+            $('#likeCount').textContent = '';
+            $('#commentCount').textContent = '';
+            return;
         }
-        renderCodeWithLineNumbers(LONG_CODE, $('#codeBox'));
 
-        const likeOn = !!likes[activeName];
-        $('#likeBtn').textContent = likeOn ? '❤️ 취소' : '🤍 좋아요';
-        $('#likeCount').textContent = `좋아요 ${likeOn ? 1 : 0} ·`;
+        const {status, timeMs, memoryMb, like, commentCount, code} = detail;
+        const statusText = (status === 'success') ? '성공' : '실패';
+        $('#codeMeta').textContent =
+            `${activeUserName} · ${statusText} · ${timeMs ?? '-'}ms / ${memoryMb ?? '-'}MB`;
 
-        const list = COMMENTS[activeName] || [];
-        $('#commentCount').textContent = `댓글 ${list.length}`;
-        const page = cPageByName[activeName] || 1;
-        const last = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
-        $('#cPage').textContent = `${page} / ${last}`;
+        // 신호등
+        $('#signal').style.background = (status === 'success') ? '#22C55E' : '#EF4444';
 
-        // render comments
+        // 코드 박스
+        const cleaned = sanitizeCodeString(code);
+        renderCodeWithLineNumbers(cleaned, $('#codeBox'));
+
+        // 좋아요/댓글
+        $('#likeBtn').disabled = false;
+        $('#likeBtn').textContent = like?.me ? '❤️ 취소' : '🤍 좋아요';
+        $('#likeCount').textContent = `좋아요 ${like?.count ?? 0} ·`;
+        $('#commentCount').textContent = `댓글 ${commentCount ?? 0}`;
+    }
+
+    // [ADD] 일부 파일에서 말미에 \" 가 남아있는 케이스 대비
+    function sanitizeCodeString(raw) {
+        let s = String(raw ?? '');
+        // "code": "..." 같은 오염 문자열로 시작할 때 제거
+        if (s.startsWith('"code":')) {
+            const firstQuote = s.indexOf('"', 7);
+            s = s.slice(firstQuote + 1);
+            if (s.endsWith('"')) s = s.slice(0, -1);
+        }
+        // 앞뒤 큰따옴표만 덮어쓴 경우
+        if (s.length >= 2 && s.startsWith('"') && s.endsWith('"')) {
+            s = s.slice(1, -1);
+        }
+        // 통일된 개행
+        s = s.replace(/\r\n/g, '\n');
+        return s;
+    }
+
+    // ---------------------- COMMENTS ----------------------
+    function keyComments(id, page) {
+        return `${id}:${page}`;
+    }
+
+    function renderComments(detailId, page) {
+        const key = keyComments(detailId, page);
+        const data = COMMENT_CACHE.get(key);
         const box = $('#comments');
+        const pagerText = $('#cPage');
+
+        if (!data) {
+            box.innerHTML = '<div class="muted">댓글 로딩 중…</div>';
+            pagerText.textContent = '';
+            return;
+        }
+
+        const {items, total, pageSize} = data;
+        const size = pageSize || PAGE_SIZE_FALLBACK;
+        const last = Math.max(1, Math.ceil((total || 0) / size));
+        pagerText.textContent = `${page} / ${last}`;
+
         box.innerHTML = '';
-        list.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE).forEach((c, idx) => {
-            const short = c.text.length > 90 ? c.text.slice(0, 90) + '…' : c.text;
-            const isOwner = c.user === CURRENT_USER;
+        (items || []).forEach((c, idx) => {
+            const uname = c.user?.name || c.user?.id || 'anon';
+            const short = (c.text || '').length > 90 ? (c.text || '').slice(0, 90) + '…' : (c.text || '');
             const item = document.createElement('div');
             item.className = 'subcard comment';
             item.innerHTML =
-                `<div class="avatar">${c.user[0].toUpperCase()}</div>` +
+                `<div class="avatar">${uname[0].toUpperCase()}</div>` +
                 `<div style="flex:1">
           <div class="row-between" style="margin-bottom:4px">
-            <div class="muted" style="font-size:12px">${c.user} · ${c.ts}</div>
-            ${isOwner ? '<div class="ownerActions"><button class="btn btn-xs deleteBtn" data-id="' + c.id + '">삭제</button></div>' : ''}
+            <div class="muted" style="font-size:12px">${uname} · ${c.ts || ''}</div>
+            ${c.isOwner ? '<div class="ownerActions"><button class="btn btn-xs deleteBtn" data-id="' + c.id + '">삭제</button></div>' : ''}
           </div>
           <div>${short} <button data-i="${idx}" class="btn btn-xs commentMore">자세히</button></div>
         </div>`;
             box.appendChild(item);
         });
 
-        // pager buttons
-        const list2 = COMMENTS[activeName] || [];
-        const p = cPageByName[activeName] || 1;
-        const last2 = Math.max(1, Math.ceil(list2.length / PAGE_SIZE));
-        $('#cPrev').disabled = p <= 1;
-        $('#cNext').disabled = p >= last2;
+        $('#cPrev').disabled = page <= 1;
+        $('#cNext').disabled = page >= last;
 
-        // handlers
+        // 상세 모달
         $$('#comments .commentMore').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const i = +e.currentTarget.getAttribute('data-i');
-                $('#commentFull').textContent = list2[(p - 1) * PAGE_SIZE + i].text;
+                $('#commentFull').textContent = (items || [])[i]?.text || '';
                 $('#commentModal').classList.add('open');
             });
         });
+
+        // [ADD] 목업 삭제(클라 캐시만 조작)
         $$('#comments .deleteBtn').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const id = +e.currentTarget.getAttribute('data-id');
                 if (!confirm('정말로 이 댓글을 삭제하시겠습니까?')) return;
-                const idx = list2.findIndex(x => x.id === id);
-                if (idx > -1) {
-                    list2.splice(idx, 1);
-                    renderRight();
+                const arr = (COMMENT_CACHE.get(key)?.items || []);
+                const ix = arr.findIndex(x => x.id === id);
+                if (ix > -1) {
+                    arr.splice(ix, 1);
+                    COMMENT_CACHE.set(key, {
+                        ...COMMENT_CACHE.get(key),
+                        items: arr,
+                        total: (COMMENT_CACHE.get(key).total || 1) - 1
+                    });
+                    renderComments(detailId, page);
                 }
             });
         });
     }
 
+    async function loadComments(detailId, page) {
+        const key = keyComments(detailId, page);
+        if (COMMENT_CACHE.has(key)) {
+            renderComments(detailId, page);
+            return;
+        }
+        try {
+            const json = await fetchJSON(API.comments(detailId, page));
+            COMMENT_CACHE.set(key, json);
+            renderComments(detailId, page);
+        } catch (err) {
+            $('#comments').innerHTML = `<div class="muted">댓글 로드 실패: ${err.message}</div>`;
+            $('#cPage').textContent = '';
+        }
+    }
+
+    // ---------------------- DETAIL ----------------------
+    async function ensureDetail(detailId) {
+        if (DETAIL_CACHE.has(detailId)) return DETAIL_CACHE.get(detailId);
+        const json = await fetchJSON(API.detail(detailId));
+        DETAIL_CACHE.set(detailId, json);
+        return json;
+    }
+
+    async function setActiveMember(detailId, userName) {
+        activeDetailId = detailId;
+        activeUserName = userName;
+
+        // 우측 초기화
+        $('#codeMeta').textContent = '로딩 중…';
+        $('#signal').style.background = '#6b7280';
+        renderCodeWithLineNumbers('', $('#codeBox'));
+
+        try {
+            await ensureDetail(detailId);
+            renderRight();
+
+            if (commentsOpen) {
+                const page = pageByDetailId[detailId] || 1;
+                await loadComments(detailId, page);
+            } else {
+                const d = DETAIL_CACHE.get(detailId);
+                $('#commentCount').textContent = `댓글 ${d.commentCount ?? 0}`;
+            }
+        } catch (err) {
+            $('#codeMeta').textContent = `상세 로드 실패: ${err.message}`;
+        }
+    }
+
     // ---------------------- EVENTS ----------------------
     function bindEvents() {
+        // 탭 좌우
         $('#namePrev').onclick = () => {
-            nameOffset = clamp(nameOffset - NAME_VISIBLE, 0, Math.max(0, DATA.members.length - NAME_VISIBLE));
-            renderRight();
+            nameOffset = clamp(nameOffset - NAME_VISIBLE, 0, Math.max(0, (SOL.members || []).length - NAME_VISIBLE));
+            renderNameTabs();
         };
         $('#nameNext').onclick = () => {
-            nameOffset = clamp(nameOffset + NAME_VISIBLE, 0, Math.max(0, DATA.members.length - NAME_VISIBLE));
-            renderRight();
+            nameOffset = clamp(nameOffset + NAME_VISIBLE, 0, Math.max(0, (SOL.members || []).length - NAME_VISIBLE));
+            renderNameTabs();
         };
+
+        // 좋아요 토글(목업: 캐시만)
         $('#likeBtn').onclick = () => {
-            likes[activeName] = !likes[activeName];
+            const d = DETAIL_CACHE.get(activeDetailId);
+            if (!d) return;
+            const me = !!d.like?.me;
+            const cnt = d.like?.count ?? 0;
+            d.like = {me: !me, count: me ? Math.max(0, cnt - 1) : cnt + 1};
+            DETAIL_CACHE.set(activeDetailId, d);
             renderRight();
         };
-        $('#cPrev').onclick = () => {
-            const p = cPageByName[activeName] || 1;
-            cPageByName[activeName] = Math.max(1, p - 1);
-            renderRight();
-        };
-        $('#cNext').onclick = () => {
-            const list = COMMENTS[activeName] || [];
-            const p = cPageByName[activeName] || 1;
-            const last = Math.max(1, Math.ceil(list.length / PAGE_SIZE));
-            cPageByName[activeName] = Math.min(last, p + 1);
-            renderRight();
-        };
-        $('#backBtn').onclick = () => {
-            alert('목업: 이전 화면으로 이동');
-        };
-        $('#bjToggle').onclick = () => {
-            $('#bjBody').classList.toggle('hidden');
-        };
-        $('#cToggle').onclick = () => {
+
+        // 댓글 열고/닫기
+        $('#cToggle').onclick = async () => {
             commentsOpen = !commentsOpen;
             $('#commentsWrap').classList.toggle('hidden', !commentsOpen);
             $('#cToggle').textContent = commentsOpen ? '댓글 숨기기' : '댓글 보기';
+            if (commentsOpen) {
+                const page = pageByDetailId[activeDetailId] || 1;
+                await loadComments(activeDetailId, page);
+            }
         };
 
-        // 코드 모달(오버레이 클릭 닫기)
+        // 댓글 페이징
+        $('#cPrev').onclick = async () => {
+            const cur = pageByDetailId[activeDetailId] || 1;
+            const next = Math.max(1, cur - 1);
+            pageByDetailId[activeDetailId] = next;
+            await loadComments(activeDetailId, next);
+        };
+        $('#cNext').onclick = async () => {
+            const cur = pageByDetailId[activeDetailId] || 1;
+            const data = COMMENT_CACHE.get(keyComments(activeDetailId, cur));
+            const size = data?.pageSize || PAGE_SIZE_FALLBACK;
+            const last = Math.max(1, Math.ceil((data?.total || 0) / size));
+            const next = Math.min(last, cur + 1);
+            pageByDetailId[activeDetailId] = next;
+            await loadComments(activeDetailId, next);
+        };
+
+        // 코드 모달
         $('#codeBox').onclick = () => {
-            renderCodeWithLineNumbers(LONG_CODE, $('#codeFull'), true);
+            const d = DETAIL_CACHE.get(activeDetailId);
+            const code = sanitizeCodeString(d?.code || '');
+            renderCodeWithLineNumbers(code, $('#codeFull'), true);
             $('#codeModal').classList.add('open');
+            document.body.classList.add('modal-open');
         };
         $('#codeClose').onclick = () => {
             $('#codeModal').classList.remove('open');
-        };
+            document.body.classList.remove('modal-open');
+        }
         $('#codeModal').addEventListener('click', (e) => {
             if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+            document.body.classList.remove('modal-open');
         });
 
-        // 댓글 상세 모달(오버레이 클릭 닫기)
+        // 댓글 상세 모달
         $('#commentClose').onclick = () => {
             $('#commentModal').classList.remove('open');
-        };
+            document.body.classList.remove('modal-open');
+        }
+
         $('#commentModal').addEventListener('click', (e) => {
             if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+            document.body.classList.remove('modal-open');
         });
 
-        // 인라인 댓글 등록
-        $('#commentInlineSubmit').onclick = () => {
-            const text = ($('#commentInlineInput').value || '').trim();
-            if (!text) return;
-            const list = COMMENTS[activeName] || [];
-            list.unshift({id: Date.now(), user: CURRENT_USER, text, ts: '방금'});
-            COMMENTS[activeName] = list;
-            $('#commentInlineInput').value = '';
-            renderRight();
+        // 백준 카드 클릭 시 즉시 새 탭으로 이동
+        $('#bjToggle').onclick = () => {
+            const url = $('#bojLink')?.href || SOL?.problem?.url || '';
+            if (!url || url === '#') {
+                alert('문제 URL이 없습니다.');
+                return;
+            }
+            window.open(url, '_blank', 'noopener,noreferrer');
         };
 
-        // 리더 메뉴
+        // 리더 메뉴(목업)
         const menuBtn = $('#leaderMenuBtn');
         const menu = $('#leaderMenu');
-        if (IS_LEADER) {
+        if (isLeader) {
             $('#leaderActions').classList.remove('hidden');
             menuBtn.onclick = (e) => {
                 e.stopPropagation();
                 menu.classList.toggle('open');
             };
-            document.addEventListener('click', () => {
-                menu.classList.remove('open');
-            });
+            document.addEventListener('click', () => menu.classList.remove('open'));
             $('#problemDeleteBtn').onclick = (e) => {
                 e.stopPropagation();
                 menu.classList.remove('open');
                 $('#problemDeleteModal').classList.add('open');
             };
-            $('#problemDeleteCancel').onclick = () => {
-                $('#problemDeleteModal').classList.remove('open');
-            };
+            $('#problemDeleteCancel').onclick = () => $('#problemDeleteModal').classList.remove('open');
             $('#problemDeleteConfirm').onclick = () => {
-                problemDeleted = true;
                 $('#problemDeleteModal').classList.remove('open');
-                renderProblem();
+                $('#problemTitle').textContent = '(삭제됨)';
+                $('#problemDesc').textContent = '이 문제는 삭제되었습니다. (모의)';
+                $('#inputDesc').textContent = '';
+                $('#samples').innerHTML = '';
+                $('#bojLink').href = '#';
+                $('#leaderActions').classList.add('hidden');
             };
         }
     }
 
+    // ---------------------- SPLIT BAR ----------------------
     function initSplit() {
         const container = document.getElementById('split');
         const bar = document.getElementById('splitter');
@@ -337,54 +468,41 @@
         });
     }
 
-
-    // ---------------------- INIT (fetch JSON) ----------------------
+    // ---------------------- BOOT ----------------------
     async function boot() {
         try {
-            const res = await fetch(`${CTX}/mock/solution.json`, {cache: 'no-store'});
-            DATA = await res.json();
+            // 1) 문제/멤버 목록 로딩
+            SOL = await fetchJSON(API.solution());
+            renderProblem();
+
+            // 2) 첫 멤버를 활성화
+            const first = (SOL.members || [])[0];
+            if (!first) {
+                renderNameTabs();
+                $('#codeMeta').textContent = '제출한 멤버 없음';
+                renderCodeWithLineNumbers('', $('#codeBox'));
+                return;
+            }
+            activeDetailId = first.id;
+            activeUserName = first.user?.name || '';
+
+            // 3) 상세 로딩 후 렌더
+            await ensureDetail(activeDetailId);
+            renderRight();
+
+            // 댓글은 기본 닫힘
+            $('#commentsWrap').classList.add('hidden');
+            $('#cToggle').textContent = '댓글 보기';
+            pageByDetailId[activeDetailId] = 1;
+
+            // 이벤트/스플릿
+            bindEvents();
+            initSplit();
         } catch (err) {
-            console.warn('solution.json 로드 실패, 내부 MOCK 사용', err);
-            DATA = {
-                problem: {
-                    title: "회전초밥",
-                    meta: {
-                        timeLimit: "1초",
-                        memoryLimit: "1024MB",
-                        submissions: 1801,
-                        correct: 687,
-                        solvers: 532,
-                        ratio: "38.607%"
-                    },
-                    description: "fallback desc...",
-                    inputDesc: "fallback input...",
-                    samples: [{in: "6\n3 5\n1 4 5", out: "1 3 0"}],
-                    url: "https://www.acmicpc.net/problem/00000"
-                },
-                members: ["권광재", "박민용", "이진욱", "이은수", "김도윤", "안호진", "서지민", "이수현"]
-            };
+            $('#pageProblemTitle').textContent = '로드 실패';
+            $('#problemTitle').textContent = '로드 실패';
+            $('#problemDesc').textContent = err.message;
         }
-
-        // 파생 데이터(상태/시간/메모리/댓글) 구성
-        STATUS = Object.fromEntries(DATA.members.map((n, i) => [n, (i % 3 === 1) ? 'fail' : 'success']));
-        TIME = Object.fromEntries(DATA.members.map((n, i) => [n, [92, 310, 120, 188, 140, 215, 170, 260][i % 8]]));
-        MEM = Object.fromEntries(DATA.members.map((n, i) => [n, [128, 256, 192, 160, 128, 192, 160, 256][i % 8]]));
-
-        COMMENTS = Object.fromEntries(DATA.members.map((n) => [n, [
-            {id: Date.now() + 1, user: "devA", text: makeLongComment(1), ts: "2분 전"},
-            {id: Date.now() + 2, user: "devB", text: makeLongComment(2), ts: "1분 전"},
-            {id: Date.now() + 3, user: "devC", text: makeLongComment(3), ts: "방금"},
-            {id: Date.now() + 4, user: "devD", text: makeLongComment(4), ts: "방금"},
-            {id: Date.now() + 5, user: "devE", text: makeLongComment(5), ts: "방금"}
-        ]]));
-
-        activeName = DATA.members[0];
-
-        bindEvents();
-        renderProblem();
-        renderRight();
-        initSplit();
-
     }
 
     document.addEventListener('DOMContentLoaded', boot);

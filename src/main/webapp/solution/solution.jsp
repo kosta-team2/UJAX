@@ -33,29 +33,36 @@
                     </header>
                     <div class="divider"></div>
                     <div class="meta" id="metaChips"></div>
-                    <div class="divider"></div>
 
                     <section class="block">
                         <div class="block-title">문제</div>
+                        <div class="divider"></div>
                         <p class="muted" id="problemDesc"></p>
                     </section>
 
                     <section class="block">
                         <div class="block-title">입력</div>
+                        <div class="divider"></div>
                         <p class="muted" id="inputDesc"></p>
+                    </section>
+
+                    <section class="block">
+                        <div class="block-title">출력</div>
+                        <div class="divider"></div>
+                        <p class="muted" id="outputDesc"></p>
                     </section>
 
                     <section id="samples"></section>
 
                     <!-- Bookmark for Baekjoon -->
-                    <div class="bookmark" id="bjToggle" title="백준 북마크">
+                    <div class="bookmark" id="bjToggle" title="백준 북마크" role="link" tabindex="0">
                         <img alt="Baekjoon"
                              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Crect width='28' height='28' rx='6' ry='6' fill='%231e293b'/%3E%3Ccircle cx='8' cy='14' r='4' fill='%235b86e5'/%3E%3Ccircle cx='20' cy='14' r='4' fill='%2339d98a'/%3E%3C/svg%3E"/>
                         <div>
                             <div class="bm-title">백준 문제 페이지</div>
-                            <div class="muted small">클릭하여 링크 보기</div>
+                            <div class="muted small">링크 가기</div>
                         </div>
-                        <span class="chev">▾</span>
+                        <span class="chev">↗</span>
                     </div>
                     <div class="bookmark-body hidden" id="bjBody">
                         <a id="bojLink" href="#" target="_blank">https://www.acmicpc.net/problem/00000</a>

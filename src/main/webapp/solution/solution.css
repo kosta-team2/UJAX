@@ -302,15 +302,15 @@ body.page-solution .code {
     background: var(--surface-sub);
     border-radius: 12px;
     padding: 12px;
-    font-size: 13px;
-    line-height: 1.5;
+    font-size: 15px;
+    line-height: 1.6;
     max-height: 520px;
     font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace
 }
 
 body.page-solution .code .line {
     display: grid;
-    grid-template-columns:48px 1fr;
+    grid-template-columns:56px 1fr;
     gap: 8px
 }
 
@@ -321,7 +321,7 @@ body.page-solution .code .ln {
 }
 
 body.page-solution .code-lg {
-    font-size: 14px;
+    font-size: 15px;
     line-height: 1.6;
     max-height: 72vh
 }
@@ -510,4 +510,16 @@ body.page-solution {
     background: var(--bg);
     color: var(--text);
     overflow: hidden;
+}
+
+body.page-solution .modal {
+    z-index: 9999;
+}
+
+body.modal-open .splitter {
+    pointer-events: none;
+}
+
+body.modal-open .splitter::before {
+    opacity: 0.25;
 }
