@@ -162,6 +162,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const res = await fetch(`${page}.jsp`);
                 const html = await res.text();
                 main.innerHTML = html;
+                if (window.wsSettingsMount) window.wsSettingsMount(main.querySelector('#ws-settings-root'));
 
                 resetJS(); // 새 페이지 JS 재바인딩
             } catch (e) {

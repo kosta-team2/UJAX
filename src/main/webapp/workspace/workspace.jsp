@@ -37,5 +37,6 @@
 </div>
 
 <script src="js/script.js" defer></script>
+<script src="js/workspaceInfo.js" defer></script>
 </body>
 </html>
