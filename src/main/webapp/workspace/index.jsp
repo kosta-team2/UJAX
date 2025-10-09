@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KOSTA - Workspace</title>
     <link rel="stylesheet" href="../common/css/darkmode.css">
-    <link rel="stylesheet" href="css/workspace.css">
+    <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/noticeModal.css">
 </head>
 <body>
@@ -16,7 +16,7 @@
     <jsp:include page="left-sidebar.jsp"/>
 
     <main class="main-content" id="mainContent">
-        <jsp:include page="home.jsp" />
+        <jsp:include page="main.jsp" />
     </main>
 
     <jsp:include page="right-sidebar.jsp"/>
@@ -30,12 +30,13 @@
         <p id="modalContent"></p>
 
         <div class="modal-actions">
-            <button class="notice-edit-btn">수정</button>
             <button class="notice-delete-btn">삭제</button>
         </div>
     </div>
 </div>
 
 <script src="js/script.js" defer></script>
+<script src="js/leftSidebar.js" defer></script>
+<script src="js/rightSidebar.js" defer></script>
 </body>
 </html>
