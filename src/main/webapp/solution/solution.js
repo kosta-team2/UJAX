@@ -1,40 +1,115 @@
-(function () {
-    // ---------------------- CONFIG ----------------------
-    // [CHANGE] JSP가 넣어주는 CTX만 사용 (그 외 서버 주입값은 없음)
-    const CTX = (window.CTX || '');
-    const BASE = `${CTX}/mock/solution`; // mock에서만 읽음
-
-    // UI 설정
+(() => {
+    // ====================== SIMPLE CONFIG ======================
+    // mock 경로는 페이지(/solution/solution.jsp) 기준 ../mock/solution/ 입니다.
+    // 상대경로 문제(404) 방지를 위해 URL 객체로 절대경로화합니다.
+    const SOLUTION_ID = 1014;
+    const MOCK_BASE = new URL('../mock/solution/', location.href).toString().replace(/\/$/, '');
     const NAME_VISIBLE = 5;
-    const PAGE_SIZE_FALLBACK = 3; // comments 응답에 pageSize 없을 때
-    const clamp = (n, min, max) => Math.max(min, Math.min(max, n));
+    const PAGE_SIZE = 3;
 
-    // ---------------------- STATE ----------------------
-    let SOL = null;                   // solution.json (문제/멤버 목록)
-    let DETAIL_CACHE = new Map();     // detailId -> (100.json 등)
-    let COMMENT_CACHE = new Map();    // `${detailId}:${page}` -> (100c.json 등)
-    let nameOffset = 0;
-    let activeDetailId = null;
-    let activeUserName = '';
-    let commentsOpen = false;
-    let pageByDetailId = {};          // detail별 현재 페이지(댓글)
-    const isLeader = true;            // [CHANGE] 목업용 플래그(원하면 JSP로 주입)
+    const API = {
+        solution: () => `${MOCK_BASE}/${SOLUTION_ID}.json`,
+        detail: (detailId) => `${MOCK_BASE}/details/${detailId}.json`,
+        comments: (detailId, page = 1, size = PAGE_SIZE) =>
+            `${MOCK_BASE}/details/comments/${detailId}.json?page=${page}&pageSize=${size}`,
+    };
 
-    // ---------------------- DOM HELPERS ----------------------
-    const $ = (sel) => document.querySelector(sel);
-    const $$ = (sel) => Array.from(document.querySelectorAll(sel));
+    /** =========================
+     *  PROD API 로 바꿀 때 ↓ 이 블록만 활성
+     *  const WS_ID = 1111;
+     *  const PROD_BASE = `/workspaces/${WS_ID}/solutions/${SOLUTION_ID}`;
+     *  const API = {
+     *    solution: () => `${PROD_BASE}`,
+     *    detail:   (id) => `${PROD_BASE}/details/${id}`,
+     *    comments: (id, page = 1, size = PAGE_SIZE) =>
+     *      `${PROD_BASE}/details/${id}/comments?page=${page}&pageSize=${size}`,
+     *  };
+     *  ========================= */
+
+    // ====================== MINI UTIL ======================
+    function clamp(n, min, max) {
+        return Math.max(min, Math.min(max, n));
+    }
+
+    function sanitizeCodeString(raw) {
+        let s = String(raw ?? '');
+        if (s.startsWith('"code":')) {
+            const firstQuote = s.indexOf('"', 7);
+            s = s.slice(firstQuote + 1);
+            if (s.endsWith('"')) s = s.slice(0, -1);
+        }
+        if (s.length >= 2 && s.startsWith('"') && s.endsWith('"')) s = s.slice(1, -1);
+        return s.replace(/\r\n/g, '\n');
+    }
+
+    function writeJSON(id, obj) {
+        let el = document.getElementById(id);
+        if (!el) {
+            el = document.createElement('script');
+            el.type = 'application/json';
+            el.id = id;
+            document.body.appendChild(el);
+        }
+        el.textContent = JSON.stringify(obj);
+    }
+
+    function readJSON(id) {
+        const el = document.getElementById(id);
+        if (!el) return null;
+        try {
+            return JSON.parse(el.textContent || 'null');
+        } catch {
+            return null;
+        }
+    }
+
+    function getNameOffset() {
+        return parseInt(document.getElementById('nameTabs').dataset.offset || '0', 10);
+    }
+
+    function setNameOffset(v) {
+        document.getElementById('nameTabs').dataset.offset = String(v);
+    }
+
+    function getActiveDetailId() {
+        const q = new URLSearchParams(location.search).get('detail');
+        const m0 = getMembers()[0]?.id;
+        return q ? +q : m0;
+    }
+
+    function getActivePage() {
+        return +(new URLSearchParams(location.search).get('page') || 1);
+    }
+
+    function setURL(next) {
+        const url = new URL(location.href);
+        Object.entries(next).forEach(([k, v]) => {
+            if (v === null || v === undefined) url.searchParams.delete(k);
+            else url.searchParams.set(k, v);
+        });
+        history.replaceState({}, '', url);
+    }
+
+    function getMembers() {
+        return readJSON('data-solution')?.members || [];
+    }
+
+    function usernameByDetailId(detailId) {
+        const m = getMembers().find(m => m.id === detailId);
+        return m?.user?.name || '';
+    }
 
     function renderCodeWithLineNumbers(code, preEl, large = false) {
         preEl.innerHTML = '';
         if (large) preEl.classList.add('code-lg'); else preEl.classList.remove('code-lg');
         const frag = document.createDocumentFragment();
-        const lines = (code || '').split('\n');
-        lines.forEach((t, idx) => {
+        const lines = String(code || '').replace(/\r\n/g, '\n').split('\n');
+        lines.forEach((t, i) => {
             const line = document.createElement('div');
             line.className = 'line';
             const ln = document.createElement('span');
             ln.className = 'ln';
-            ln.textContent = String(idx + 1);
+            ln.textContent = String(i + 1);
             const tx = document.createElement('span');
             tx.className = 'tx';
             tx.textContent = t.length ? t : '\u00A0';
@@ -45,400 +120,307 @@
         preEl.appendChild(frag);
     }
 
-    // ---------------------- API (mock 파일 경로만) ----------------------
-    const API = {
-        solution: () => `${BASE}/solution.json`,
-        detail: (id) => `${BASE}/${id}.json`,
-        comments: (id, page) => `${BASE}/${id}c.json?page=${page}` // 쿼리는 무시되어도 OK
-    };
-
-    async function fetchJSON(url) {
-        const res = await fetch(url, {cache: 'no-store'});
-        if (!res.ok) throw new Error(`Fetch failed: ${res.status} ${url}`);
-        return res.json();
-    }
-
-    // ---------------------- RENDER: LEFT ----------------------
+    // ====================== LEFT: 문제 ======================
     function renderProblem() {
-        const p = SOL.problem;
+        const p = readJSON('data-solution').problem;
 
-        // [CHANGE] 스키마에 맞춤
-        $('#pageProblemTitle').textContent = p.title;
-        $('#problemTitle').textContent = p.title;
+        document.getElementById('pageProblemTitle').textContent = p.title;
+        document.getElementById('problemTitle').textContent = p.title;
 
-        const metaBox = $('#metaChips');
+        const metaBox = document.getElementById('metaChips');
         metaBox.innerHTML = '';
-        [
-            {k: '시간 제한', v: p.meta?.timeLimitRaw || '-'},
-            {k: '메모리 제한', v: p.meta?.memoryLimitRaw || '-'}
-        ].forEach(c => {
+        [{k: '시간 제한', v: p.meta?.timeLimitRaw || '-'},
+            {k: '메모리 제한', v: p.meta?.memoryLimitRaw || '-'}].forEach(({k, v}) => {
             const div = document.createElement('div');
             div.className = 'chip';
-            div.innerHTML = `<span class="muted">${c.k}</span><span style="font-weight:700">${c.v}</span>`;
+            div.innerHTML = `<span class="muted">${k}</span><span style="font-weight:700">${v}</span>`;
             metaBox.appendChild(div);
         });
 
-        // 본문 (서버에서 sanitize 했다는 가정)
-        $('#problemDesc').innerHTML = p.problem_description || '';
-        $('#inputDesc').innerHTML = p.problem_input || '';
-        $('#outputDesc').innerHTML = p.problem_output || '';
+        document.getElementById('problemDesc').innerHTML = p.problem_description || '';
+        document.getElementById('inputDesc').innerHTML = p.problem_input || '';
+        document.getElementById('outputDesc').innerHTML = p.problem_output || '';
 
-        const samples = $('#samples');
+        const samples = document.getElementById('samples');
         samples.innerHTML = '';
         (p.samples || []).forEach(s => {
             const wrap = document.createElement('div');
             wrap.style.display = 'grid';
             wrap.style.gap = '12px';
             wrap.style.gridTemplateColumns = '1fr 1fr';
-
             const a = document.createElement('div');
             a.className = 'subcard';
-            a.innerHTML =
-                `<div style="font-weight:600;margin-bottom:6px">예제 입력 ${s.index}</div>` +
-                `<pre class="code" style="margin:0;max-height:none">${s.input || ''}</pre>`;
-
+            a.innerHTML = `<div style="font-weight:600;margin-bottom:6px">예제 입력 ${s.index}</div><pre class="code" style="margin:0;max-height:none">${s.input || ''}</pre>`;
             const b = document.createElement('div');
             b.className = 'subcard';
-            b.innerHTML =
-                `<div style="font-weight:600;margin-bottom:6px">예제 출력 ${s.index}</div>` +
-                `<pre class="code" style="margin:0;max-height:none">${s.output || ''}</pre>`;
-
+            b.innerHTML = `<div style="font-weight:600;margin-bottom:6px">예제 출력 ${s.index}</div><pre class="code" style="margin:0;max-height:none">${s.output || ''}</pre>`;
             wrap.appendChild(a);
             wrap.appendChild(b);
             samples.appendChild(wrap);
         });
 
-        $('#bojLink').href = p.url || '#';
-
-        // 리더 메뉴
-        $('#leaderActions').classList.toggle('hidden', !isLeader);
+        const a = document.getElementById('bojLink');
+        if (p.url) {
+            a.href = p.url;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            a.classList.remove('disabled');
+        } else {
+            a.removeAttribute('href');
+            a.removeAttribute('target');
+            a.removeAttribute('rel');
+            a.classList.add('disabled');
+        }
     }
 
+    // ====================== 탭 ======================
     function renderNameTabs() {
-        const prevBtn = $('#namePrev');
-        const nextBtn = $('#nameNext');
-        const tabs = $('#nameTabs');
+        const prevBtn = document.getElementById('namePrev');
+        const nextBtn = document.getElementById('nameNext');
+        const tabs = document.getElementById('nameTabs');
 
-        const total = (SOL.members || []).length;
-        const slice = SOL.members.slice(nameOffset, nameOffset + NAME_VISIBLE);
+        const offset = getNameOffset();
+        const list = getMembers();
+        const total = list.length;
+        const slice = list.slice(offset, offset + NAME_VISIBLE);
+        const active = getActiveDetailId();
 
-        prevBtn.disabled = nameOffset === 0;
-        nextBtn.disabled = nameOffset + NAME_VISIBLE >= total;
+        prevBtn.disabled = offset === 0;
+        nextBtn.disabled = offset + NAME_VISIBLE >= total;
 
         tabs.innerHTML = '';
         slice.forEach(m => {
             const b = document.createElement('button');
-            b.className = 'tab' + (m.id === activeDetailId ? ' active' : '');
+            b.className = 'tab' + (m.id === active ? ' active' : '');
             b.textContent = m.user?.name || '(이름없음)';
-            b.onclick = () => setActiveMember(m.id, m.user?.name || '');
+            b.addEventListener('click', async () => {
+                closeComments(true);
+                setURL({detail: m.id});
+                resetRightForLoading();
+                await routeFromURL();
+            });
             tabs.appendChild(b);
         });
     }
 
-    // ---------------------- RENDER: RIGHT ----------------------
-    function renderRight() {
-        renderNameTabs();
+    // ====================== 우측 패널 (초기화/렌더) ======================
+    function resetRightForLoading() {
+        document.getElementById('codeMeta').textContent = '로딩 중…';
+        document.getElementById('signal').style.background = '#6b7280';
+        renderCodeWithLineNumbers('', document.getElementById('codeBox'));
+        const likeBtn = document.getElementById('likeBtn');
+        likeBtn.disabled = true;
+        likeBtn.textContent = '🤍 좋아요';
+        document.getElementById('likeCount').textContent = '';
+        document.getElementById('commentCount').textContent = '';
+    }
 
-        const detail = DETAIL_CACHE.get(activeDetailId);
-        if (!detail) {
-            // 로딩 플레이스홀더
-            $('#signal').style.background = '#6b7280';
-            $('#codeMeta').textContent = '로딩 중…';
-            renderCodeWithLineNumbers('', $('#codeBox'));
-            $('#likeBtn').disabled = true;
-            $('#likeCount').textContent = '';
-            $('#commentCount').textContent = '';
+    function renderRightFromDetail() {
+        const d = readJSON('data-detail');
+        if (!d) {
+            resetRightForLoading();
             return;
         }
 
-        const {status, timeMs, memoryMb, like, commentCount, code} = detail;
-        const statusText = (status === 'success') ? '성공' : '실패';
-        $('#codeMeta').textContent =
-            `${activeUserName} · ${statusText} · ${timeMs ?? '-'}ms / ${memoryMb ?? '-'}MB`;
+        const uname = usernameByDetailId(d.id);
+        const statusText = (d.status === 'success') ? '성공' : '실패';
+        document.getElementById('codeMeta').textContent = `${uname} · ${statusText} · ${d.timeMs ?? '-'}ms / ${d.memoryMb ?? '-'}MB`;
+        document.getElementById('signal').style.background = (d.status === 'success') ? '#22C55E' : '#EF4444';
 
-        // 신호등
-        $('#signal').style.background = (status === 'success') ? '#22C55E' : '#EF4444';
+        renderCodeWithLineNumbers(sanitizeCodeString(d.code), document.getElementById('codeBox'));
 
-        // 코드 박스
-        const cleaned = sanitizeCodeString(code);
-        renderCodeWithLineNumbers(cleaned, $('#codeBox'));
-
-        // 좋아요/댓글
-        $('#likeBtn').disabled = false;
-        $('#likeBtn').textContent = like?.me ? '❤️ 취소' : '🤍 좋아요';
-        $('#likeCount').textContent = `좋아요 ${like?.count ?? 0} ·`;
-        $('#commentCount').textContent = `댓글 ${commentCount ?? 0}`;
+        const likeBtn = document.getElementById('likeBtn');
+        likeBtn.disabled = false;
+        likeBtn.textContent = d.like?.me ? '❤️ 취소' : '🤍 좋아요';
+        document.getElementById('likeCount').textContent = `좋아요 ${d.like?.count ?? 0} ·`;
+        document.getElementById('commentCount').textContent = `댓글 ${d.commentCount ?? 0}`;
     }
 
-    // [ADD] 일부 파일에서 말미에 \" 가 남아있는 케이스 대비
-    function sanitizeCodeString(raw) {
-        let s = String(raw ?? '');
-        // "code": "..." 같은 오염 문자열로 시작할 때 제거
-        if (s.startsWith('"code":')) {
-            const firstQuote = s.indexOf('"', 7);
-            s = s.slice(firstQuote + 1);
-            if (s.endsWith('"')) s = s.slice(0, -1);
+    // ====================== 댓글 ======================
+    function closeComments(force = false) {
+        const wrap = document.getElementById('commentsWrap');
+        if (force || !wrap.classList.contains('hidden')) {
+            wrap.classList.add('hidden');
+            document.getElementById('cToggle').textContent = '댓글 보기';
+            // 리스트/페이저 비우기
+            document.getElementById('comments').innerHTML = '';
+            document.getElementById('cPage').textContent = '';
         }
-        // 앞뒤 큰따옴표만 덮어쓴 경우
-        if (s.length >= 2 && s.startsWith('"') && s.endsWith('"')) {
-            s = s.slice(1, -1);
-        }
-        // 통일된 개행
-        s = s.replace(/\r\n/g, '\n');
-        return s;
     }
 
-    // ---------------------- COMMENTS ----------------------
-    function keyComments(id, page) {
-        return `${id}:${page}`;
-    }
-
-    function renderComments(detailId, page) {
-        const key = keyComments(detailId, page);
-        const data = COMMENT_CACHE.get(key);
-        const box = $('#comments');
-        const pagerText = $('#cPage');
-
-        if (!data) {
+    function renderComments(page, json) {
+        const box = document.getElementById('comments');
+        const pagerText = document.getElementById('cPage');
+        if (!json) {
             box.innerHTML = '<div class="muted">댓글 로딩 중…</div>';
             pagerText.textContent = '';
             return;
         }
-
-        const {items, total, pageSize} = data;
-        const size = pageSize || PAGE_SIZE_FALLBACK;
-        const last = Math.max(1, Math.ceil((total || 0) / size));
+        const items = json.items || [];
+        const size = json.pageSize || PAGE_SIZE;
+        const last = Math.max(1, Math.ceil((json.total || 0) / size));
         pagerText.textContent = `${page} / ${last}`;
 
         box.innerHTML = '';
-        (items || []).forEach((c, idx) => {
+        items.forEach((c, idx) => {
             const uname = c.user?.name || c.user?.id || 'anon';
             const short = (c.text || '').length > 90 ? (c.text || '').slice(0, 90) + '…' : (c.text || '');
             const item = document.createElement('div');
             item.className = 'subcard comment';
             item.innerHTML =
-                `<div class="avatar">${uname[0].toUpperCase()}</div>` +
-                `<div style="flex:1">
-          <div class="row-between" style="margin-bottom:4px">
-            <div class="muted" style="font-size:12px">${uname} · ${c.ts || ''}</div>
-            ${c.isOwner ? '<div class="ownerActions"><button class="btn btn-xs deleteBtn" data-id="' + c.id + '">삭제</button></div>' : ''}
-          </div>
-          <div>${short} <button data-i="${idx}" class="btn btn-xs commentMore">자세히</button></div>
-        </div>`;
+                `<div class="avatar">${uname[0].toUpperCase()}</div>
+         <div style="flex:1">
+           <div class="row-between" style="margin-bottom:4px">
+             <div class="muted" style="font-size:12px">${uname} · ${c.ts || ''}</div>
+             ${c.isOwner ? '<div class="ownerActions"><button class="btn btn-xs deleteBtn" data-id="' + c.id + '">삭제</button></div>' : ''}
+           </div>
+           <div>${short} <button data-i="${idx}" class="btn btn-xs commentMore">자세히</button></div>
+         </div>`;
             box.appendChild(item);
         });
 
-        $('#cPrev').disabled = page <= 1;
-        $('#cNext').disabled = page >= last;
+        document.getElementById('cPrev').disabled = page <= 1;
+        document.getElementById('cNext').disabled = page >= last;
 
-        // 상세 모달
-        $$('#comments .commentMore').forEach(btn => {
+        // 모달
+        Array.from(box.querySelectorAll('.commentMore')).forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const i = +e.currentTarget.getAttribute('data-i');
-                $('#commentFull').textContent = (items || [])[i]?.text || '';
-                $('#commentModal').classList.add('open');
+                document.getElementById('commentFull').textContent = (items[i]?.text || '');
+                document.getElementById('commentModal').classList.add('open');
+                document.body.classList.add('modal-open');
             });
         });
-
-        // [ADD] 목업 삭제(클라 캐시만 조작)
-        $$('#comments .deleteBtn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                const id = +e.currentTarget.getAttribute('data-id');
+        // (목업) 삭제
+        Array.from(box.querySelectorAll('.deleteBtn')).forEach(btn => {
+            btn.addEventListener('click', () => {
                 if (!confirm('정말로 이 댓글을 삭제하시겠습니까?')) return;
-                const arr = (COMMENT_CACHE.get(key)?.items || []);
-                const ix = arr.findIndex(x => x.id === id);
-                if (ix > -1) {
-                    arr.splice(ix, 1);
-                    COMMENT_CACHE.set(key, {
-                        ...COMMENT_CACHE.get(key),
-                        items: arr,
-                        total: (COMMENT_CACHE.get(key).total || 1) - 1
-                    });
-                    renderComments(detailId, page);
-                }
+                // 목업이므로 화면만 갱신
+                const rest = items.filter(x => x.id !== +btn.dataset.id);
+                renderComments(page, {...json, items: rest, total: Math.max(0, (json.total || 0) - 1)});
             });
         });
     }
 
     async function loadComments(detailId, page) {
-        const key = keyComments(detailId, page);
-        if (COMMENT_CACHE.has(key)) {
-            renderComments(detailId, page);
+        const res = await fetch(API.comments(detailId, page, PAGE_SIZE), {cache: 'no-store'});
+        if (!res.ok) {
+            document.getElementById('comments').innerHTML = `<div class="muted">댓글 로드 실패: ${res.status}</div>`;
+            document.getElementById('cPage').textContent = '';
             return;
         }
-        try {
-            const json = await fetchJSON(API.comments(detailId, page));
-            COMMENT_CACHE.set(key, json);
-            renderComments(detailId, page);
-        } catch (err) {
-            $('#comments').innerHTML = `<div class="muted">댓글 로드 실패: ${err.message}</div>`;
-            $('#cPage').textContent = '';
-        }
+        renderComments(page, await res.json());
     }
 
-    // ---------------------- DETAIL ----------------------
-    async function ensureDetail(detailId) {
-        if (DETAIL_CACHE.has(detailId)) return DETAIL_CACHE.get(detailId);
-        const json = await fetchJSON(API.detail(detailId));
-        DETAIL_CACHE.set(detailId, json);
-        return json;
+    // ====================== DETAIL ======================
+    async function loadDetail(detailId) {
+        resetRightForLoading();         // 먼저 초기화
+        renderNameTabs();               // 탭 active 갱신
+
+        const res = await fetch(API.detail(detailId), {cache: 'no-store'});
+        if (!res.ok) throw new Error(String(res.status));
+
+        const json = await res.json();
+        writeJSON('data-detail', json);
+        renderRightFromDetail();
     }
 
-    async function setActiveMember(detailId, userName) {
-        activeDetailId = detailId;
-        activeUserName = userName;
-
-        // 우측 초기화
-        $('#codeMeta').textContent = '로딩 중…';
-        $('#signal').style.background = '#6b7280';
-        renderCodeWithLineNumbers('', $('#codeBox'));
-
-        try {
-            await ensureDetail(detailId);
-            renderRight();
-
-            if (commentsOpen) {
-                const page = pageByDetailId[detailId] || 1;
-                await loadComments(detailId, page);
-            } else {
-                const d = DETAIL_CACHE.get(detailId);
-                $('#commentCount').textContent = `댓글 ${d.commentCount ?? 0}`;
-            }
-        } catch (err) {
-            $('#codeMeta').textContent = `상세 로드 실패: ${err.message}`;
-        }
-    }
-
-    // ---------------------- EVENTS ----------------------
+    // ====================== EVENTS ======================
     function bindEvents() {
-        // 탭 좌우
-        $('#namePrev').onclick = () => {
-            nameOffset = clamp(nameOffset - NAME_VISIBLE, 0, Math.max(0, (SOL.members || []).length - NAME_VISIBLE));
+        // 탭 슬라이더
+        document.getElementById('namePrev').addEventListener('click', () => {
+            const list = getMembers();
+            const next = clamp(getNameOffset() - NAME_VISIBLE, 0, Math.max(0, list.length - NAME_VISIBLE));
+            setNameOffset(next);
             renderNameTabs();
-        };
-        $('#nameNext').onclick = () => {
-            nameOffset = clamp(nameOffset + NAME_VISIBLE, 0, Math.max(0, (SOL.members || []).length - NAME_VISIBLE));
+        });
+        document.getElementById('nameNext').addEventListener('click', () => {
+            const list = getMembers();
+            const next = clamp(getNameOffset() + NAME_VISIBLE, 0, Math.max(0, list.length - NAME_VISIBLE));
+            setNameOffset(next);
             renderNameTabs();
-        };
+        });
 
-        // 좋아요 토글(목업: 캐시만)
-        $('#likeBtn').onclick = () => {
-            const d = DETAIL_CACHE.get(activeDetailId);
+        // 좋아요 (목업: 현재 상세 JSON만 조작)
+        document.getElementById('likeBtn').addEventListener('click', () => {
+            const d = readJSON('data-detail');
             if (!d) return;
             const me = !!d.like?.me;
             const cnt = d.like?.count ?? 0;
             d.like = {me: !me, count: me ? Math.max(0, cnt - 1) : cnt + 1};
-            DETAIL_CACHE.set(activeDetailId, d);
-            renderRight();
-        };
+            writeJSON('data-detail', d);
+            renderRightFromDetail();
+        });
 
         // 댓글 열고/닫기
-        $('#cToggle').onclick = async () => {
-            commentsOpen = !commentsOpen;
-            $('#commentsWrap').classList.toggle('hidden', !commentsOpen);
-            $('#cToggle').textContent = commentsOpen ? '댓글 숨기기' : '댓글 보기';
-            if (commentsOpen) {
-                const page = pageByDetailId[activeDetailId] || 1;
-                await loadComments(activeDetailId, page);
+        document.getElementById('cToggle').addEventListener('click', async () => {
+            const wrap = document.getElementById('commentsWrap');
+            const open = wrap.classList.contains('hidden');
+            if (open) {
+                wrap.classList.remove('hidden');
+                document.getElementById('cToggle').textContent = '댓글 숨기기';
+                const page = getActivePage();
+                await loadComments(getActiveDetailId(), page);
+            } else {
+                closeComments(true);
             }
-        };
+        });
 
         // 댓글 페이징
-        $('#cPrev').onclick = async () => {
-            const cur = pageByDetailId[activeDetailId] || 1;
+        document.getElementById('cPrev').addEventListener('click', async () => {
+            const cur = getActivePage();
             const next = Math.max(1, cur - 1);
-            pageByDetailId[activeDetailId] = next;
-            await loadComments(activeDetailId, next);
-        };
-        $('#cNext').onclick = async () => {
-            const cur = pageByDetailId[activeDetailId] || 1;
-            const data = COMMENT_CACHE.get(keyComments(activeDetailId, cur));
-            const size = data?.pageSize || PAGE_SIZE_FALLBACK;
-            const last = Math.max(1, Math.ceil((data?.total || 0) / size));
-            const next = Math.min(last, cur + 1);
-            pageByDetailId[activeDetailId] = next;
-            await loadComments(activeDetailId, next);
-        };
+            setURL({page: next});
+            await loadComments(getActiveDetailId(), next);
+        });
+        document.getElementById('cNext').addEventListener('click', async () => {
+            const cur = getActivePage();
+            const next = cur + 1; // renderComments에서 last에 따라 disable 처리됨
+            setURL({page: next});
+            await loadComments(getActiveDetailId(), next);
+        });
 
         // 코드 모달
-        $('#codeBox').onclick = () => {
-            const d = DETAIL_CACHE.get(activeDetailId);
-            const code = sanitizeCodeString(d?.code || '');
-            renderCodeWithLineNumbers(code, $('#codeFull'), true);
-            $('#codeModal').classList.add('open');
+        document.getElementById('codeBox').addEventListener('click', () => {
+            const code = sanitizeCodeString(readJSON('data-detail')?.code || '');
+            renderCodeWithLineNumbers(code, document.getElementById('codeFull'), true);
+            document.getElementById('codeModal').classList.add('open');
             document.body.classList.add('modal-open');
-        };
-        $('#codeClose').onclick = () => {
-            $('#codeModal').classList.remove('open');
-            document.body.classList.remove('modal-open');
-        }
-        $('#codeModal').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
+        });
+        document.getElementById('codeClose').addEventListener('click', () => {
+            document.getElementById('codeModal').classList.remove('open');
             document.body.classList.remove('modal-open');
         });
-
-        // 댓글 상세 모달
-        $('#commentClose').onclick = () => {
-            $('#commentModal').classList.remove('open');
-            document.body.classList.remove('modal-open');
-        }
-
-        $('#commentModal').addEventListener('click', (e) => {
-            if (e.target === e.currentTarget) e.currentTarget.classList.remove('open');
-            document.body.classList.remove('modal-open');
-        });
-
-        // 백준 카드 클릭 시 즉시 새 탭으로 이동
-        $('#bjToggle').onclick = () => {
-            const url = $('#bojLink')?.href || SOL?.problem?.url || '';
-            if (!url || url === '#') {
-                alert('문제 URL이 없습니다.');
-                return;
+        document.getElementById('codeModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                e.currentTarget.classList.remove('open');
+                document.body.classList.remove('modal-open');
             }
-            window.open(url, '_blank', 'noopener,noreferrer');
-        };
+        });
 
-        // 리더 메뉴(목업)
-        const menuBtn = $('#leaderMenuBtn');
-        const menu = $('#leaderMenu');
-        if (isLeader) {
-            $('#leaderActions').classList.remove('hidden');
-            menuBtn.onclick = (e) => {
-                e.stopPropagation();
-                menu.classList.toggle('open');
-            };
-            document.addEventListener('click', () => menu.classList.remove('open'));
-            $('#problemDeleteBtn').onclick = (e) => {
-                e.stopPropagation();
-                menu.classList.remove('open');
-                $('#problemDeleteModal').classList.add('open');
-            };
-            $('#problemDeleteCancel').onclick = () => $('#problemDeleteModal').classList.remove('open');
-            $('#problemDeleteConfirm').onclick = () => {
-                $('#problemDeleteModal').classList.remove('open');
-                $('#problemTitle').textContent = '(삭제됨)';
-                $('#problemDesc').textContent = '이 문제는 삭제되었습니다. (모의)';
-                $('#inputDesc').textContent = '';
-                $('#samples').innerHTML = '';
-                $('#bojLink').href = '#';
-                $('#leaderActions').classList.add('hidden');
-            };
-        }
+        // 댓글 모달 닫기
+        document.getElementById('commentClose').addEventListener('click', () => {
+            document.getElementById('commentModal').classList.remove('open');
+            document.body.classList.remove('modal-open');
+        });
+        document.getElementById('commentModal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) {
+                e.currentTarget.classList.remove('open');
+                document.body.classList.remove('modal-open');
+            }
+        });
     }
 
-    // ---------------------- SPLIT BAR ----------------------
+    // ====================== SPLITTER ======================
     function initSplit() {
         const container = document.getElementById('split');
         const bar = document.getElementById('splitter');
         if (!container || !bar) return;
 
-        const saved = localStorage.getItem('solution.splitLeft');
-        if (saved) container.style.setProperty('--split-left', saved);
-
         const clampPct = p => Math.max(20, Math.min(80, p));
-        const moveTo = (clientX) => {
+        const moveTo = (x) => {
             const rect = container.getBoundingClientRect();
-            const pct = clampPct(((clientX - rect.left) / rect.width) * 100);
+            const pct = clampPct(((x - rect.left) / rect.width) * 100);
             container.style.setProperty('--split-left', pct + '%');
         };
 
@@ -451,8 +433,8 @@
             dragging = false;
             bar.releasePointerCapture?.(e.pointerId);
             container.classList.remove('dragging');
-            window.removeEventListener('pointermove', onMove);
-            window.removeEventListener('pointerup', stop);
+            bar.removeEventListener('pointermove', onMove);
+            bar.removeEventListener('pointerup', stop);
             const val = getComputedStyle(container).getPropertyValue('--split-left').trim();
             localStorage.setItem('solution.splitLeft', val);
         };
@@ -462,46 +444,44 @@
             dragging = true;
             bar.setPointerCapture?.(e.pointerId);
             container.classList.add('dragging');
-            window.addEventListener('pointermove', onMove);
-            window.addEventListener('pointerup', stop, {once: true});
+            bar.addEventListener('pointermove', onMove);
+            bar.addEventListener('pointerup', stop, {once: true});
             moveTo(e.clientX);
         });
     }
 
-    // ---------------------- BOOT ----------------------
+    // ====================== ROUTER ======================
+    async function routeFromURL() {
+        renderNameTabs();
+        resetRightForLoading();
+        try {
+            await loadDetail(getActiveDetailId());
+            // 댓글은 기본 닫힘(탭 전환 시도 마찬가지). 필요 시 사용자가 열면 로드.
+            closeComments(true);
+        } catch (err) {
+            document.getElementById('codeMeta').textContent = `상세 로드 실패: ${err.message}`;
+        }
+    }
+
+    // ====================== BOOT ======================
     async function boot() {
         try {
-            // 1) 문제/멤버 목록 로딩
-            SOL = await fetchJSON(API.solution());
-            renderProblem();
-
-            // 2) 첫 멤버를 활성화
-            const first = (SOL.members || [])[0];
-            if (!first) {
-                renderNameTabs();
-                $('#codeMeta').textContent = '제출한 멤버 없음';
-                renderCodeWithLineNumbers('', $('#codeBox'));
-                return;
+            const res = await fetch(API.solution(), {cache: 'no-store'});
+            if (!res.ok){
+                throw new Error(`목록 ${res.status}`);
             }
-            activeDetailId = first.id;
-            activeUserName = first.user?.name || '';
+            writeJSON('data-solution', await res.json());
 
-            // 3) 상세 로딩 후 렌더
-            await ensureDetail(activeDetailId);
-            renderRight();
-
-            // 댓글은 기본 닫힘
-            $('#commentsWrap').classList.add('hidden');
-            $('#cToggle').textContent = '댓글 보기';
-            pageByDetailId[activeDetailId] = 1;
-
-            // 이벤트/스플릿
+            renderProblem();
+            setNameOffset(0);
             bindEvents();
             initSplit();
+
+            await routeFromURL();
         } catch (err) {
-            $('#pageProblemTitle').textContent = '로드 실패';
-            $('#problemTitle').textContent = '로드 실패';
-            $('#problemDesc').textContent = err.message;
+            document.getElementById('pageProblemTitle').textContent = '로드 실패';
+            document.getElementById('problemTitle').textContent = '로드 실패';
+            document.getElementById('problemDesc').textContent = err.message;
         }
     }
 

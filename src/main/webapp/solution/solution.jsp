@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="<%=request.getContextPath()%>/common/css/darkmode.css">
     <!-- 이 페이지 전용 스타일 -->
     <link rel="stylesheet" href="<%=request.getContextPath()%>/solution/solution.css">
-    <script>window.CTX = '<%=request.getContextPath()%>';</script>
 </head>
 <body class="page-solution">
 <div class="wrap">
@@ -55,7 +54,7 @@
                     <section id="samples"></section>
 
                     <!-- Bookmark for Baekjoon -->
-                    <div class="bookmark" id="bjToggle" title="백준 북마크" role="link" tabindex="0">
+                    <a class="bookmark" id="bojLink" href="#" target="_blank" rel="noopener noreferrer">
                         <img alt="Baekjoon"
                              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Crect width='28' height='28' rx='6' ry='6' fill='%231e293b'/%3E%3Ccircle cx='8' cy='14' r='4' fill='%235b86e5'/%3E%3Ccircle cx='20' cy='14' r='4' fill='%2339d98a'/%3E%3C/svg%3E"/>
                         <div>
@@ -63,10 +62,7 @@
                             <div class="muted small">링크 가기</div>
                         </div>
                         <span class="chev">↗</span>
-                    </div>
-                    <div class="bookmark-body hidden" id="bjBody">
-                        <a id="bojLink" href="#" target="_blank">https://www.acmicpc.net/problem/00000</a>
-                    </div>
+                    </a>
                 </section>
 
                 <div id="splitter" class="splitter" role="separator"
@@ -95,6 +91,7 @@
 
                     <div id="commentsWrap" class="hidden">
                         <div class="subcard comment-editor">
+                            <label for="commentInlineInput"></label>
                             <textarea id="commentInlineInput" rows="2" placeholder="댓글을 입력하세요..."></textarea>
                             <div class="row right">
                                 <button class="btn" id="commentInlineSubmit">등록</button>
