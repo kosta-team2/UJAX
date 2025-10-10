@@ -38,5 +38,6 @@
 
 <script src="js/script.js" defer></script>
 <script src="js/workspaceInfo.js" defer></script>
+<script src="js/register-problem.js" defer></script>
 </body>
 </html>

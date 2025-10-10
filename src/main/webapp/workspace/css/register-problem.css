@@ -1,0 +1,274 @@
+/* ✅ register-problem.css — WS 스타일과 완전 동일 스케일(색/폰트/사이즈)로 맞춤 */
+
+/* === Root (이미 전역에 있으면 이 블록은 지워도 OK) === */
+:root {
+    --bg: #1F2230;
+    --surface: #2A2E3E;
+    --surface-sub: #202433;
+    --border: #3A4059;
+    --text: #E7EAF3;
+    --muted: #A8B3CF;
+    --accent: #5B86E5;
+    --accent2: #2C7BE5;
+    --input: #232739;
+}
+
+/* 공통 타이포는 body에서 'Segoe UI'를 쓰는 전역 규칙을 그대로 따릅니다. */
+/* 이 파일에선 폰트패밀리를 재정의하지 않습니다. */
+
+/* 스코프 */
+#register-problem-fragment,
+#register-problem-fragment * {
+    box-sizing: border-box;
+    color: var(--text);
+}
+
+/* 섹션 패딩: main-content의 패딩과 균형 (1.25rem=20px) - WS와 자연스럽게 맞춤 */
+#register-problem-fragment {
+    padding: 20px;
+}
+
+/* 카드: WS .card와 동일 톤/사이즈 */
+#register-problem-fragment .card {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
+}
+
+/* 헤더: WS .card-header와 동일 */
+#register-problem-fragment .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+}
+#register-problem-fragment .card-header h1 {
+    font-size: 22px; /* WS와 동일 */
+    margin: 0;
+}
+
+/* 뒤로가기 버튼: WS .btn 계열 톤에 맞춤(ghost 느낌) */
+#register-problem-fragment .back-link {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 10px 14px; /* WS 버튼 패딩과 동일 */
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .25s;
+    font: inherit;
+}
+#register-problem-fragment .back-link:not(:disabled):hover {
+    border-color: var(--accent);
+}
+
+/* 추천 영역: WS.block 톤과 일치 (surface-sub + border) */
+#register-problem-fragment .promo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 18px 18px 0;
+    border: 1px solid var(--border);
+    background: var(--surface-sub);
+    border-radius: 14px;
+    padding: 12px 14px;
+    color: var(--muted);
+}
+#register-problem-fragment .promo b {
+    color: var(--accent);
+    cursor: pointer;
+}
+#register-problem-fragment .refresh {
+    margin-left: auto;
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: .25s;
+}
+#register-problem-fragment .refresh:hover {
+    border-color: var(--accent);
+}
+
+/* 폼 그리드: WS .grid-2의 간격 규칙(16px) 반영 */
+#register-problem-fragment .grid-form {
+    padding: 20px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px; /* WS와 동일 간격 */
+}
+#register-problem-fragment .form-col {
+    display: flex;
+    flex-direction: column;
+    gap: 18px; /* WS .stack의 아이템 간격 18px와 맞춤 */
+}
+
+/* 필드: WS .field label과 완전 동일 */
+#register-problem-fragment .field label {
+    display: block;
+    margin: 0 0 8px 2px;
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 14px; /* WS와 동일 */
+}
+
+/* 인풋: WS input/select와 동일 (padding 12px, 테두리/배경 동일) */
+#register-problem-fragment input,
+#register-problem-fragment select {
+    width: 100%;
+    background: var(--input);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px; /* WS와 동일 */
+    color: var(--text);
+    outline: none;
+    font: inherit; /* 폰트/사이즈 전역 상속(WS와 동일 체감) */
+}
+#register-problem-fragment input::placeholder {
+    color: #8fa0c0; /* muted 톤에 맞춘 플레이스홀더 */
+}
+#register-problem-fragment input:focus,
+#register-problem-fragment select:focus {
+    border-color: var(--accent);
+}
+#register-problem-fragment .hint {
+    margin: 0.35rem 0 0;
+    color: var(--muted);
+    font-size: 12px; /* WS badge와 유사한 보조텍스트 크기 */
+}
+
+/* 알람 pill 라디오: WS 톤으로 맞춤 (surface-sub + border) */
+#register-problem-fragment .alarm-pill {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    background: var(--surface-sub);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 8px 16px;
+    min-height: 54px;
+}
+#register-problem-fragment .radio-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 16px; /* WS 기본 텍스트 대비 강조 크기 */
+    color: var(--text);
+}
+#register-problem-fragment .radio-item input {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+#register-problem-fragment .radio-item .dot {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    border: 2px solid rgba(231, 234, 243, 0.65);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+#register-problem-fragment .radio-item .dot::after {
+    content: "";
+    width: 11px;
+    height: 11px;
+    border-radius: 50%;
+    background: var(--accent);
+    opacity: 0;
+}
+#register-problem-fragment .radio-item input:checked + .dot {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(91, 134, 229, 0.25);
+}
+#register-problem-fragment .radio-item input:checked + .dot::after {
+    opacity: 1;
+}
+#register-problem-fragment .radio-item input:focus-visible + .dot {
+    outline: 2px solid rgba(91,134,229,.45);
+    outline-offset: 2px;
+}
+
+/* 알람 옵션 (ON일 때 보임) */
+#register-problem-fragment .alarm-options {
+    display: none;
+    margin-top: 12px;
+    padding: 14px;
+    border: 1px dashed var(--border);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.02);
+    grid-template-columns: 1fr;
+    gap: 14px;
+}
+#register-problem-fragment .alarm-options.show { display: grid; }
+#register-problem-fragment .alarm-options .opt label {
+    display: block;
+    margin: 0 0 8px 2px;
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 14px; /* WS와 동일 */
+}
+#register-problem-fragment .opt-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+#register-problem-fragment .opt-row input[type="number"] {
+    width: 120px;
+    background: var(--input);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    color: var(--text);
+    font: inherit;
+}
+#register-problem-fragment .opt-row .unit {
+    color: var(--muted);
+}
+
+/* 액션 영역/버튼: WS .actions / .btn과 동일 */
+#register-problem-fragment .actions {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 8px;                 /* WS와 동일 */
+    justify-content: flex-end;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px dashed var(--border);
+}
+#register-problem-fragment .btn {
+    border: 1px solid var(--border);
+    background: var(--surface-sub);
+    color: var(--text);
+    padding: 10px 14px;       /* WS와 동일 */
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .25s;
+    font: inherit;            /* 폰트/사이즈 상속: WS와 동일 체감 */
+}
+#register-problem-fragment .btn:not(:disabled):hover {
+    border-color: var(--accent);
+}
+#register-problem-fragment .btn.primary {
+    background: var(--accent);
+    border-color: transparent;
+}
+#register-problem-fragment .btn.primary:not(:disabled):hover {
+    background: var(--accent2);
+}
+
+/* 반응형: WS grid-2 기준과 동일 */
+@media (max-width: 880px) {
+    #register-problem-fragment .grid-form {
+        grid-template-columns: 1fr;
+    }
+}

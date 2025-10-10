@@ -213,6 +213,36 @@ function resetJS() {
         alert('공지 등록 모달이 열릴 예정입니다.');
     });
 
+    // 문제 등록 버튼
+    const problemRegisterBtn = document.querySelector('.problem-register-btn');
+    if (problemRegisterBtn) {
+        problemRegisterBtn.addEventListener('click', async () => {
+            const main = document.getElementById('mainContent');
+            const page = problemRegisterBtn.dataset.page || 'register-problem';
+
+            try {
+                const res = await fetch(`${page}.jsp`);
+                if (!res.ok) throw new Error(`${res.status} ${res.statusText}`);
+                const html = await res.text();
+
+                main.innerHTML = html;
+
+                // ✅ register-problem.jsp 내부 JS 수동 마운트 호출
+                const root = main.querySelector('#register-problem-fragment');
+                if (root && window.registerProblemMount) {
+                    window.registerProblemMount(root);
+                }
+
+                // ✅ resetJS도 기존처럼 호출 (공지 등 다른 페이지용)
+                if (typeof resetJS === 'function') resetJS();
+
+            } catch (e) {
+                console.error(e);
+                main.innerHTML = `<p style="color:red">❌ 페이지를 불러오지 못했습니다: ${page}.jsp</p>`;
+            }
+        });
+    }
+
     // 정렬 버튼
     document.querySelector('.sort-btn')?.addEventListener('click', () => {
         alert('정렬 기능 실행');
