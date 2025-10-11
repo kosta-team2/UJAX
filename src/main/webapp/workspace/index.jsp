@@ -25,6 +25,7 @@
 <jsp:include page="notice-modal.jsp"/>
 
 <!-- index.jsp 하단 (</body> 직전), 모든 js를 한 번만 로드 -->
+<script defer src="js/header.js"></script>
 <script defer src="js/leftSidebar.js"></script>
 <script defer src="js/rightSidebar.js"></script>
 
