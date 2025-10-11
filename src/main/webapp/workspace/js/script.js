@@ -7,14 +7,14 @@
     // 페이지별 초기화 묶음
     App.init = {
         home() {
-            // 홈 구성요소들 초기화 (있을 때만 호출)
-            window.initHomeNotice?.();   // 홈 공지 3개
-            window.initTeamChart?.();    // 월간 잔디
-            window.initHomeProblem?.();  // (필요 시) 홈의 문제 하이라이트
+            window.initNoticeModal?.();
+            window.initHomeNotice?.();
+            window.initTeamChart?.();
+            window.initHomeProblem?.();
         },
         notice() {
-            window.initNotice?.();       // 공지 리스트 + 카드 클릭 핸들링
-            window.initNoticeModal?.();  // 모달 닫기/오버레이 등
+            window.initNotice?.();
+            window.initNoticeModal?.();
         },
         problem() {
             window.initProblem?.();
@@ -36,21 +36,21 @@
         });
     };
 
-    // 공통 이벤트(있을 때만)
     function bindCommonEvents() {
         const modal = document.getElementById('noticeModal');
-        if (!modal) return;
+        if (!modal || modal.dataset.bound === '1') return; // ✅ 중복 방지
+        modal.dataset.bound = '1';
 
         const closeBtn = modal.querySelector('.modal-close');
         closeBtn && closeBtn.addEventListener('click', () => {
             modal.style.display = 'none';
         });
 
-        // 오버레이 클릭으로 닫기 (중복 방지: 모달 자체에만 바인딩)
         modal.addEventListener('click', (e) => {
             if (e.target === modal) modal.style.display = 'none';
-        }, { once: true });
+        });
     }
+
 })();
 
 // header.js
