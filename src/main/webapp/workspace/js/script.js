@@ -20,7 +20,9 @@
             window.initProblem?.();
         },
         info() {
-            window.initInfo?.();
+            // window.initInfo?.();
+            const root = document.getElementById('ws-settings-root');
+            window.wsSettingsMount?.(root);
         },
         mypage() {
             window.initMypage?.();

@@ -1,0 +1,377 @@
+.ws-settings * {
+    box-sizing: border-box;
+}
+
+.ws-settings {
+    color: var(--text);
+}
+
+.ws-settings .card {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
+}
+
+.ws-settings .card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+}
+
+.ws-settings .card-header h1 {
+    font-size: 22px;
+    margin: 0;
+}
+
+.ws-settings .stack {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    padding: 20px;
+}
+
+.ws-settings .block {
+    background: var(--surface-sub);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+}
+
+.ws-settings .block-title {
+    font-weight: 800;
+    margin-bottom: 10px;
+}
+
+.ws-settings .block-title-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.ws-settings .danger-banner {
+    border: 1px solid #5a1d1d;
+    background: #2b1d1d;
+    color: #ffdedf;
+    border-radius: 14px;
+    padding: 14px 16px;
+}
+
+.ws-settings .danger-title {
+    font-weight: 800;
+    margin-bottom: 4px;
+    color: #ffc7c7;
+}
+
+.ws-settings .field label {
+    display: block;
+    margin: 0 0 8px 2px;
+    color: var(--muted);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.ws-settings input, .ws-settings select {
+    width: 100%;
+    background: var(--input);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 12px;
+    color: var(--text);
+}
+
+.ws-settings input:focus, .ws-settings select:focus {
+    border-color: var(--accent);
+}
+
+.ws-settings .grid-2 {
+    display: grid;
+    grid-template-columns:1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 880px) {
+    .ws-settings .grid-2 {
+        grid-template-columns:1fr;
+    }
+}
+
+.ws-settings .actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.ws-settings .actions.left {
+    justify-content: flex-start;
+}
+
+.ws-settings .member-toolbar {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.ws-settings .search {
+    min-width: 240px;
+}
+
+.ws-settings .table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.ws-settings .table th, .ws-settings .table td {
+    border-bottom: 1px solid var(--border);
+    padding: 12px;
+}
+
+.ws-settings .table thead {
+    background: #ffffff0a;
+}
+
+.ws-settings .table tr:last-child td {
+    border-bottom: none;
+}
+
+.ws-settings .col-user {
+    width: auto;
+}
+
+.ws-settings .col-role {
+    width: 120px;
+}
+
+.ws-settings .col-actions {
+    width: 220px;
+}
+
+.ws-settings .table th.th-user, .ws-settings .table td:nth-child(1) {
+    text-align: left;
+}
+
+.ws-settings .table th.th-role, .ws-settings .table td:nth-child(2) {
+    text-align: center;
+}
+
+.ws-settings .table th.th-actions, .ws-settings .table td:nth-child(3) {
+    text-align: right;
+}
+
+.ws-settings .badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: #ffffff10;
+    font-size: 12px;
+}
+
+.ws-settings .badge.leader {
+    background: #3b82f620;
+    border-color: #3b82f6;
+    color: #9fc5ff;
+}
+
+.ws-settings .row-actions {
+    display: inline-flex;
+    gap: 8px;
+}
+
+.ws-settings .table-foot {
+    padding: 12px;
+    color: var(--muted);
+}
+
+.ws-settings .leave-zone {
+    margin-top: 14px;
+    border: 1px dashed #374151;
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: #0f172a66;
+}
+
+.ws-settings .leave-zone-title {
+    font-weight: 800;
+}
+
+.ws-settings .leave-zone-desc {
+    margin: 0;
+    color: #cbd5e1;
+}
+
+.ws-settings .danger-zone {
+    margin-top: 14px;
+    border: 1px dashed #7a2a2a;
+    border-radius: 12px;
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: #2b1d1d33;
+}
+
+.ws-settings .danger-zone-title {
+    font-weight: 800;
+}
+
+.ws-settings .danger-zone-desc {
+    margin: 0;
+    color: #ffdedf;
+}
+
+/* 버튼 */
+.ws-settings .btn {
+    border: 1px solid var(--border);
+    background: var(--surface-sub);
+    color: var(--text);
+    padding: 10px 14px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: .25s;
+}
+
+.ws-settings .btn:not(:disabled):hover {
+    border-color: var(--accent);
+}
+
+.ws-settings .btn.primary {
+    background: var(--accent);
+    border-color: transparent;
+}
+
+.ws-settings .btn.primary:not(:disabled):hover {
+    background: var(--accent2);
+}
+
+.ws-settings .btn.warn {
+    background: #7a2a2a;
+    border-color: #7a2a2a;
+    color: #fff;
+}
+
+.ws-settings .btn.warn:not(:disabled):hover {
+    background: #962f2f;
+}
+
+.ws-settings .btn.ghost {
+    background: transparent;
+}
+
+.ws-settings .btn.danger-outline {
+    background: transparent;
+    border-color: #ef4444;
+    color: #fecaca;
+}
+
+.ws-settings .btn.danger-outline:not(:disabled):hover {
+    background: #7a2a2a44;
+}
+
+/* modal & toast (필요 시) */
+.ws-settings .modal {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: rgba(0, 0, 0, .35);
+    z-index: 4100;
+}
+
+.ws-settings .modal[hidden] {
+    display: none;
+}
+
+.ws-settings .modal-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px;
+    width: min(480px, 92vw);
+}
+
+.ws-settings .modal-title {
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.ws-settings .modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.ws-settings .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(40px);
+    background: #2b3348;
+    color: #e2e8f0;
+    padding: 12px 22px;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 15px;
+    opacity: 0;
+    transition: all .4s ease;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
+    z-index: 4200;
+}
+
+.ws-settings .toast.visible {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+
+.ws-settings .toast.success {
+    background: #16a34a;
+    color: #fff;
+}
+
+.ws-settings .toast.warn {
+    background: #b91c1c;
+    color: #fff;
+}
+
+/* 숨김 유틸 */
+.ws-settings .hidden {
+    display: none !important;
+}
+
+/* 툴바 한 줄 유지 */
+.ws-settings .member-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: nowrap;         /* 줄바꿈 금지 */
+}
+
+/* 검색 인풋은 남는 공간을 차지하면서 필요하면 수축 */
+.ws-settings .member-toolbar .search {
+    flex: 1 1 auto;
+    min-width: 0;              /* ✅ 이게 없으면 인풋이 줄어들지 않아 버튼이 밀립니다 */
+}
+
+/* "멤버 추가" 버튼은 수축 금지 + 줄바꿈 금지 */
+.ws-settings .member-toolbar #ws-openInvite {
+    flex: 0 0 auto;            /* 수축 금지 */
+    white-space: nowrap;       /* 줄바꿈 금지 */
+    display: inline-flex;      /* 텍스트 한 줄 정렬 안정화 */
+    align-items: center;
+}
