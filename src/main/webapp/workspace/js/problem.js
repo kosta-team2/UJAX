@@ -52,9 +52,25 @@ window.initProblem = async function () {
         else if (firstChar === 'B') el.classList.add('bronze');
     });
 
-// todo 문제 등록
-    document.querySelector('.register-btn')?.addEventListener('click', () => {
-        alert('문제 등록 모달이 열릴 예정입니다.');
+    // 문제 등록 버튼
+    document.querySelector('.problem-register-btn')?.addEventListener('click', async () => {
+        const main = document.getElementById('mainContent');
+        try {
+            const res = await fetch('problem-register.jsp');
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const html = await res.text();
+            main.innerHTML = html;
+
+            // registerProblemMount 자동 실행 (기존 JS 사용)
+            const root = main.querySelector('#register-problem-fragment');
+            if (root && window.registerProblemMount) {
+                window.registerProblemMount(root);
+            }
+
+        } catch (e) {
+            console.error('❌ 문제 등록 페이지 로드 실패:', e);
+            main.innerHTML = '<p style="color:red;">문제 등록 페이지를 불러올 수 없습니다.</p>';
+        }
     });
 
 //todo

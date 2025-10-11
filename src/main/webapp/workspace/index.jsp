@@ -37,6 +37,7 @@
 <script defer src="js/homeProblem.js"></script>
 <script defer src="js/notice.js"></script>
 <script defer src="js/problem.js"></script>
+<script defer src="js/problem-register.js"></script>
 <script defer src="js/info.js"></script>
 <script defer src="js/mypage.js"></script>
 

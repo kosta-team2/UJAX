@@ -19,6 +19,10 @@
         problem() {
             window.initProblem?.();
         },
+        "problem-register"() {
+            const root = document.getElementById('register-problem-fragment');
+            window.registerProblemMount?.(root);
+        },
         info() {
             // window.initInfo?.();
             const root = document.getElementById('ws-settings-root');
