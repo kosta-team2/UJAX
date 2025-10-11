@@ -46,7 +46,7 @@
             <h3>알고리즘 문제</h3>
         </div>
 
-        <div class="problem-grid" id="problemGrid">
+        <div class="problem-grid" id="homeProblemGrid">
 
         </div>
     </section>

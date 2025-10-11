@@ -30,11 +30,13 @@
 <script defer src="js/rightSidebar.js"></script>
 
 <!-- 페이지/컴포넌트 모듈(자동 실행 금지! init 함수만 등록) -->
-<script defer src="js/notice.js"></script>
+
 <script defer src="js/noticeModal.js"></script>
 <script defer src="js/homeNotice.js"></script>
-<script defer src="js/problem.js"></script>
 <script defer src="js/teamChart.js"></script>
+<script defer src="js/homeProblem.js"></script>
+<script defer src="js/notice.js"></script>
+<script defer src="js/problem.js"></script>
 <script defer src="js/info.js"></script>
 <script defer src="js/mypage.js"></script>
 
