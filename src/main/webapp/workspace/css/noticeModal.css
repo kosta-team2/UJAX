@@ -1,70 +1,144 @@
+/* 전체 모달 오버레이 */
 .notice-modal {
     position: fixed;
-    top: 0; left: 0;
-    width: 100%; height: 100%;
-    background: rgba(0,0,0,0.5);
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     display: none;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    background: rgba(0, 0, 0, 0.55);
+    z-index: 9999;
+    backdrop-filter: blur(3px);
 }
-.modal-content {
-    background: var(--surface);
-    padding: 2rem;
-    border-radius: 1rem;
-    width: 90%;
-    max-width: 480px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    animation: fadeIn 0.3s ease;
+
+/* 모달 컨텐츠 박스 */
+.notice-modal .modal-content {
+    background: var(--surface); /* ✅ 기존 다크 톤 대신 surface 톤 */
+    width: 460px;
+    max-width: 92%;
+    padding: 28px 26px;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
     position: relative;
+    animation: fadeIn 0.25s ease-in-out;
+    color: var(--text);
+    border: 1px solid var(--border);
 }
-.modal-close {
+
+/* 닫기 버튼 */
+.notice-modal .modal-close {
     position: absolute;
-    top: 1rem;
-    right: 1rem;
-    font-size: 1.25rem;
-    cursor: pointer;
+    top: 14px;
+    right: 18px;
+    font-size: 22px;
     color: var(--muted);
+    cursor: pointer;
+    transition: 0.2s;
 }
-.notice-modal h3 {
-    margin-bottom: 0.5rem;
-    font-size: 1.25rem;
-}
-.notice-modal p {
-    margin-top: 0.5rem;
-    line-height: 1.6;
+.notice-modal .modal-close:hover {
     color: var(--text);
 }
 
-.modal-actions {
+/* 제목 */
+.notice-modal h3 {
+    margin-bottom: 18px;
+    font-size: 1.25rem;
+    font-weight: 600;
+    text-align: center;
+    color: var(--text);
+}
+
+/* 읽기 모드 */
+#viewSection {
+    color: var(--muted);
+    line-height: 1.7;
+    font-size: 0.96rem;
+    word-break: keep-all;
+}
+
+/* 입력 영역 */
+#editSection {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    margin-top: 14px;
+}
+
+/* 입력 필드 공통 */
+#noticeTitleInput,
+#noticeContentInput {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 0.95rem;
+    padding: 10px 12px;
+    background-color: var(--input);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+#noticeTitleInput:focus,
+#noticeContentInput:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(91, 134, 229, 0.25);
+}
+
+#noticeContentInput {
+    resize: none;
+    min-height: 150px;
+    line-height: 1.5;
+}
+
+/* 버튼 영역 */
+.notice-modal .modal-actions {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    margin-top: 1.5rem;
+    margin-top: 18px;
 }
 
-.modal-actions .notice-edit-btn,
-.modal-actions .notice-delete-btn {
-    padding: 0.5rem 1rem;
+.notice-modal button {
     border: none;
+    padding: 9px 18px;
     border-radius: 6px;
-    font-weight: 600;
-    cursor: pointer;
-    color: #fff;
     font-size: 0.9rem;
-    transition: background 0.2s;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.15s;
 }
 
-.modal-actions .notice-edit-btn {
-    background-color: #4b8af0;
+/* 등록 버튼 */
+#saveNoticeBtn {
+    background-color: var(--accent);
+    color: #fff;
 }
-.modal-actions .notice-edit-btn:hover {
-    background-color: #3a78d9;
+#saveNoticeBtn:hover {
+    background-color: var(--accent2);
+    transform: translateY(-1px);
 }
 
-.modal-actions .notice-delete-btn {
-    background-color: #e14a4a;
+/* 삭제 버튼 */
+.notice-delete-btn {
+    background-color: #c0392b;
+    color: #fff;
 }
-.modal-actions .notice-delete-btn:hover {
-    background-color: #c03939;
+.notice-delete-btn:hover {
+    background-color: #a33225;
+    transform: translateY(-1px);
+}
+
+/* 등장 애니메이션 */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

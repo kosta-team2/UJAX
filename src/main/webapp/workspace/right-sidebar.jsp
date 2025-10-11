@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <link rel="stylesheet" href="css/rightSidebar.css">
 <aside class="right-sidebar">
-    <div class="profile-box" id="profileBox">
+    <div class="profile-box" id="profileBox" page="mypage">
         <div class="profile-header">
             <div class="nickname">testuser123</div>
         </div>

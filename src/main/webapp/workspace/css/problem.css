@@ -18,7 +18,7 @@
     color: var(--text);
 }
 
-.register-btn {
+.problem-register-btn {
     background: #22c55e;
     color: #fff;
     font-weight: 600;
@@ -28,7 +28,7 @@
     cursor: pointer;
     transition: background 0.2s ease;
 }
-.register-btn:hover {
+.problem-register-btn:hover {
     background: #16a34a;
 }
 
