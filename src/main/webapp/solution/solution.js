@@ -173,6 +173,59 @@
         }
     }
 
+    // ====================== LEADER: 메뉴 & 삭제 ======================
+    function initLeaderMenu() {
+        const leaderMenuBtn = document.getElementById('leaderMenuBtn');
+        const leaderMenu    = document.getElementById('leaderMenu');
+
+        if (!leaderMenuBtn || !leaderMenu) return;
+
+        leaderMenuBtn.setAttribute('type', 'button');
+
+        // 메뉴 토글
+        leaderMenuBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            leaderMenu.classList.toggle('open');
+        });
+
+    }
+
+    function initProblemDelete() {
+        const deleteBtn = document.getElementById('problemDeleteBtn');
+        const modal     = document.getElementById('problemDeleteModal');
+        const cancelBtn = document.getElementById('problemDeleteCancel');
+        const okBtn     = document.getElementById('problemDeleteConfirm');
+
+        if (!deleteBtn || !modal || !cancelBtn || !okBtn) return;
+
+        deleteBtn.setAttribute('type', 'button');
+
+        // 모달 열기
+        deleteBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('leaderMenu')?.classList.remove('open');
+            modal.classList.add('open');
+            document.body.classList.add('modal-open');
+        });
+
+        // 취소
+        cancelBtn.addEventListener('click', () => {
+            modal.classList.remove('open');
+            document.body.classList.remove('modal-open');
+        });
+
+        // 확정(목업 삭제 로직)
+        okBtn.addEventListener('click', async () => {
+            // TODO:DELETE
+            // await fetch(`${PROD_BASE}`, { method: 'DELETE' });
+
+            // 이동/뒤로가기
+            // history.back();
+            // location.href = '<%=request.getContextPath()%>/solution/list.jsp';
+        });
+    }
+
     // ====================== 탭 ======================
     function renderNameTabs() {
         const prevBtn = document.getElementById('namePrev');
@@ -474,6 +527,8 @@
 
             renderProblem();
             setNameOffset(0);
+            initLeaderMenu();
+            initProblemDelete();
             bindEvents();
             initSplit();
 

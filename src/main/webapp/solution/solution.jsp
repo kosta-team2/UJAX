@@ -23,7 +23,7 @@
                 <section class="card pane" id="problemPanel">
                     <header class="panel-head">
                         <div><h2 id="problemTitle">문제 제목</h2></div>
-                        <div id="leaderActions" class="menu-wrap hidden">
+                        <div id="leaderActions" class="menu-wrap">
                             <button class="btn" id="leaderMenuBtn" title="관리">⋯</button>
                             <div class="menu-panel" id="leaderMenu">
                                 <button class="menu-item" id="problemDeleteBtn">🗑 문제 삭제…</button>
