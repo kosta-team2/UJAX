@@ -1,47 +1,57 @@
 // 모든 js의 활성을 다룬다
-function reload(page) {
-    const scriptMap = {
-        home: ['js/notice.js', 'js/noticeModal.js', 'js/teamChart.js', 'js/problem.js'],
-        notice: ['js/notice.js', 'js/noticeModal.js'],
-        problem: ['js/problem.js'],
-        info: ['js/info.js'],
-        mypage: ['js/mypage.js']
+(function () {
+    // 전역 네임스페이스
+    window.App = window.App || {};
+    const App = window.App;
+
+    // 페이지별 초기화 묶음
+    App.init = {
+        home() {
+            // 홈 구성요소들 초기화 (있을 때만 호출)
+            window.initHomeNotice?.();   // 홈 공지 3개
+            window.initTeamChart?.();    // 월간 잔디
+            window.initHomeProblem?.();  // (필요 시) 홈의 문제 하이라이트
+        },
+        notice() {
+            window.initNotice?.();       // 공지 리스트 + 카드 클릭 핸들링
+            window.initNoticeModal?.();  // 모달 닫기/오버레이 등
+        },
+        problem() {
+            window.initProblem?.();
+        },
+        info() {
+            window.initInfo?.();
+        },
+        mypage() {
+            window.initMypage?.();
+        }
     };
 
-    // DOM 렌더링 시간
-    if (scriptMap[page]) {
+    // 기존 left/rightSidebar.js에서 호출하는 hook 유지
+    window.reload = function (page) {
+        // DOM 주입 직후 프레임이 그려지고 나서 초기화
         requestAnimationFrame(() => {
-            scriptMap[page].forEach(src => loadScript(src, true));
+            App.init[page]?.();
+            bindCommonEvents();
         });
+    };
+
+    // 공통 이벤트(있을 때만)
+    function bindCommonEvents() {
+        const modal = document.getElementById('noticeModal');
+        if (!modal) return;
+
+        const closeBtn = modal.querySelector('.modal-close');
+        closeBtn && closeBtn.addEventListener('click', () => {
+            modal.style.display = 'none';
+        });
+
+        // 오버레이 클릭으로 닫기 (중복 방지: 모달 자체에만 바인딩)
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) modal.style.display = 'none';
+        }, { once: true });
     }
-
-    bindCommonEvents();
-}
-
-function loadScript(src, force = false) {
-    // 기존 js 삭제후 다시 로드
-    const existing = document.querySelector(`script[src$="${src}"]`);
-    if (existing && !force) return;
-    if (existing) existing.remove();
-
-    const contextPath = window.location.pathname.split('/')[1] || '';
-    const fullSrc = `/${contextPath ? contextPath + '/' : ''}${src}`;
-
-    if (document.querySelector(`script[src="${fullSrc}"]`)) return;
-
-    const script = document.createElement('script');
-    script.src = fullSrc;
-    script.defer = false;
-    document.body.appendChild(script);
-}
-
-// --- 공통 버튼 / 모달 이벤트 바인딩 ---
-function bindCommonEvents() {
-    // 예: 모달 닫기 / 공통 툴팁 / 다크모드 등
-    document.querySelector('.modal-close')?.addEventListener('click', () => {
-        document.getElementById('noticeModal').style.display = 'none';
-    });
-}
+})();
 
 // header.js
 // logo 클릭시?

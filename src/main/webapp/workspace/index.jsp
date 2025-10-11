@@ -22,21 +22,22 @@
     <jsp:include page="right-sidebar.jsp"/>
 </div>
 
-<%--공지 modal창--%>
-<div id="noticeModal" class="notice-modal" style="display:none;">
-    <div class="modal-content">
-        <span class="modal-close">&times;</span>
-        <h3 id="modalTitle"></h3>
-        <p id="modalContent"></p>
+<jsp:include page="notice-modal.jsp"/>
 
-        <div class="modal-actions">
-            <button class="notice-delete-btn">삭제</button>
-        </div>
-    </div>
-</div>
+<!-- index.jsp 하단 (</body> 직전), 모든 js를 한 번만 로드 -->
+<script defer src="js/leftSidebar.js"></script>
+<script defer src="js/rightSidebar.js"></script>
 
-<script src="js/script.js" defer></script>
-<script src="js/leftSidebar.js" defer></script>
-<script src="js/rightSidebar.js" defer></script>
+<!-- 페이지/컴포넌트 모듈(자동 실행 금지! init 함수만 등록) -->
+<script defer src="js/notice.js"></script>
+<script defer src="js/noticeModal.js"></script>
+<script defer src="js/homeNotice.js"></script>
+<script defer src="js/problem.js"></script>
+<script defer src="js/teamChart.js"></script>
+<script defer src="js/info.js"></script>
+<script defer src="js/mypage.js"></script>
+
+<!-- 라우터/오케스트레이터: reload(page) 정의 -->
+<script defer src="js/script.js"></script>
 </body>
 </html>

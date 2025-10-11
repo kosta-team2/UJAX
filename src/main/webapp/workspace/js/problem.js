@@ -1,5 +1,5 @@
 // 문제 불러오기
-(async () => {
+window.initProblem = async function () {
     const problemGrid = document.getElementById('problemGrid');
 
     try {
@@ -43,24 +43,25 @@
         problemGrid.innerHTML = '<p>문제 목록을 불러오는 중 오류가 발생했습니다.</p>';
         console.error(err);
     }
-})();
 
-// todo 난이도별 색 변경
-document.querySelectorAll('.difficulty-level').forEach((el) => {
-    const firstChar = el.textContent.trim().charAt(0);
-    if (firstChar === 'G') el.classList.add('gold');
-    else if (firstChar === 'S') el.classList.add('silver');
-    else if (firstChar === 'B') el.classList.add('bronze');
-});
+    // todo 난이도별 색 변경
+    document.querySelectorAll('.difficulty-level').forEach((el) => {
+        const firstChar = el.textContent.trim().charAt(0);
+        if (firstChar === 'G') el.classList.add('gold');
+        else if (firstChar === 'S') el.classList.add('silver');
+        else if (firstChar === 'B') el.classList.add('bronze');
+    });
 
 // todo 문제 등록
-document.querySelector('.register-btn')?.addEventListener('click', () => {
-    alert('문제 등록 모달이 열릴 예정입니다.');
-});
+    document.querySelector('.register-btn')?.addEventListener('click', () => {
+        alert('문제 등록 모달이 열릴 예정입니다.');
+    });
 
 //todo
 // 검색
 // 정렬 버튼
-document.querySelector('.sort-btn')?.addEventListener('click', () => {
-    alert('정렬 기능 실행');
-});
+    document.querySelector('.sort-btn')?.addEventListener('click', () => {
+        alert('정렬 기능 실행');
+    });
+
+};

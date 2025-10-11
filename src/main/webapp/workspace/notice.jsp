@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <link rel="stylesheet" href="css/notice.css">
+<link rel="stylesheet" href="css/noticeModal.css">
 <section class="section notice-list-section">
 
     <div class="notice-header">
