@@ -3,7 +3,7 @@
 <section class="section problem-list-section">
     <div class="problem-header">
         <h3>문제 리스트</h3>
-        <button class="register-btn">문제 등록</button>
+        <button class="problem-register-btn">문제 등록</button>
     </div>
 
     <hr class="section-divider">
