@@ -7,13 +7,14 @@
 }
 
 .ws-settings .card {
-    max-width: 1200px;
-    margin: 0 auto;
+    width: 100%;
+    margin: 0;
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: 18px;
     box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
 }
+
 
 .ws-settings .card-header {
     display: flex;
@@ -317,9 +318,13 @@
     margin-top: 12px;
 }
 
+
+/* =========================
+   Toast Notifications
+========================= */
 .ws-settings .toast {
     position: fixed;
-    bottom: 20px;
+    bottom: 24px;
     left: 50%;
     transform: translateX(-50%) translateY(40px);
     background: #2b3348;
@@ -332,6 +337,8 @@
     transition: all .4s ease;
     box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
     z-index: 4200;
+    white-space: nowrap;
+    pointer-events: none;
 }
 
 .ws-settings .toast.visible {
@@ -346,6 +353,11 @@
 
 .ws-settings .toast.warn {
     background: #b91c1c;
+    color: #fff;
+}
+
+.ws-settings .toast.info {
+    background: #3b82f6;
     color: #fff;
 }
 
