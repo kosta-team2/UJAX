@@ -30,7 +30,13 @@
         },
         mypage() {
             window.initMypage?.();
-        }
+        },
+		giftshop() {
+			window.mountGiftShop?.();
+		},
+		detail() {
+			window.mountOrderDetail?.(); //상세 주문 페이지 초기화
+		}
     };
 
     // 기존 left/rightSidebar.js에서 호출하는 hook 유지

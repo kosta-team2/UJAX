@@ -6,7 +6,8 @@ document.addEventListener('DOMContentLoaded', () => {
     logoutBtn.addEventListener('click', (e) => {
         e.preventDefault();
 
-        alert('로그아웃 기능이 여기에 연결될 예정입니다.');
-
+		// workspace/ → auth/ 상대 경로로 안전 이동
+	    window.location.href = '../auth/login.jsp';
+		
     });
 });
