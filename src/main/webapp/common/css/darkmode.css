@@ -3,10 +3,16 @@
     --bg: #1F2230;
     --surface: #2A2E3E;
     --surface-sub: #202433;
+    --surface-menu: #141624;
     --border: #3A4059;
     --text: #E7EAF3;
+    --text-hover: #fff;
+    --hover: rgba(70, 130, 250, 0.15);
+    --shadow-hover: 0 3px 10px rgba(0, 0, 0, 0.35);
+    --surface-hover: #23263a;
     --muted: #A8B3CF;
     --accent: #5B86E5;
     --accent2: #2C7BE5;
+    /*--accent2: #39D98A; 초록색 색감을 가져가고 싶다면 이것으로*/
     --input: #232739;
 }

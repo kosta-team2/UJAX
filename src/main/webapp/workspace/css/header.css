@@ -32,19 +32,6 @@
     color: var(--muted);
 }
 
-.search-section {
-    flex: 1;
-    max-width: 480px;
-    margin: 0 1rem;
-}
-.search-input {
-    width: 100%;
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    border: 1px solid var(--border);
-    background: var(--input);
-    font-size: 0.9rem;
-}
 
 /* 테마 토글 + 로그아웃 버튼 */
 .action-section {
@@ -53,6 +40,7 @@
     gap: 0.5rem;
 }
 .action-section button {
+    color: var(--text);
     padding: 0.5rem 0.75rem;
     border-radius: 0.5rem;
     border: 1px solid var(--border);
@@ -60,6 +48,17 @@
     font-weight: 600;
     cursor: pointer;
 }
+
+#modeToggle:hover {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+    transform: scale(1.05);
+}
+#modeToggle:active {
+    transform: scale(0.96);
+}
+
 .logout-btn {
     background: #ef4444;
     color: #fff;

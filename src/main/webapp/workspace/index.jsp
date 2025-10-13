@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KOSTA - Workspace</title>
-    <link rel="stylesheet" href="../common/css/darkmode.css">
+    <link rel="stylesheet" id="theme-style" href="../common/css/darkmode.css">
     <link rel="stylesheet" href="css/index.css">
     <link rel="stylesheet" href="css/noticeModal.css">
 </head>
