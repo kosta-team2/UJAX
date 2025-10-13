@@ -1,5 +1,6 @@
+
     window.initInfo = async function () {
-    const root = document.getElementById("ws-settings-root");
+        const root = document.getElementById("ws-settings-root");
         if (!root) return;
 
         // ===== DOM refs =====
