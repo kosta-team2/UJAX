@@ -24,9 +24,7 @@
             window.registerProblemMount?.(root);
         },
         info() {
-            // window.initInfo?.();
-            const root = document.getElementById('ws-settings-root');
-            window.wsSettingsMount?.(root);
+             window.initInfo?.();
         },
         mypage() {
             window.initMypage?.();
