@@ -1,8 +1,5 @@
-(function () {
-    if (window.wsSettingsMount) return;
-
-    window.wsSettingsMount = function (root) {
-        root = root || document.getElementById("ws-settings-root");
+    window.initInfo = async function () {
+    const root = document.getElementById("ws-settings-root");
         if (!root) return;
 
         // ===== DOM refs =====
@@ -194,9 +191,3 @@
             showToast("워크스페이스 탈퇴 요청을 보냈습니다.", "success");
         });
     };
-
-    document.addEventListener("DOMContentLoaded", () => {
-        const root = document.getElementById("ws-settings-root");
-        if (root) window.wsSettingsMount(root);
-    });
-})();

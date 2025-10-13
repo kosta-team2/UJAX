@@ -54,11 +54,6 @@ document.addEventListener('DOMContentLoaded', async () => {
                     const html = await res.text();
                     main.innerHTML = html;
 
-                    const mountName = `ws${page.charAt(0).toUpperCase() + page.slice(1)}Mount`;
-                    if (typeof window[mountName] === 'function') {
-                        window[mountName](main.querySelector(`#ws-settings-root`) || main);
-                    }
-
                     // 페이지 비동기 이동시 마다 맞는 js 호출
                     if (typeof reload === 'function') reload(page);
 
