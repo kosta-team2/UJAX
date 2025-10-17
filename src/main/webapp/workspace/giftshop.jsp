@@ -1,5 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<link rel="stylesheet" href="<%=request.getContextPath()%>/workspace/css/giftshop.css" />
+<link rel="stylesheet" href="css/giftshop.css" />
 
 <main class="giftshop">
   <header class="topbar">

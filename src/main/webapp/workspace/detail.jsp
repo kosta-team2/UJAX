@@ -9,7 +9,7 @@
 <section class="order-detail" data-product-id="<%= id %>">
   <header class="topbar">
     <h1 class="title">상세 주문 페이지</h1>
-    <a class="btn-list" id="backToList" href="<%= request.getContextPath() %>/workspace/giftshop.jsp">목록으로</a>
+    <a class="btn-list" id="backToList" href="css/giftshop.jsp">목록으로</a>
   </header>
 
   <article class="card" role="article" aria-label="상품 상세">
