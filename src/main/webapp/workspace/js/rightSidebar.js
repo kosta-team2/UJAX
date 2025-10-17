@@ -2,13 +2,13 @@
 document.addEventListener('DOMContentLoaded', () => {
     const profileBox = document.getElementById('profileBox');
     const main = document.getElementById('mainContent');
-    const page = profileBox?.getAttribute('page') || 'mypage';
 
     if (profileBox) {
         profileBox.addEventListener('click', async () => {
             try {
-                // todo mypage 불러오기
-				await window.mountMypage?.(main); // JSP 주입 (mypage.js 제공)
+            const res = await fetch(`mypage.jsp`);
+            const html = await res.text();
+             main.innerHTML = html;
 
                 // js 초기화
                 if (typeof reload === 'function') reload(page);

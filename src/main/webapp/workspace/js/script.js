@@ -29,7 +29,7 @@
             window.wsSettingsMount?.(root);
         },
         mypage() {
-            window.initMypage?.();
+            window.mountMypage?.();
         },
 		giftshop() {
 			window.mountGiftShop?.();
