@@ -1,23 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-  String ctx = request.getContextPath();
   String id = request.getParameter("id") != null ? request.getParameter("id") : "";
   boolean fragment = "1".equals(request.getParameter("fragment"));
 %>
-<% if (!fragment) { %>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>상세 주문 페이지</title>
-  <!-- 전역 테마 CSS가 이미 있다면 그대로 두시고, 상세 전용 스타일만 detail.css에서 가져옵니다 -->
-  <link rel="stylesheet" href="<%=ctx%>/workspace/css/detail.css" />
-</head>
-<body>
-<div id="mainContent"><!-- SPA와 동일 구조 유지 -->
-<% } %>
 
+<link rel="stylesheet" href="/css/detail.css" />
+<div id="mainContent"><!-- SPA와 동일 구조 유지 -->
 <section class="order-detail" data-product-id="<%= id %>">
   <header class="topbar">
     <h1 class="title">상세 주문 페이지</h1>
@@ -96,11 +84,4 @@
 
 <% if (!fragment) { %>
 </div><!-- /#mainContent -->
-<script>
-  // 전역 layout(예: index.jsp)에서 script.js, detail.js를 이미 포함하고 있다면 이 블록은 생략 가능.
-  // layout에서 공통 로더가 없다면, 아래 한 줄로 상세 초기화:
-  window.mountOrderDetail && window.mountOrderDetail();
-</script>
-</body>
-</html>
 <% } %>
