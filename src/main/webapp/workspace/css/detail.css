@@ -1,0 +1,58 @@
+/* 상세 페이지 전용 */
+.order-detail { max-width: 1100px; margin: 0 auto; padding: 28px 20px 48px; color: var(--text); }
+
+.order-detail .topbar{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:18px}
+.order-detail .title{margin:0; font-size:26px; font-weight:800}
+.order-detail .btn-list{
+  display:inline-flex; align-items:center; gap:8px; padding:10px 14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,0)), var(--surface);
+  border:1px solid var(--border); color:var(--text); border-radius:12px;
+  text-decoration:none; font-weight:700; box-shadow:0 8px 28px rgba(0,0,0,.35);
+  transition:transform .15s ease, border-color .15s ease, background .15s ease;
+}
+.order-detail .btn-list::before{content:'←'; font-weight:900}
+.order-detail .btn-list:hover{transform:translateY(-1px); border-color:var(--accent); background:var(--surface-sub)}
+
+/* 카드 레이아웃 */
+.order-detail .card{ display:flex; align-items:stretch; gap:20px;
+  background: var(--surface); border:1px solid var(--border); border-radius:18px; box-shadow:0 8px 28px rgba(0,0,0,.35); padding:18px; }
+
+.order-detail .thumb{ flex:1 1 50%; min-width:340px; display:flex; align-items:center; justify-content:center; }
+.order-detail .thumb .ph,
+.order-detail .thumb img{ width:100%; aspect-ratio:1 / 1; border-radius:16px; border:1px solid var(--border); background:var(--surface-sub); color:rgba(231,234,243,.72); font-weight:700; font-size:18px; display:flex; align-items:center; justify-content:center; }
+.order-detail .thumb img{ object-fit:cover; display:none }
+
+/* 우측 정보 */
+.order-detail .info{ flex:1 1 50%; position:relative; padding:12px 4px 96px 4px; display:flex; flex-direction:column; }
+.order-detail .brand{color:rgba(231,234,243,.72); font-size:14px; margin-bottom:6px}
+.order-detail .name{margin:0 0 10px; font-size:24px; line-height:1.3}
+.order-detail .price-row{ display:flex; align-items:baseline; gap:12px; margin:6px 0 10px }
+.order-detail .price{ font-size:30px; font-weight:900 }
+.order-detail .notes{ margin-top:8px; color:rgba(231,234,243,.55); font-size:13px }
+.order-detail .chip{ align-self:flex-start; margin:10px 0 14px; background:rgba(91,134,229,.14); color:#cfe0ff; border:1px solid rgba(91,134,229,.28); padding:6px 10px; border-radius:999px; font-weight:800; font-size:12px }
+
+/* CTA */
+.order-detail .btn-pay{ position:absolute; right:0; bottom:0; display:inline-flex; align-items:center; justify-content:center; gap:10px; min-width:168px; padding:14px 20px; border-radius:14px; border:0; background:var(--cta, #3E79F7); color:#fff; font-weight:900; font-size:18px; letter-spacing:-.3px; box-shadow:0 14px 36px rgba(62,121,247,.35), inset 0 0 0 1px rgba(255,255,255,.15); cursor:pointer; transition: transform .1s ease; }
+.order-detail .btn-pay:active{ transform: translateY(1px); }
+
+/* 모달 */
+.order-detail .modal{ position:fixed; inset:0; display:none; place-items:center; background:rgba(0,0,0,.55); z-index:50; }
+.order-detail .modal[aria-hidden="false"]{ display:grid; }
+.order-detail .dialog{ width:min(720px, calc(100% - 40px)); margin:10vh auto; background:var(--surface); border:1px solid var(--border); border-radius:16px; box-shadow:0 16px 40px rgba(0,0,0,.45); padding:24px 24px 22px; }
+.order-detail .dialog-head{ display:flex; align-items:center; gap:12px; margin-bottom:8px }
+.order-detail .icon{ width:28px; height:28px; color:var(--success, #39D98A) }
+.order-detail .icon.warn{ color:var(--warn, #F3B856) }
+.order-detail .dialog-title{ font-weight:800; font-size:20px; margin:0 }
+.order-detail .dialog-body{ color:rgba(231,234,243,.72); margin-top:6px; margin-bottom:18px; line-height:1.6 }
+.order-detail .dialog-actions{ display:flex; justify-content:flex-end; gap:8px }
+.order-detail .btn{ display:inline-flex; align-items:center; justify-content:center; padding:12px 16px; border-radius:12px; font-weight:800; cursor:pointer }
+.order-detail .btn-primary{ border:1px solid transparent; background:var(--accent); color:#fff; text-decoration:none; box-shadow:0 8px 20px rgba(91,134,229,.28); }
+.order-detail .btn-ghost{ border:1px solid var(--border); background:var(--surface-sub); color:var(--text) }
+
+/* 반응형 */
+@media (max-width: 920px){
+  .order-detail .card{ flex-direction:column; padding:16px }
+  .order-detail .thumb{ min-width:0 }
+  .order-detail .info{ padding:10px 2px 0 }
+  .order-detail .btn-pay{ position:relative; width:100%; margin-top:14px }
+}

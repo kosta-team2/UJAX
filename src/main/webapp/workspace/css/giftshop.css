@@ -1,0 +1,73 @@
+:root{ --container-max:1280px; --gap:20px; }
+*{ box-sizing:border-box; }
+html,body{ height:100%; }
+body{
+  margin:0; background:var(--bg); color:var(--text);
+  font-family:"Pretendard","Noto Sans KR",system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
+  letter-spacing:-.2px;
+}
+.giftshop{ max-width:var(--container-max); margin:0 auto; padding:32px 24px 96px; }
+.topbar{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin:4px 0 18px; }
+.page-title{ margin:0; font-weight:800; font-size:26px; }
+.btn-back{
+  display:inline-flex; align-items:center; gap:8px; padding:10px 14px;
+  background:linear-gradient(180deg,rgba(255,255,255,.03),rgba(255,255,255,0)), var(--surface);
+  border:1px solid var(--border); border-radius:12px; color:var(--text); text-decoration:none; font-weight:700;
+  box-shadow:0 6px 24px rgba(0,0,0,.30); transition:.15s;
+}
+.btn-back::before{ content:'←'; font-weight:900; }
+.btn-back:hover{ border-color:var(--accent); background:var(--surface-sub); transform:translateY(-1px); box-shadow:0 8px 28px rgba(0,0,0,.35); }
+
+.grid{ display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:var(--gap); }
+.card{
+  background:var(--surface); border:1px solid var(--border); border-radius:16px; padding:14px;
+  box-shadow:0 6px 24px rgba(0,0,0,.30); display:flex; flex-direction:column; transition:.2s; cursor:pointer;
+}
+.card:hover{ transform:translateY(-2px); border-color:var(--accent); }
+.thumb{
+  width:100%; aspect-ratio:1/1; border-radius:12px;
+  background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,0)), var(--surface-sub);
+  border:1px solid var(--border); display:grid; place-items:center; margin-bottom:12px;
+}
+.thumb img{ display:none; width:100%; height:100%; object-fit:cover; }
+.thumb .ph{ font-size:12px; color:rgba(231,234,243,.65); border:1px dashed var(--border); padding:8px 10px; border-radius:10px; background:rgba(255,255,255,.02); user-select:none; }
+
+.brand{ color:rgba(231,234,243,.75); font-size:12px; margin-bottom:6px; }
+.name{ font-size:15px; font-weight:800; margin:0 0 8px; color:var(--text); }
+.price-row{ display:flex; align-items:baseline; gap:8px; }
+.price{ font-size:17px; font-weight:900; }
+
+.pagination{ display:flex; align-items:center; justify-content:center; gap:8px; margin-top:28px; user-select:none; }
+.page-btn{ padding:10px 12px; border-radius:10px; border:1px solid var(--border); background:var(--surface); color:var(--text); box-shadow:0 6px 24px rgba(0,0,0,.30); cursor:pointer; }
+.page-btn:hover{ border-color:var(--accent); }
+.page-btn.is-disabled, .page-btn[disabled]{ opacity:.45; pointer-events:none; }
+.page-list{ list-style:none; display:flex; gap:8px; padding:0; margin:0 4px; }
+.page{ display:inline-flex; width:36px; height:36px; align-items:center; justify-content:center; border-radius:10px; border:1px solid var(--border); background:var(--surface); color:var(--text); text-decoration:none; font-weight:700; box-shadow:0 6px 24px rgba(0,0,0,.30); }
+.page:hover{ border-color:var(--accent); }
+.page.is-active{ background:var(--accent); border-color:var(--accent); color:#fff; }
+
+.state{ margin-top:18px; color:rgba(231,234,243,.80); font-weight:700; }
+
+@media (max-width:1200px){ .grid{ grid-template-columns:repeat(3,minmax(0,1fr)); } }
+@media (max-width:900px){ .grid{ grid-template-columns:repeat(2,minmax(0,1fr)); } }
+@media (max-width:560px){
+  .giftshop{ padding:20px 16px 96px; }
+  .page-title{ font-size:22px; }
+  .page{ width:34px; height:34px; }
+  .grid{ grid-template-columns:1fr; }
+}
+
+/* giftshop 전용: giftshop 화면일 때만 스크롤바 숨김 (body, html, #mainContent 모두 커버) */
+html.hide-scrollbar,
+body.hide-scrollbar,
+#mainContent.hide-scrollbar {
+  -ms-overflow-style: none; /* IE, old Edge */
+  scrollbar-width: none;    /* Firefox */
+}
+html.hide-scrollbar::-webkit-scrollbar,
+body.hide-scrollbar::-webkit-scrollbar,
+#mainContent.hide-scrollbar::-webkit-scrollbar {
+  width: 0;
+  height: 0;                /* Chrome, Safari, Opera */
+}
+
