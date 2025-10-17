@@ -46,6 +46,7 @@
 <script defer src="js/mypage.js"></script>
 <script defer src="js/personal-info.js"></script>
 <script defer src="js/giftshop.js"></script>
+<script defer src="js/detail.js"></script>
 
 <!-- 비동기 페이지 이동시 js reloading -->
 <script defer src="js/script.js"></script>
@@ -54,9 +55,5 @@
 <script>window.FE_CTX = "<%=request.getContextPath()%>";</script>
 <!-- 모의 스토어: /mock/giftProducts.json 로더 -->
 <script defer src="../common/js/mock-store.js"></script>
-<!-- 기프티콘 샵 스크립트 (mountGiftShop 정의) -->
-
-<script src="${pageContext.request.contextPath}/workspace/js/detail.js"></script>
-
 </body>
 </html>
