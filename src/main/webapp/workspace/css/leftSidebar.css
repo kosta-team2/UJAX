@@ -17,25 +17,26 @@
 }
 
 .workspace-toggle {
-    background: #1d1f2b;              /* 전체 톤보다 살짝 밝은 박스 */
-    border: 1px solid #2e3350;        /* 은은한 네이비 테두리 */
+    background: var(--surface-sub);
+    border: 1px solid var(--border);
     border-radius: 8px;
     margin-bottom: 0.75rem;
-    overflow: hidden;              /* 내부 요소 둥근 모서리 따라감 */
+    overflow: hidden;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     transition: background 0.2s, transform 0.1s;
 }
 
 .workspace-toggle:hover {
-    background: #23263a;
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.35);
+    background: var(--surface-hover, var(--accent2));
+    box-shadow: var(--shadow-hover);
+    transform: translateY(-1px);
 }
 
 .workspace-name {
     width: 100%;
     background: transparent;
     border: none;
-    color: #e0e3ff;
+    color: var(--text);
     font-weight: 600;
     font-size: 1rem;
     padding: 0.9rem 1rem;
@@ -46,21 +47,20 @@
 }
 
 .workspace-name:hover {
-    background: rgba(70, 130, 250, 0.15); /* 파란빛 하이라이트 */
-    color: #fff;
+    background: var(--hover, rgba(70, 130, 250, 0.15));
+    color: var(--text-hover, #fff);
 }
 
 .workspace-name.active {
-    background-color: var(--accent);   /* 기존 accent 색상 강조 */
+    background-color: var(--accent);
     color: #fff;
 }
 
-/* 하위 메뉴는 박스 내부 여백과 구분선으로 구분 */
 .workspace-menu {
     display: none;
     flex-direction: column;
-    background: #141624;              /* 전체보다 살짝 어두운 구획 */
-    border-top: 1px solid #2a2f45;
+    background: var(--surface-menu);
+    border-top: 1px solid var(--border);
     padding: 0.5rem 0.8rem;
 }
 
@@ -83,12 +83,11 @@
 }
 
 .nav-btn:hover {
-    background: var(--accent2);
+    background: var(--accent);
     color: #fff;
 }
 
 .nav-btn.active {
-
     background: var(--accent);
     color: white;
     transform: translateX(3px);
