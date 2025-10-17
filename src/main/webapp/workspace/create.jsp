@@ -1,19 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
-  <title>워크스페이스 생성</title>
-  <!-- 다크 테마 공통 변수 -->
-  <link rel="stylesheet" href="../common/css/darkmode.css"/>
-  <!-- 이 페이지 전용 스타일 -->
   <link rel="stylesheet" href="./css/create.css"/>
-</head>
-<body>
   <div class="page">
     <div class="top">
-      <a class="back" href="javascript:history.back()" aria-label="뒤로 가기">
+    <!-- todo 뒤로가기 버튼 만들지 또는 href 수정 필요 -->
+    <!-- <a class="back" href="javascript:history.back()" aria-label="뒤로 가기"> -->
         <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M15 18l-6-6 6-6"/>
         </svg>
@@ -63,6 +53,4 @@
     </div>
   </div>
 
-  <script src="./js/create.js" defer></script>
-</body>
-</html>
+

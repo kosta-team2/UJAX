@@ -20,7 +20,7 @@
     <jsp:include page="left-sidebar.jsp"/>
 
     <main class="main-content" id="mainContent">
-        <jsp:include page="main.jsp" />
+        <jsp:include page="create.jsp" />
     </main>
 
     <jsp:include page="right-sidebar.jsp"/>
@@ -33,8 +33,8 @@
 <script defer src="js/leftSidebar.js"></script>
 <script defer src="js/rightSidebar.js"></script>
 
-<!-- 페이지/컴포넌트 모듈(자동 실행 금지! init 함수만 등록) -->
-
+<!-- mainContent에 들어가는 비동기 페이지 js 목록 -->]
+<script defer src="js/create.js"></script>
 <script defer src="js/noticeModal.js"></script>
 <script defer src="js/homeNotice.js"></script>
 <script defer src="js/teamChart.js"></script>
@@ -44,8 +44,10 @@
 <script defer src="js/problem-register.js"></script>
 <script defer src="js/info.js"></script>
 <script defer src="js/mypage.js"></script>
+<script defer src="js/personal-info.js"></script>
+<script defer src="js/giftshop.js"></script>
 
-<!-- 라우터/오케스트레이터: reload(page) 정의 -->
+<!-- 비동기 페이지 이동시 js reloading -->
 <script defer src="js/script.js"></script>
 
 <!-- 전역 컨텍스트 경로 (반드시 먼저) -->
@@ -53,10 +55,8 @@
 <!-- 모의 스토어: /mock/giftProducts.json 로더 -->
 <script defer src="../common/js/mock-store.js"></script>
 <!-- 기프티콘 샵 스크립트 (mountGiftShop 정의) -->
-<script defer src="js/giftshop.js"></script>
 
 <script src="${pageContext.request.contextPath}/workspace/js/detail.js"></script>
-<script defer src="js/mypage.js"></script>
-<script defer src="js/personal-info.js"></script>
+
 </body>
 </html>
