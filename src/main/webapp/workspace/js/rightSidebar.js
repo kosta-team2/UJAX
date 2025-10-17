@@ -2,19 +2,20 @@
 document.addEventListener('DOMContentLoaded', () => {
     const profileBox = document.getElementById('profileBox');
     const main = document.getElementById('mainContent');
-    const page = btn.dataset.page;
 
     if (profileBox) {
         profileBox.addEventListener('click', async () => {
             try {
-                // todo mypage 불러오기
-
+            const res = await fetch(`mypage.jsp`);
+            const html = await res.text();
+             main.innerHTML = html;
 
                 // js 초기화
                 if (typeof reload === 'function') reload(page);
 
                 // 사이드바 버튼 활성화 해제
                 document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+				profileBox.classList.add('active');
 
                 console.log('✅ 마이페이지 로드 완료');
             } catch (err) {

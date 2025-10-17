@@ -14,6 +14,13 @@ document.addEventListener('DOMContentLoaded', () => {
             themeLink.href = '../common/css/lightmode.css';
             modeToggle.textContent = '🌙 Dark';
         }
+    // 로그아웃 버튼 클릭 시
+    logoutBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+
+		// workspace/ → auth/ 상대 경로로 안전 이동
+	    window.location.href = '../auth/login.jsp';
+		
     });
 
     // 로그아웃 버튼
