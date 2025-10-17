@@ -53,6 +53,6 @@
 
     // 실제 가입 API 연결 위치
     // auth/ → workspace/ 상대경로 사용
-    window.location.href = '../workspace/create.jsp';
+    window.location.href = 'login.jsp';
   });
 })();

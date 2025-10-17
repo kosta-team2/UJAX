@@ -13,7 +13,7 @@
     }
     // 실제 인증 로직 연결 위치
     // auth/ → workspace/ 상대경로로 안전 이동 (contextPath 필요 없음)
-    window.location.href = '../workspace/create.jsp';
+    window.location.href = '../workspace';
   });
 
   document.getElementById('signupBtn').addEventListener('click', function () {
