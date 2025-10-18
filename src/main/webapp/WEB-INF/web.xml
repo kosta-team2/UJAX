@@ -5,12 +5,14 @@
                              https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
          version="6.0">
 
-    <resource-ref>
-        <description>MySQL Connection</description>
-        <res-ref-name>jdbc/mySql</res-ref-name>
-        <res-type>javax.sql.DataSource</res-type>
-        <res-auth>Container</res-auth>
-    </resource-ref>
+    <context-param>
+        <param-name>fileName</param-name>
+        <param-value>controller-mapping</param-value>
+    </context-param>
 
+    <context-param>
+        <param-name>apiFileName</param-name>
+        <param-value>api-controller-mapping</param-value>
+    </context-param>
 
 </web-app>

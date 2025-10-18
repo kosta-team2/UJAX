@@ -1,11 +1,10 @@
-package org.kostaTeam2.presentation.servelt;
+package org.kostaTeam2.presentation.servlet;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.kostaTeam2.presentation.controller.api.RestController;
-import org.kostaTeam2.presentation.controller.api.WorkspaceApiController;
 import org.kostaTeam2.presentation.view.JsonResult;
 
 import com.google.gson.Gson;
@@ -22,8 +21,10 @@ public class ApiFrontControllerServlet extends HttpServlet {
 
 	@Override
 	public void init() throws ServletException {
-		controllerMap.put("workspace", new WorkspaceApiController());
-		//TODO: 컨트롤러 매핑 추가
+		Object attr = getServletContext().getAttribute("apiControllerMap");
+		if (!(attr instanceof Map))
+			throw new ServletException("apiControllerMap의 형식이 map이 아닙니다.");
+		controllerMap = (Map<String, RestController>) attr;
 	}
 
 	@Override

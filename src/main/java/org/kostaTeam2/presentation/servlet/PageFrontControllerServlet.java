@@ -1,11 +1,10 @@
-package org.kostaTeam2.presentation.servelt;
+package org.kostaTeam2.presentation.servlet;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.kostaTeam2.presentation.controller.page.Controller;
-import org.kostaTeam2.presentation.controller.page.WorkspacePageController;
 import org.kostaTeam2.presentation.view.ModelAndView;
 
 import jakarta.servlet.ServletException;
@@ -14,14 +13,16 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet(urlPatterns = "/", loadOnStartup = 1)
+@WebServlet(urlPatterns = "/front", loadOnStartup = 1)
 public class PageFrontControllerServlet extends HttpServlet {
 	private Map<String, Controller> controllerMap = new HashMap<>();
 
 	@Override
 	public void init() throws ServletException {
-		controllerMap.put("workspace", new WorkspacePageController());
-		//TODO: 컨트롤러 매핑 추가
+		Object attr = getServletContext().getAttribute("controllerMap");
+		if (!(attr instanceof Map))
+			throw new ServletException("controllerMap의 형식이 map이 아닙니다.");
+		controllerMap = (Map<String, Controller>)attr;
 	}
 
 	@Override

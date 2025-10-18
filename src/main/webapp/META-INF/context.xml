@@ -34,7 +34,7 @@
               auth="Container"
               type="javax.sql.DataSource"
               driverClassName="com.mysql.cj.jdbc.Driver"
-              url="jdbc:mysql://localhost:3307/web_basic"
+              url="jdbc:mysql://localhost:3307/web_basic?serverTimezone=Asia/Seoul"
               username="kosta_user"
               password="kosta1234"
               maxTotal="20"
