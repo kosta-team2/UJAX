@@ -43,4 +43,13 @@ public class MemberServiceImpl implements MemberService {
             throw new DBException("회원가입 처리 중 DB 오류가 발생했습니다.", e);
         }
     }
+
+    @Override
+    public void softDelete(long memberId) {
+        try (Connection con = ds.getConnection()) {
+            repository.softDeleteById(con, memberId);
+        } catch (SQLException e) {
+            throw new DBException("회원 탈퇴 처리 중 DB 오류가 발생했습니다.", e);
+        }
+    }
 }

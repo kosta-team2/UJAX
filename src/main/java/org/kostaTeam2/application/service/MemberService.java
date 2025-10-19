@@ -8,4 +8,6 @@ public interface MemberService {
 	Optional<Member> login(String email, String password);
 
     void signup(String email, String password, String nickname);
+
+    void softDelete(long memberId);
 }

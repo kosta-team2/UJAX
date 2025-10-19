@@ -79,6 +79,19 @@ public class MemberDao implements MemberRepository {
         }
     }
 
+    @Override
+    public void softDeleteById(Connection con, long memberId) throws SQLException {
+        String sql = """
+                UPDATE member 
+                SET is_deleted = 1 
+                WHERE member_id = ?
+                """;
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setLong(1, memberId);
+            ps.executeUpdate();
+        }
+    }
+
     // rs로부터 Member 생성하는 mapper
     private Member mapRow(ResultSet rs) throws SQLException {
         return new Member(

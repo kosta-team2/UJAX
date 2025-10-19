@@ -11,5 +11,8 @@ public interface MemberRepository {
     Optional<Member> findByEmail(Connection con, String email) throws SQLException;
 
     Optional<Member> findByNickname(Connection con, String nickname) throws SQLException;
+
     void saveMember(Connection con, Member member) throws SQLException;
+
+    void softDeleteById(Connection con, long memberId) throws SQLException;
 }

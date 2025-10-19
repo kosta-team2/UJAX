@@ -28,6 +28,7 @@ public class MemberPageController implements Controller {
 			case "login" -> login(request, response);
             case "logout" -> logout(request, response);
             case "signup" -> signup(request, response);
+            case "delete" -> delete(request, response);
 			default -> throw new BadRequestException("login methodName이 올바르지 않습니다.");
 		};
 	}
@@ -74,6 +75,35 @@ public class MemberPageController implements Controller {
         } catch (BadRequestException e) {
             request.setAttribute("error", e.getMessage());
             return new ModelAndView("/auth/signup.jsp");
+        }
+    }
+
+    private ModelAndView delete(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession(false);
+
+        // 세션이 만료된 상태에서 접근 시 로그인 페이지로 리다이렉트
+        if (session == null || session.getAttribute("SessionUser") == null) {
+            request.setAttribute("error", "로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
+            return new ModelAndView("/auth/login.jsp");
+        }
+
+        SessionUser user = (SessionUser) session.getAttribute("SessionUser");
+
+        try {
+            memberService.softDelete(user.memberId());
+            session.invalidate();
+
+            request.setAttribute("message", "회원 탈퇴가 정상적으로 처리되었습니다. 이용해주셔서 감사합니다.");
+            return new ModelAndView("/auth/login.jsp");
+
+        } catch (BadRequestException e) {
+            request.setAttribute("error", e.getMessage());
+            return new ModelAndView("/workspace.jsp");
+
+        } catch (Exception e) {
+            // 이건 나중에 오류 생기면 잡으려고 해놓음
+            request.setAttribute("error", "회원 탈퇴 중 문제가 발생했습니다. 잠시 후 다시 시도해주세요.");
+            return new ModelAndView("/workspace.jsp");
         }
     }
 
