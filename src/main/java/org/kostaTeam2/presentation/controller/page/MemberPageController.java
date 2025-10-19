@@ -27,6 +27,7 @@ public class MemberPageController implements Controller {
 		return switch (methodName) {
 			case "login" -> login(request, response);
             case "logout" -> logout(request, response);
+            case "signup" -> signup(request, response);
 			default -> throw new BadRequestException("login methodName이 올바르지 않습니다.");
 		};
 	}
