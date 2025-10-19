@@ -55,7 +55,7 @@ public class GlobalExceptionFilter implements Filter {
 			}
 
 		} catch (Throwable t) { // 예기치 못한 예외
-			//TODO: 개발 후에 삭제
+			//TODO: 로깅으로 변경
 			t.printStackTrace();
 			if (res.isCommitted())
 				return;

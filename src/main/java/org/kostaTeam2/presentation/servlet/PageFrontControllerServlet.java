@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kostaTeam2.global.exception.common.AppException;
 import org.kostaTeam2.presentation.controller.page.Controller;
 import org.kostaTeam2.presentation.view.ModelAndView;
 
@@ -45,8 +46,10 @@ public class PageFrontControllerServlet extends HttpServlet {
 		ModelAndView mv;
 		try {
 			mv = controller.handle(method, request, response);
+		} catch (AppException ae) {
+			throw ae;
 		} catch (Exception e) {
-			throw new ServletException("Controller error", e);
+			throw new ServletException(e);
 		}
 
 		if (mv.isRedirect()) {

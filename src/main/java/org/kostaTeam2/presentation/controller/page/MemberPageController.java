@@ -40,7 +40,6 @@ public class MemberPageController implements Controller {
 		}
 
 		Member m = member.get();
-
 		HttpSession old = request.getSession(false);
 		if (old != null) old.invalidate();
 		HttpSession session = request.getSession(true);

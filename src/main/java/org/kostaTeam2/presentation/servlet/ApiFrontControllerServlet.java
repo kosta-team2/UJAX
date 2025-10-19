@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.kostaTeam2.global.exception.common.AppException;
 import org.kostaTeam2.presentation.controller.api.RestController;
 import org.kostaTeam2.presentation.view.JsonResult;
 
@@ -24,7 +25,7 @@ public class ApiFrontControllerServlet extends HttpServlet {
 		Object attr = getServletContext().getAttribute("apiControllerMap");
 		if (!(attr instanceof Map))
 			throw new ServletException("apiControllerMap의 형식이 map이 아닙니다.");
-		controllerMap = (Map<String, RestController>) attr;
+		controllerMap = (Map<String, RestController>)attr;
 	}
 
 	@Override
@@ -48,6 +49,8 @@ public class ApiFrontControllerServlet extends HttpServlet {
 		JsonResult result;
 		try {
 			result = controller.handle(method, request, response);
+		} catch (AppException ae) {
+			throw ae;
 		} catch (Exception e) {
 			throw new ServletException("API Controller error", e);
 		}

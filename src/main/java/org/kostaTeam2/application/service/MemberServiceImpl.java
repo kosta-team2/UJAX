@@ -24,7 +24,7 @@ public class MemberServiceImpl implements MemberService {
 		try (Connection con = ds.getConnection()) {
 			return repository.findByEmailAndPassword(con, email, password);
 		} catch (SQLException e) {
-			throw new DBException("login 중에 db 연결에 실패하였습니다.", e);
+			throw new DBException("로그인 처리 중 db 오류가 발생하였습니다.", e);
 		}
 	}
 }
