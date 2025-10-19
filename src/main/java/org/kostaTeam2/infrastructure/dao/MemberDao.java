@@ -2,21 +2,36 @@ package org.kostaTeam2.infrastructure.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Optional;
 
-import javax.sql.DataSource;
-
-import org.kostaTeam2.domain.model.member.Member;
-import org.kostaTeam2.domain.model.member.MemberRepository;
+import org.kostaTeam2.domain.member.Member;
+import org.kostaTeam2.domain.member.MemberRepository;
 
 public class MemberDao implements MemberRepository {
 
-	public Optional<Member> findById(Connection con, long id) throws SQLException {
-		String sql = "SELECT id, name FROM member WHERE id = ?";
+	public Optional<Member> findByEmailAndPassword(Connection con, String email, String password) throws SQLException {
+		String sql = """
+			SELECT member_id, email, nickname
+			FROM member
+			WHERE email = ? and password = ? and is_deleted = 0
+			LIMIT 1
+			""";
 
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			return Optional.empty();
+			ps.setString(1, email);
+			ps.setString(2, password);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (!rs.next()) {
+					return Optional.empty();
+				}
+				return Optional.of(new Member(
+					rs.getLong("member_id"),
+					rs.getString("email"),
+					rs.getString("nickname")
+				));
+			}
 		}
 	}
 }

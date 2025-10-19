@@ -1,11 +1,14 @@
 package org.kostaTeam2.application.service;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Optional;
 
 import javax.sql.DataSource;
 
-import org.kostaTeam2.domain.model.member.Member;
-import org.kostaTeam2.domain.model.member.MemberRepository;
+import org.kostaTeam2.domain.member.Member;
+import org.kostaTeam2.domain.member.MemberRepository;
+import org.kostaTeam2.global.exception.DBException;
 
 public class MemberServiceImpl implements MemberService {
 	private final DataSource ds;
@@ -17,7 +20,11 @@ public class MemberServiceImpl implements MemberService {
 	}
 
 	@Override
-	public Optional<Member> get(long id) {
-		return Optional.empty();
+	public Optional<Member> login(String email, String password) {
+		try (Connection con = ds.getConnection()) {
+			return repository.findByEmailAndPassword(con, email, password);
+		} catch (SQLException e) {
+			throw new DBException("login 중에 db 연결에 실패하였습니다.", e);
+		}
 	}
 }

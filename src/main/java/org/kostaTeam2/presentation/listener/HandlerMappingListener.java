@@ -9,7 +9,7 @@ import javax.sql.DataSource;
 
 import org.kostaTeam2.application.service.MemberService;
 import org.kostaTeam2.application.service.MemberServiceImpl;
-import org.kostaTeam2.domain.model.member.MemberRepository;
+import org.kostaTeam2.domain.member.MemberRepository;
 import org.kostaTeam2.infrastructure.dao.MemberDao;
 import org.kostaTeam2.presentation.controller.api.RestController;
 import org.kostaTeam2.presentation.controller.page.Controller;
