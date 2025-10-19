@@ -20,7 +20,7 @@ public class Member {
 		this.xp = xp;
 	}
 
-	public Member(Long memberId, String email, String nickname) {
+	public Member(String email, String password, String nickname) {
 		this.memberId = memberId;
 		this.email = email;
 		this.nickname = nickname;

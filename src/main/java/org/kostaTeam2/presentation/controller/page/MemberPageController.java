@@ -5,6 +5,7 @@ import java.util.Optional;
 import org.kostaTeam2.application.service.MemberService;
 import org.kostaTeam2.domain.member.Member;
 import org.kostaTeam2.dto.request.LoginUserRequest;
+import org.kostaTeam2.dto.request.SignupUserRequest;
 import org.kostaTeam2.global.exception.BadRequestException;
 import org.kostaTeam2.presentation.controller.dto.SessionUser;
 import org.kostaTeam2.presentation.view.ModelAndView;
@@ -62,6 +63,17 @@ public class MemberPageController implements Controller {
         }
 
         return new ModelAndView(request.getContextPath() + "/auth/login.jsp", true);
+    }
+
+    private ModelAndView signup(HttpServletRequest request, HttpServletResponse response) {
+        var dto = SignupUserRequest.from(request);
+        try {
+            memberService.signup(dto.email(), dto.password(), dto.nickname());
+            return new ModelAndView(request.getContextPath() + "/auth/login.jsp", true);
+        } catch (BadRequestException e) {
+            request.setAttribute("error", e.getMessage());
+            return new ModelAndView("/auth/signup.jsp");
+        }
     }
 
 }
