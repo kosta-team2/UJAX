@@ -25,6 +25,7 @@ public class MemberPageController implements Controller {
 		Exception {
 		return switch (methodName) {
 			case "login" -> login(request, response);
+            case "logout" -> logout(request, response);
 			default -> throw new BadRequestException("login methodName이 올바르지 않습니다.");
 		};
 	}
@@ -53,4 +54,14 @@ public class MemberPageController implements Controller {
 		String target = request.getContextPath() + "/workspace";
 		return new ModelAndView(target, true);
 	}
+
+    private ModelAndView logout(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
+        return new ModelAndView(request.getContextPath() + "/auth/login.jsp", true);
+    }
+
 }
