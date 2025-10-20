@@ -3,16 +3,17 @@ package org.kostaTeam2.infrastructure.dao;
 import org.kostaTeam2.domain.workspace.Workspace;
 import org.kostaTeam2.domain.workspace.WorkspaceLanguage;
 import org.kostaTeam2.domain.workspace.WorkspaceRepository;
-import org.kostaTeam2.global.exception.CreatedException;
 import org.kostaTeam2.global.exception.DBException;
 import org.kostaTeam2.global.exception.NotFoundException;
+import org.kostaTeam2.global.exception.common.AppException;
 
 import java.sql.*;
+import java.util.Optional;
 
 public class WorkspaceDao implements WorkspaceRepository {
 
     @Override
-    public Long save(Connection conn, Workspace workspace){
+    public Long save(Connection conn, Workspace workspace) throws SQLException {
         String ws_name = workspace.getWorkspaceName();
         WorkspaceLanguage ws_lang = workspace.getWorkspaceLanguage();
         boolean is_hint_view = workspace.isHintView();
@@ -26,44 +27,33 @@ public class WorkspaceDao implements WorkspaceRepository {
             ps.executeUpdate();
 
             try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (rs.next()) {
-                    return rs.getLong(1);
-                }
+                if (!rs.next()) return null;
 
-                throw new CreatedException("workspace GENERATED_KEYS 반환 실패.");
+                return rs.getLong(1);
             }
-        } catch (SQLException e) {
-            throw new DBException("workspace 생성 중 DB 오류 발생", e);
         }
     }
 
     @Override
-    public Workspace findById(Connection conn, Long workspaceId) {
+    public Optional<Workspace> findById(Connection conn, Long workspaceId) throws SQLException {
         String sql = "SELECT * FROM workspace WHERE ws_id = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setLong(1, workspaceId);
 
             try (ResultSet rs = ps.executeQuery()){
-                if (rs.next()) {
-                    return new Workspace(
-                            rs.getLong("ws_id"),
-                            rs.getString("ws_name"),
-                            WorkspaceLanguage.fromString(rs.getString("ws_lang")),
-                            rs.getBoolean("is_hint_view"),
-                            rs.getTimestamp("created_at").toLocalDateTime(),
-                            rs.getTimestamp("updated_at").toLocalDateTime(),
-                            rs.getBoolean("is_deleted")
-                            );
+                if (!rs.next()) return Optional.empty();
 
-                } else {
-                    throw new NotFoundException(
-                            "[" + workspaceId + "]" + "에 해당하는 workspace를 찾을 수 없습니다."
-                    );
-                }
+                return Optional.of(new Workspace(
+                        rs.getLong("ws_id"),
+                        rs.getString("ws_name"),
+                        WorkspaceLanguage.fromString(rs.getString("ws_lang")),
+                        rs.getBoolean("is_hint_view"),
+                        rs.getTimestamp("created_at").toLocalDateTime(),
+                        rs.getTimestamp("updated_at").toLocalDateTime(),
+                        rs.getBoolean("is_deleted")
+                ));
             }
-        } catch (SQLException e) {
-            throw new DBException("워크스페이스 조회 중 DB 오류 발생", e);
         }
     }
 

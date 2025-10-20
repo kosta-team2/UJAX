@@ -5,9 +5,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.kostaTeam2.application.service.workspace.WorkspaceService;
 import org.kostaTeam2.domain.workspace.Workspace;
-import org.kostaTeam2.domain.workspace.WorkspaceLanguage;
-import org.kostaTeam2.dto.request.WorkspaceCreateDto;
+import org.kostaTeam2.dto.request.WorkspaceCreateRequest;
 import org.kostaTeam2.global.exception.BadRequestException;
+import org.kostaTeam2.global.exception.common.AppException;
 import org.kostaTeam2.presentation.controller.dto.SessionUser;
 import org.kostaTeam2.presentation.view.ModelAndView;
 
@@ -21,42 +21,38 @@ public class WorkspacePageController implements Controller {
 	@Override
 	public ModelAndView handle(String methodName, HttpServletRequest request, HttpServletResponse response) throws
 		Exception {
-        return switch (methodName) {
-            case "createWorkspace" -> createWorkspace(request, response);
-            default -> throw new BadRequestException("workspace methodName이 올바르지 않습니다.");
-        };
+        try {
+            return switch (methodName) {
+                case "createWorkspace" -> create(request, response);
+                default -> throw new BadRequestException("workspace methodName이 올바르지 않습니다.");
+            };
+        } catch (AppException e) {
+            request.setAttribute("errorMessage", e.getMessage());
+            return new ModelAndView("/workspace");
+        } catch (Exception e) {
+            request.setAttribute("errorMessage", "시스템 오류가 발생했습니다.");
+            return new ModelAndView("/workspace");
+        }
 	}
 
     /**
      * 워크스페이스 생성
      */
-    private ModelAndView createWorkspace(HttpServletRequest request, HttpServletResponse response) {
+    private ModelAndView create(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(false);
         if (session == null || session.getAttribute("SessionUser") == null) {
-            throw new BadRequestException("로그인이 필요합니다.");
+            throw new AppException(401, "로그인이 필요합니다.");
         }
 
-        SessionUser loginUser = (SessionUser) session.getAttribute("SessionUser");
-        Long leaderId = loginUser.memberId();
+        SessionUser sessionUser = (SessionUser) session.getAttribute("SessionUser");
+        var dto =  WorkspaceCreateRequest.from(request, sessionUser);
 
-        // validation
-        String workspaceName = request.getParameter("workspaceName");
-        if (workspaceName == null || workspaceName.isBlank()) {
-            throw new BadRequestException("워크스페이스 이름은 필수입니다.");
-        }
-        WorkspaceLanguage workspaceLanguage =
-                WorkspaceLanguage.fromString(request.getParameter("workspaceLanguage"));
-        Boolean isHintView = Boolean.valueOf(request.getParameter("isHintView"));
+        Workspace workspace = workspaceService.createWorkspace(dto)
+                .orElseThrow(() -> new AppException(500, "워크스페이스 생성에 실패 했습니다. 다시 시도해 주십시오."));
 
-        Workspace workspace = workspaceService.createWorkspace(
-                new WorkspaceCreateDto(
-                        leaderId,
-                        workspaceName,
-                        workspaceLanguage,
-                        isHintView
-                ));
-
-        String target = request.getContextPath() + "/workspaces/" + workspace.getWorkspaceId();
-        return new ModelAndView(target, true);
+        request.setAttribute("workspace", workspace);
+        
+        String target = request.getContextPath() + "/workspace";
+        return new ModelAndView(target);
     }
 }

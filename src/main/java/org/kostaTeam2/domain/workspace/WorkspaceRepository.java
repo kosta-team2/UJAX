@@ -2,8 +2,10 @@ package org.kostaTeam2.domain.workspace;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Optional;
 
-public interface WorkspaceRepository {
+public interface
+WorkspaceRepository {
     /**
      * 워크스페이스 생성 후 워크스페이스 아이디 반환
      * @param conn
@@ -11,7 +13,7 @@ public interface WorkspaceRepository {
      * @return workspaceId
      * @throws SQLException
      */
-    Long save(Connection conn, Workspace workspace);
+    Long save(Connection conn, Workspace workspace) throws SQLException;
 
     /**
      * ID로 워크스페이스 찾기
@@ -19,5 +21,5 @@ public interface WorkspaceRepository {
      * @param id
      * @return
      */
-    Workspace findById(Connection conn, Long id);
+    Optional<Workspace> findById(Connection conn, Long id) throws SQLException;
 }

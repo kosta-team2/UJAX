@@ -1,6 +1,7 @@
 package org.kostaTeam2.domain.workspace;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 public interface WorkspaceMemberRepository {
     /**
@@ -9,5 +10,5 @@ public interface WorkspaceMemberRepository {
      * @param conn
      * @param workspaceMember
      */
-    void save(Connection conn, WorkspaceMember workspaceMember);
+    int save(Connection conn, WorkspaceMember workspaceMember) throws SQLException;
 }
