@@ -42,7 +42,7 @@ CREATE TABLE token
 
 CREATE TABLE EmailAlert
 (
-    alert_id      VARCHAR(255) PRIMARY KEY,
+    alert_id      BIGINT PRIMARY KEY AUTO_INCREMENT,
     ws_member_id  BIGINT                                        NOT NULL,
     ws_problem_id VARCHAR(255)                                  NOT NULL,
     status        ENUM ('SCHEDULED','SENT','CANCELED','FAILED') NOT NULL,
@@ -70,9 +70,8 @@ CREATE TABLE workspace_problem
     ws_problem_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     ws_id         BIGINT       NOT NULL,
     problem_id    BIGINT       NOT NULL,
-    deadline      DATETIME     NOT NULL,
-    isAlarm       TINYINT(1)   NOT NULL,
-    scheduled_at  VARCHAR(255) NOT NULL,
+    deadline      DATETIME(3)  NOT NULL,
+    scheduled_at  VARCHAR(255) NULL,
     created_at    DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     updated_at    DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
     is_deleted    TINYINT(1)   NOT NULL DEFAULT 0
@@ -128,11 +127,12 @@ CREATE TABLE likes
 
 CREATE TABLE sample
 (
-    sample_id     BIGINT NOT NULL,
+    sample_id     BIGINT PRIMARY KEY AUTO_INCREMENT,
     problem_id    BIGINT NOT NULL,
+    sample_index  INT   NOT NULL,
     sample_input  TEXT   NOT NULL,
     sample_output TEXT   NOT NULL,
-    PRIMARY KEY (sample_id, problem_id)
+    UNIQUE KEY uq_sample_problem_idx (problem_id, sample_index)
 );
 
 CREATE TABLE notice
@@ -148,14 +148,14 @@ CREATE TABLE notice
 CREATE TABLE member
 (
     member_id  BIGINT PRIMARY KEY AUTO_INCREMENT,
-    email      VARCHAR(100)   NOT NULL UNIQUE,
-    password   VARCHAR(60)    NOT NULL,
-    nickname   VARCHAR(30)    NOT NULL UNIQUE,
-    reward     INT NOT NULL DEFAULT 0,
-    xp         INT            NOT NULL DEFAULT 0,
-    created_at DATETIME(3)    NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
-    updated_at DATETIME(3)    NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
-    is_deleted TINYINT(1)     NOT NULL DEFAULT 0
+    email      VARCHAR(100) NOT NULL UNIQUE,
+    password   VARCHAR(60)  NOT NULL,
+    nickname   VARCHAR(30)  NOT NULL UNIQUE,
+    reward     INT          NOT NULL DEFAULT 0,
+    xp         INT          NOT NULL DEFAULT 0,
+    created_at DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+    is_deleted TINYINT(1)   NOT NULL DEFAULT 0
 );
 
 CREATE TABLE tier
@@ -169,25 +169,63 @@ CREATE TABLE tier
 CREATE TABLE comment
 (
     comment_id      BIGINT PRIMARY KEY AUTO_INCREMENT,
-    solution_id     BIGINT   NOT NULL,
-    ws_member_id     BIGINT   NOT NULL,
-    comment_content TEXT     NOT NULL,
+    solution_id     BIGINT      NOT NULL,
+    ws_member_id    BIGINT      NOT NULL,
+    comment_content TEXT        NOT NULL,
     created_at      DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
 );
 
 -- Foreign Keys (원문에 명시된 것만 반영)
+-- problem_algorithm FK
 ALTER TABLE problem_algorithm
-    ADD FOREIGN KEY (algorithm_id) REFERENCES algorithm (algorithm_id),
-    ADD FOREIGN KEY (problem_id) REFERENCES problem (problem_id);
+    ADD CONSTRAINT fk_pa_algo FOREIGN KEY (algorithm_id) REFERENCES algorithm (algorithm_id),
+    ADD CONSTRAINT fk_pa_prob FOREIGN KEY (problem_id)   REFERENCES problem (problem_id);
 
+-- barcode FK (gift와 타입 일치)
 ALTER TABLE barcode
-    ADD FOREIGN KEY (product_id) REFERENCES gift (product_id);
+    ADD CONSTRAINT fk_barcode_gift FOREIGN KEY (product_id) REFERENCES gift (product_id);
 
+-- sample FK
 ALTER TABLE sample
-    ADD FOREIGN KEY (problem_id) REFERENCES problem (problem_id);
+    ADD CONSTRAINT fk_sample_problem FOREIGN KEY (problem_id) REFERENCES problem (problem_id);
 
+-- notice FK
 ALTER TABLE notice
-    ADD FOREIGN KEY (ws_id) REFERENCES workspace (ws_id);
+    ADD CONSTRAINT fk_notice_ws FOREIGN KEY (ws_id) REFERENCES workspace (ws_id);
+
+-- ADDED: workspace_member FK/UNIQUE
+ALTER TABLE workspace_member
+    ADD CONSTRAINT fk_wm_ws FOREIGN KEY (ws_id) REFERENCES workspace (ws_id),
+    ADD CONSTRAINT fk_wm_member FOREIGN KEY (member_id) REFERENCES member (member_id),
+    ADD UNIQUE KEY uq_wm_ws_member (ws_id, member_id);  -- ADDED: 중복 가입 방지
+
+-- ADDED: workspace_problem FK
+ALTER TABLE workspace_problem
+    ADD CONSTRAINT fk_wp_ws FOREIGN KEY (ws_id) REFERENCES workspace (ws_id),
+    ADD CONSTRAINT fk_wp_problem FOREIGN KEY (problem_id) REFERENCES problem (problem_id);
+
+-- ADDED: solution FK
+ALTER TABLE solution
+    ADD CONSTRAINT fk_sol_wp FOREIGN KEY (ws_problem_id) REFERENCES workspace_problem (ws_problem_id),
+    ADD CONSTRAINT fk_sol_wm FOREIGN KEY (ws_member_id)  REFERENCES workspace_member (ws_member_id);
+
+-- ADDED: likes FK/UNIQUE
+ALTER TABLE likes
+    ADD CONSTRAINT fk_likes_sol FOREIGN KEY (solution_id)  REFERENCES solution (solution_id),
+    ADD CONSTRAINT fk_likes_wm  FOREIGN KEY (ws_member_id) REFERENCES workspace_member (ws_member_id),
+    ADD UNIQUE KEY uq_likes_one_per_member (solution_id, ws_member_id); -- ADDED: 중복 좋아요 방지
+
+-- ADDED: comment FK
+ALTER TABLE comment
+    ADD CONSTRAINT fk_comment_sol FOREIGN KEY (solution_id)  REFERENCES solution (solution_id),
+    ADD CONSTRAINT fk_comment_wm  FOREIGN KEY (ws_member_id) REFERENCES workspace_member (ws_member_id);
+
+-- ADDED: token FK
+ALTER TABLE token
+    ADD CONSTRAINT fk_token_member FOREIGN KEY (member_id) REFERENCES member (member_id);
+
+ALTER TABLE algorithm
+    ADD CONSTRAINT uq_algorithm_name UNIQUE (algorithm_name);
 
 
 INSERT INTO member (email, password, nickname, reward, xp)

@@ -8,7 +8,8 @@ import org.kostaTeam2.global.exception.common.AppException;
 import org.kostaTeam2.presentation.controller.api.RestController;
 import org.kostaTeam2.presentation.view.JsonResult;
 
-import com.google.gson.Gson;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -18,6 +19,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(urlPatterns = "/ajax", loadOnStartup = 1)
 public class ApiFrontControllerServlet extends HttpServlet {
+	private static final ObjectMapper MAPPER = new ObjectMapper()
+		.findAndRegisterModules()
+		.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	private Map<String, RestController> controllerMap = new HashMap<>();
 
 	@Override
@@ -58,14 +62,12 @@ public class ApiFrontControllerServlet extends HttpServlet {
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		if (result.isSuccess()) {
-			String jsonOutput = new Gson().toJson(result.getData());
 			response.setStatus(HttpServletResponse.SC_OK);
-			response.getWriter().write(jsonOutput);
+			MAPPER.writeValue(response.getWriter(), result.getData());
 		} else {
-			String errorMsg = result.getErrorMessage();
-			String errorJson = "{\"error\":\"" + errorMsg + "\"}";
 			response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-			response.getWriter().write(errorJson);
+			MAPPER.writeValue(response.getWriter(),
+				Map.of("error", result.getErrorMessage()));
 		}
 
 	}
