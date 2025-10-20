@@ -29,7 +29,8 @@ public class MemberPageController implements Controller {
             case "logout" -> logout(request, response);
             case "signup" -> signup(request, response);
             case "delete" -> delete(request, response);
-			default -> throw new BadRequestException("login methodName이 올바르지 않습니다.");
+            case "getInfo" -> getInfo(request, response);
+			default -> throw new BadRequestException("methodName이 올바르지 않습니다.");
 		};
 	}
 
@@ -84,7 +85,7 @@ public class MemberPageController implements Controller {
         // 세션이 만료된 상태에서 접근 시 로그인 페이지로 리다이렉트
         if (session == null || session.getAttribute("SessionUser") == null) {
             request.setAttribute("error", "로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
-            return new ModelAndView("/auth/login.jsp");
+            return new ModelAndView("/auth/login.jsp", true);
         }
 
         SessionUser user = (SessionUser) session.getAttribute("SessionUser");
@@ -107,4 +108,23 @@ public class MemberPageController implements Controller {
         }
     }
 
+    private ModelAndView getInfo(HttpServletRequest request, HttpServletResponse response) {
+        HttpSession session = request.getSession(false);
+
+        if (session == null || session.getAttribute("SessionUser") == null) {
+            request.setAttribute("error", "로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
+            return new ModelAndView("/auth/login.jsp", true);
+        }
+
+        SessionUser user = (SessionUser) session.getAttribute("SessionUser");
+
+        try {
+            Member userInfo =  memberService.getInfo(user.memberId()).orElse(null);
+            request.setAttribute("userInfo", userInfo);
+        } catch (BadRequestException e) {
+            request.setAttribute("error", e.getMessage());
+            return new ModelAndView("/workspace.jsp");
+        }
+        return new ModelAndView("/workspace/mypage.jsp");
+    }
 }

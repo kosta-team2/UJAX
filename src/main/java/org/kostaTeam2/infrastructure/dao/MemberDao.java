@@ -66,6 +66,23 @@ public class MemberDao implements MemberRepository {
     }
 
     @Override
+    public Optional<Member> findById(Connection con, long id) throws SQLException {
+        String sql = """
+                SELECT * FROM member
+                WHERE member_id = ? AND is_deleted = 0
+                """;
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setLong(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(mapRow(rs));
+                }
+            }
+            return Optional.empty();
+        }
+    }
+
+    @Override
     public void saveMember(Connection con, Member member) throws SQLException {
         String sql = """
         INSERT INTO member (email, password, nickname) 

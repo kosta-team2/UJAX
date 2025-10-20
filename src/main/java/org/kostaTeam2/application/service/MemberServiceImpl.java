@@ -30,6 +30,15 @@ public class MemberServiceImpl implements MemberService {
 	}
 
     @Override
+    public Optional<Member> getInfo(long id) {
+        try(Connection con = ds.getConnection()) {
+            return repository.findById(con, id);
+        } catch (SQLException e) {
+            throw new DBException("개인 정보 조회 중 db 오류가 발생하였습니다.", e);
+        }
+    }
+
+    @Override
     public void signup(String email, String password, String nickname) {
         try (Connection con = ds.getConnection()) {
             if (repository.findByEmail(con, email).isPresent())
