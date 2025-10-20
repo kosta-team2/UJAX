@@ -1,6 +1,9 @@
 package org.kostaTeam2.presentation.controller.api;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.kostaTeam2.application.service.ProblemService;
 import org.kostaTeam2.domain.problem.AlgorithmTag;
@@ -16,40 +19,42 @@ public class ProblemController {
 	}
 
 	public void ingest(ProblemInfoRequest request) {
-		Problem p = new Problem();
-		p.setProblemNum(request.getProblemNum());
-		p.setTitle(request.getTitle());
-		p.setTimeLimit(request.getTimeLimit());
-		p.setMemoryLimit(request.getMemoryLimit());
-		p.setProblemDesc(request.getProblemDesc());
-		p.setProblemInput(request.getProblemInput());
-		p.setProblemOutput(request.getProblemOutput());
-		p.setUrl(request.getUrl());
-		p.setSamples(mapSamples(request.getSamples()));
-		p.setTags(mapTags(request.getTags()));
+		if (request.getTitle().isEmpty()) {
+			return;
+		}
+		List<Sample> samples =
+			(request.getSamples() == null ? Collections.<ProblemInfoRequest.SampleDto>emptyList() :
+				request.getSamples())
+				.stream()
+				.map(s -> new Sample(
+					s.getSampleIndex(),
+					s.getInput(),
+					s.getOutput()
+				))
+				.sorted(Comparator.comparingInt(Sample::getSampleIndex))
+				.collect(Collectors.toList());
+
+		List<AlgorithmTag> tags =
+			(request.getTags() == null ? Collections.<ProblemInfoRequest.TagDto>emptyList() : request.getTags())
+				.stream()
+				.map(t -> new AlgorithmTag(t.getName()))
+				.filter(t -> !t.getName().isBlank())
+				.collect(Collectors.toList());
+
+		Problem p = new Problem(
+			request.getProblemNum(),
+			request.getTitle(),
+			request.getTier(),
+			request.getTimeLimit(),
+			request.getMemoryLimit(),
+			request.getProblemDesc(),
+			request.getProblemInput(),
+			request.getProblemOutput(),
+			request.getUrl(),
+			samples,
+			tags
+		);
 
 		problemService.createProblem(p);
-	}
-
-	private List<Sample> mapSamples(List<ProblemInfoRequest.SampleDto> in) {
-		if (in == null || in.isEmpty()) return java.util.Collections.emptyList();
-		return in.stream().map(s -> {
-				Sample ss = new Sample();
-				ss.setSampleIndex(s.getSampleIndex());
-				ss.setInput((s.getInput()));
-				ss.setOutput(s.getOutput());
-				return ss;
-			}).sorted(java.util.Comparator.comparingInt(Sample::getSampleIndex))
-			.collect(java.util.stream.Collectors.toList());
-	}
-
-	private List<AlgorithmTag> mapTags(List<ProblemInfoRequest.TagDto> in) {
-		if (in == null || in.isEmpty()) return java.util.Collections.emptyList();
-		return in.stream().map(t -> {
-				AlgorithmTag tag = new AlgorithmTag();
-				tag.setName(t.getName());
-				return tag;
-			}).filter(t -> !t.getName().isBlank())
-			.collect(java.util.stream.Collectors.toList());
 	}
 }

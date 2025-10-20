@@ -6,35 +6,25 @@ public class Sample {
 	private String input;
 	private String output;
 
-	public Long getSampleId() {
-		return sampleId;
+	public Sample(int sampleIndex, String input, String output) {
+		this.sampleIndex = sampleIndex;
+		this.input = input;
+		this.output = output;
 	}
 
-	public void setSampleId(Long sampleId) {
-		this.sampleId = sampleId;
+	public Long getSampleId() {
+		return sampleId;
 	}
 
 	public int getSampleIndex() {
 		return sampleIndex;
 	}
 
-	public void setSampleIndex(int sampleIndex) {
-		this.sampleIndex = sampleIndex;
-	}
-
 	public String getInput() {
 		return input;
 	}
 
-	public void setInput(String input) {
-		this.input = input;
-	}
-
 	public String getOutput() {
 		return output;
-	}
-
-	public void setOutput(String output) {
-		this.output = output;
 	}
 }
