@@ -29,13 +29,8 @@ public class WorkspacePageController implements Controller {
 	}
 
     private ModelAndView createWorkspace(HttpServletRequest request, HttpServletResponse response) {
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("SessionUser") == null) {
-            throw new AppException(401, "로그인이 필요합니다.");
-        }
-
-        SessionUser sessionUser = (SessionUser) session.getAttribute("SessionUser");
-        var dto =  WorkspaceRequest.createDto(request, sessionUser);
+        SessionUser sessionUser = (SessionUser) request.getSession().getAttribute("SessionUser");
+        var dto = WorkspaceRequest.createDto(request, sessionUser);
 
         Workspace workspace = workspaceService.createWorkspace(dto)
                 .orElseThrow(() -> new AppException(500, "워크스페이스 생성에 실패 했습니다. 다시 시도해 주십시오."));
@@ -46,20 +41,25 @@ public class WorkspacePageController implements Controller {
         return new ModelAndView(target);
     }
 
-    private ModelAndView deleteWorkspace(HttpServletRequest request, HttpServletResponse response) {
-        HttpSession session = request.getSession(false);
-        if (session == null || session.getAttribute("SessionUser") == null) {
-            throw new AppException(401, "로그인이 필요합니다.");
-        }
+    private ModelAndView updateWorkspace(HttpServletRequest request, HttpServletResponse response) {
+        SessionUser sessionUser = (SessionUser) request.getSession().getAttribute("SessionUser");
+        var dto = WorkspaceRequest.updateDto(request, sessionUser);
 
-        SessionUser sessionUser = (SessionUser) session.getAttribute("SessionUser");
+        Workspace workspace = workspaceService.updateWorkspace(dto)
+                .orElseThrow(() -> new AppException(500, "워크스페이스 수정에 실패 했습니다. 다시 시도해 주십시오."));
+
+        request.setAttribute("workspace", workspace);
+        String target = request.getContextPath() + "/workspace/info.jsp";
+        return new ModelAndView(target);
+    }
+
+    private ModelAndView deleteWorkspace(HttpServletRequest request, HttpServletResponse response) {
+        SessionUser sessionUser = (SessionUser) request.getSession().getAttribute("SessionUser");
         var dto = WorkspaceRequest.deleteDto(request, sessionUser);
 
-        // 🔹 실제 삭제 로직 호출
         workspaceService.deleteWorkspace(dto);
 
-        // 🔹 삭제 성공 시 redirect
-        String target = request.getContextPath() + "/workspace/list";
+        String target = request.getContextPath() + "/workspace";
         return new ModelAndView(target, true);
     }
 }

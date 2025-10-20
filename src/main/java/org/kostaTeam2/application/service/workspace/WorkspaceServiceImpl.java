@@ -43,18 +43,23 @@ public class WorkspaceServiceImpl implements WorkspaceService{
 
             if (workspaceId == null) {throw new SQLException();}
 
-            WorkspaceMember workspaceMember = new WorkspaceMember(workspaceId , dto.userId(), true);
-            int res = workspaceMemberRepository.save(conn, workspaceMember);
-            if (res == 0) {throw new SQLException();}
+            int res = workspaceMemberRepository
+                    .save(conn,
+                            new WorkspaceMember(workspaceId,
+                                    dto.userId(),
+                                    true
+                            ));
 
+            if (res == 0) {throw new SQLException();}
             conn.commit();
-            return getWorkspaceById(workspaceId);
+
+            return workspaceRepository.findById(conn, workspaceId);
         } catch (AppException e) {
             if (conn != null) try { conn.rollback(); } catch (SQLException ignored) {}
             throw e;
         } catch (SQLException e) {
             if (conn != null) try { conn.rollback(); } catch (SQLException ignored) {}
-            throw new DBException("워크스페이스 생성 중 error 발생", e);
+            throw new DBException("워크스페이스 생성 실패했습니다.", e);
         } finally {
             if (conn != null) {
                 try { conn.setAutoCommit(true); } catch (SQLException ignored) {}
@@ -64,16 +69,38 @@ public class WorkspaceServiceImpl implements WorkspaceService{
     }
 
     @Override
-    public Optional<Workspace> getWorkspaceById(Long workspaceId) {
+    public Optional<Workspace> getWorkspaceById(WorkspaceRequest dto) {
         try (Connection conn = ds.getConnection()){
-            Optional<Workspace> workspace = workspaceRepository.findById(conn, workspaceId);
+            Optional<Workspace> workspace = workspaceRepository.findById(conn, dto.workspaceId());
             if (workspace.isEmpty()) {
-                throw new NotFoundException("워크스페이스가 존재하지 않습니다.");
+                throw new SQLException();
             }
 
             return workspace;
         } catch (SQLException e) {
-            throw new DBException("워크스페이스 조회 중 error 발생", e);
+            throw new DBException("워크스페이스 조회 실패했습니다.", e);
+        }
+    }
+
+    @Override
+    public Optional<Workspace> updateWorkspace(WorkspaceRequest dto) {
+        try (Connection conn = ds.getConnection()){
+            if (workspaceMemberRepository.isLeader(conn, dto.userId(), dto.workspaceId()) != 1) {
+                throw new ForbiddenException("워크스페이스 수정 권한이 없습니다.");
+            }
+
+            int res = workspaceRepository
+                    .update(
+                            conn, new Workspace(dto.workspaceId(),
+                                    dto.workspaceName(),
+                                    dto.workspaceLanguage(),
+                                    dto.isHintView()
+                            ));
+            if (res == 0) {throw new SQLException();}
+
+            return workspaceRepository.findById(conn, dto.workspaceId());
+        } catch (SQLException e) {
+            throw new DBException("워크스페이스 수정 실패했습니다.", e);
         }
     }
 
@@ -86,9 +113,9 @@ public class WorkspaceServiceImpl implements WorkspaceService{
             }
 
             int res = workspaceRepository.delete(conn, dto.workspaceId());
-
+            if (res == 0) {throw new SQLException();}
         } catch (SQLException e) {
-            throw new DBException("워크스페이스 삭제 중 error 발생", e);
+            throw new DBException("워크스페이스 삭제 실패했습니다.", e);
         }
     }
 }

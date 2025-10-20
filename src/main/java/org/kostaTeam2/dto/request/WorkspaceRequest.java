@@ -13,6 +13,12 @@ public record WorkspaceRequest(
         Boolean isHintView
 ) {
 
+//    public static WorkspaceRequest showDto(HttpServletRequest req, SessionUser user) {
+//        Long userId = user.memberId();
+//        Long workspaceId = Long.valueOf(req.getParameter("workspaceId"));
+//
+//    }
+
     public static WorkspaceRequest createDto(HttpServletRequest req, SessionUser user) {
         Long userId = user.memberId();
         String workspaceName = req.getParameter("workspaceName");
@@ -25,6 +31,21 @@ public record WorkspaceRequest(
         Boolean isHintView = Boolean.parseBoolean(hintViewStr);
 
         return new WorkspaceRequest(userId, null, workspaceName, language, isHintView);
+    }
+
+    public static WorkspaceRequest updateDto(HttpServletRequest req, SessionUser user) {
+        Long userId = user.memberId();
+        Long workspaceId = Long.valueOf(req.getParameter("workspaceId"));
+        String workspaceName = req.getParameter("workspaceName");
+        String languageStr = req.getParameter("workspaceLanguage");
+        String hintViewStr = req.getParameter("isHintView");
+
+        WorkspaceLanguage language = languageStr != null
+                ? WorkspaceLanguage.valueOf(languageStr.toUpperCase())
+                : null;
+        Boolean isHintView = Boolean.parseBoolean(hintViewStr);
+
+        return new WorkspaceRequest(userId, workspaceId, workspaceName, language, isHintView);
     }
 
     public static WorkspaceRequest deleteDto(HttpServletRequest req, SessionUser user) {

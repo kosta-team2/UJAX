@@ -15,10 +15,10 @@ public interface WorkspaceService {
 
     /**
      * 워크스페이스 아이디로 찾아 반환
-     * @param workspaceId
+     * @param dto
      * @return
      */
-    Optional<Workspace> getWorkspaceById(Long workspaceId);
+    Optional<Workspace> getWorkspaceById(WorkspaceRequest dto);
 
     /**
      * 리더인지 확인하고, 워크스페이스 삭제
@@ -26,4 +26,11 @@ public interface WorkspaceService {
      * @return
      */
     void deleteWorkspace(WorkspaceRequest dto);
+
+    /**
+     * 리더인지 확인하고, 워크스페이스 수정
+     * @param dto
+     * @return
+     */
+    Optional<Workspace> updateWorkspace(WorkspaceRequest dto);
 }

@@ -11,11 +11,17 @@ public class Workspace {
     private LocalDateTime updatedAt;
     private boolean isDeleted;
 
-
     public Workspace(String workspaceName, WorkspaceLanguage workspaceLanguage, Boolean isHintView) {
         this.workspaceName = workspaceName;
         this.workspaceLanguage = workspaceLanguage;
         this.isHintView = Boolean.TRUE.equals(isHintView);
+    }
+
+    public Workspace(Long workspaceId, String workspaceName, WorkspaceLanguage workspaceLanguage, Boolean isHintView) {
+        this.workspaceId = workspaceId;
+        this.workspaceName = workspaceName;
+        this.workspaceLanguage = workspaceLanguage;
+        this.isHintView = isHintView;
     }
 
     public Workspace(Long workspaceId, String workspaceName, WorkspaceLanguage workspaceLanguage, Boolean isHintView, LocalDateTime createdAt, LocalDateTime updatedAt, Boolean isDeleted) {

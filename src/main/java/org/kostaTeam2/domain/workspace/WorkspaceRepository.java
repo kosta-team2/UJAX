@@ -8,29 +8,22 @@ public interface
 WorkspaceRepository {
     /**
      * 워크스페이스 생성 후 워크스페이스 아이디 반환
-     * @param conn
-     * @param workspace
-     * @return
-     * @throws SQLException
      */
     Long save(Connection conn, Workspace workspace) throws SQLException;
 
     /**
      * ID로 워크스페이스 찾기
-     * @param conn
-     * @param workspaceId
-     * @return
-     * @throws SQLException
      */
     Optional<Workspace> findById(Connection conn, Long workspaceId) throws SQLException;
 
     /**
+     * 워크스페이스 수정
+     */
+    int update(Connection conn, Workspace workspace) throws SQLException;
+
+    /**
      * 워크스페이스 삭제
-     *
-     * @param conn
-     * @param workspaceId
-     * @return
-     * @throws SQLException
      */
     int delete(Connection conn, Long workspaceId) throws SQLException;
+
 }

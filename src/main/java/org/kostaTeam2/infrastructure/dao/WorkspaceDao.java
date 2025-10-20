@@ -58,6 +58,22 @@ public class WorkspaceDao implements WorkspaceRepository {
     }
 
     @Override
+    public int update(Connection conn, Workspace workspace) throws SQLException {
+        String sql = "UPDATE workspace " +
+                "SET ws_name = ?, ws_lang = ?, is_hint_view = ? " +
+                "WHERE ws_id = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setString(1, workspace.getWorkspaceName());
+            ps.setString(2, workspace.getWorkspaceLanguage().name());
+            ps.setBoolean(3, workspace.isHintView());
+            ps.setLong(4, workspace.getWorkspaceId());
+
+            return ps.executeUpdate();
+        }
+    }
+
+    @Override
     public int delete(Connection conn, Long workspaceId) throws SQLException {
         String sql = "UPDATE workspace " +
                 "SET is_deleted = 1 " +
