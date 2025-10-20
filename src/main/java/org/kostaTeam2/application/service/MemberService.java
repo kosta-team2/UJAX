@@ -13,4 +13,6 @@ public interface MemberService {
     void signup(String email, String password, String nickname);
 
     void softDelete(long memberId);
+
+    void updateMember(long memberId, String nickname, String password);
 }

@@ -14,6 +14,8 @@ public interface MemberRepository {
 
     Optional<Member> findById(Connection con, long id) throws SQLException;
 
+    void updateMember(Connection con, Member member) throws SQLException;
+
     void saveMember(Connection con, Member member) throws SQLException;
 
     void softDeleteById(Connection con, long memberId) throws SQLException;

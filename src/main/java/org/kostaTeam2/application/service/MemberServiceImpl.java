@@ -61,4 +61,14 @@ public class MemberServiceImpl implements MemberService {
             throw new DBException("회원 탈퇴 처리 중 DB 오류가 발생했습니다.", e);
         }
     }
+
+    @Override
+    public void updateMember(long memberId, String nickname, String password) {
+        try (Connection con = ds.getConnection()) {
+            Member member = new Member(memberId, nickname, password);
+            repository.updateMember(con, member);
+        } catch (SQLException e) {
+            throw new DBException("회원 정보 수정 처리 중 DB 오류가 발생했습니다.", e);
+        }
+    }
 }

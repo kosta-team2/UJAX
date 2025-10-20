@@ -26,6 +26,12 @@ public class Member {
 		this.nickname = nickname;
 	}
 
+    public Member(Long memberId, String nickname, String password) {
+        this.memberId = memberId;
+        this.nickname = nickname;
+        this.password = password;
+    }
+
 	public Long getMemberId() {
 		return memberId;
 	}

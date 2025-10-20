@@ -11,25 +11,25 @@ import org.kostaTeam2.domain.member.MemberRepository;
 
 public class MemberDao implements MemberRepository {
 
-	public Optional<Member> findByEmailAndPassword(Connection con, String email, String password) throws SQLException {
-		String sql = """
-			SELECT member_id, email, nickname
-			FROM member
-			WHERE email = ? and password = ? and is_deleted = 0
-			LIMIT 1
-			""";
+    public Optional<Member> findByEmailAndPassword(Connection con, String email, String password) throws SQLException {
+        String sql = """
+                SELECT member_id, email, nickname
+                FROM member
+                WHERE email = ? and password = ? and is_deleted = 0
+                LIMIT 1
+                """;
 
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			ps.setString(1, email);
-			ps.setString(2, password);
-			try (ResultSet rs = ps.executeQuery()) {
-				if (rs.next()) {
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, email);
+            ps.setString(2, password);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
                     return Optional.of(mapRow(rs));
-				}
+                }
                 return Optional.empty();
-			}
-		}
-	}
+            }
+        }
+    }
 
     @Override
     public Optional<Member> findByEmail(Connection con, String email) throws SQLException {
@@ -83,11 +83,26 @@ public class MemberDao implements MemberRepository {
     }
 
     @Override
+    public void updateMember(Connection con, Member member) throws SQLException {
+        String sql = """
+                UPDATE member
+                SET nickname = ?, password = ?
+                WHERE member_id = ? AND is_deleted = 0
+                """;
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, member.getNickname());
+            ps.setString(2, member.getPassword());
+            ps.setLong(3, member.getMemberId());
+            ps.executeUpdate();
+        }
+    }
+
+    @Override
     public void saveMember(Connection con, Member member) throws SQLException {
         String sql = """
-        INSERT INTO member (email, password, nickname) 
-        VALUES (?, ?, ?)
-        """;
+                INSERT INTO member (email, password, nickname) 
+                VALUES (?, ?, ?)
+                """;
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, member.getEmail());
             ps.setString(2, member.getPassword());
