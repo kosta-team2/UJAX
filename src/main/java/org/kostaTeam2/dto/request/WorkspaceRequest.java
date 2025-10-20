@@ -5,23 +5,15 @@ import org.kostaTeam2.domain.workspace.WorkspaceLanguage;
 import org.kostaTeam2.global.exception.BadRequestException;
 import org.kostaTeam2.presentation.controller.dto.SessionUser;
 
-public record WorkspaceCreateRequest(
+public record WorkspaceRequest(
         Long userId,
+        Long workspaceId,
         String workspaceName,
         WorkspaceLanguage workspaceLanguage,
         Boolean isHintView
 ) {
-    public WorkspaceCreateRequest {
-        if (workspaceName() == null) {
-            throw new BadRequestException("workspaceName cannot be null");
-        }
-        if (workspaceLanguage == null) {
-            throw new BadRequestException("workspaceLanguage cannot be null");
-        }
-    }
 
-
-    public static WorkspaceCreateRequest from(HttpServletRequest req, SessionUser user) {
+    public static WorkspaceRequest createDto(HttpServletRequest req, SessionUser user) {
         Long userId = user.memberId();
         String workspaceName = req.getParameter("workspaceName");
         String languageStr = req.getParameter("workspaceLanguage");
@@ -32,6 +24,13 @@ public record WorkspaceCreateRequest(
                 : null;
         Boolean isHintView = Boolean.parseBoolean(hintViewStr);
 
-        return new WorkspaceCreateRequest(userId, workspaceName, language, isHintView);
+        return new WorkspaceRequest(userId, null, workspaceName, language, isHintView);
+    }
+
+    public static WorkspaceRequest deleteDto(HttpServletRequest req, SessionUser user) {
+        Long userId = user.memberId();
+        Long workspaceId = Long.valueOf(req.getParameter("workspaceId"));
+
+        return new WorkspaceRequest(userId, workspaceId, null, null, null);
     }
 }
