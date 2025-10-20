@@ -11,4 +11,13 @@ public interface WorkspaceMemberRepository {
      * @param workspaceMember
      */
     int save(Connection conn, WorkspaceMember workspaceMember) throws SQLException;
+
+    /**
+     * 워크스페이스의 리더인지 확인
+     *
+     * @param memberId
+     * @param workspaceId
+     * @return
+     */
+    int isLeader(Connection conn, Long memberId, Long workspaceId) throws SQLException;
 }

@@ -3,9 +3,6 @@ package org.kostaTeam2.infrastructure.dao;
 import org.kostaTeam2.domain.workspace.Workspace;
 import org.kostaTeam2.domain.workspace.WorkspaceLanguage;
 import org.kostaTeam2.domain.workspace.WorkspaceRepository;
-import org.kostaTeam2.global.exception.DBException;
-import org.kostaTeam2.global.exception.NotFoundException;
-import org.kostaTeam2.global.exception.common.AppException;
 
 import java.sql.*;
 import java.util.Optional;
@@ -24,13 +21,11 @@ public class WorkspaceDao implements WorkspaceRepository {
             ps.setString(1, ws_name);
             ps.setString(2, ws_lang.name());
             ps.setBoolean(3, is_hint_view);
-            int res = ps.executeUpdate();
-            if (res == 0) {
-                throw new SQLException("워크스페이스 생성 실패.");
-            }
+
+            ps.executeUpdate();
 
             try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (!rs.next()) throw new SQLException("워크스페이스 ID 반환 실패");
+                if (!rs.next()) return null;
 
                 return rs.getLong(1);
             }
@@ -39,7 +34,9 @@ public class WorkspaceDao implements WorkspaceRepository {
 
     @Override
     public Optional<Workspace> findById(Connection conn, Long workspaceId) throws SQLException {
-        String sql = "SELECT * FROM workspace WHERE ws_id = ?";
+        String sql = "SELECT * " +
+                "FROM workspace " +
+                "WHERE ws_id = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setLong(1, workspaceId);
@@ -60,4 +57,15 @@ public class WorkspaceDao implements WorkspaceRepository {
         }
     }
 
+    @Override
+    public int delete(Connection conn, Long workspaceId) throws SQLException {
+        String sql = "UPDATE workspace " +
+                "SET is_deleted = 1 " +
+                "WHERE ws_id = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setLong(1, workspaceId);
+            return ps.executeUpdate();
+        }
+    }
 }

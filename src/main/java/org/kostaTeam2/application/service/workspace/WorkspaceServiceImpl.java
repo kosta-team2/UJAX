@@ -4,8 +4,9 @@ import org.kostaTeam2.domain.workspace.Workspace;
 import org.kostaTeam2.domain.workspace.WorkspaceMember;
 import org.kostaTeam2.domain.workspace.WorkspaceMemberRepository;
 import org.kostaTeam2.domain.workspace.WorkspaceRepository;
-import org.kostaTeam2.dto.request.WorkspaceCreateRequest;
+import org.kostaTeam2.dto.request.WorkspaceRequest;
 import org.kostaTeam2.global.exception.DBException;
+import org.kostaTeam2.global.exception.ForbiddenException;
 import org.kostaTeam2.global.exception.NotFoundException;
 import org.kostaTeam2.global.exception.common.AppException;
 
@@ -27,7 +28,7 @@ public class WorkspaceServiceImpl implements WorkspaceService{
 
 
     @Override
-    public Optional<Workspace> createWorkspace(WorkspaceCreateRequest dto) {
+    public Optional<Workspace> createWorkspace(WorkspaceRequest dto) {
         Connection conn = null;
 
         try {
@@ -40,8 +41,11 @@ public class WorkspaceServiceImpl implements WorkspaceService{
                     dto.isHintView()
             ));
 
+            if (workspaceId == null) {throw new SQLException();}
+
             WorkspaceMember workspaceMember = new WorkspaceMember(workspaceId , dto.userId(), true);
-            workspaceMemberRepository.save(conn, workspaceMember);
+            int res = workspaceMemberRepository.save(conn, workspaceMember);
+            if (res == 0) {throw new SQLException();}
 
             conn.commit();
             return getWorkspaceById(workspaceId);
@@ -64,7 +68,7 @@ public class WorkspaceServiceImpl implements WorkspaceService{
         try (Connection conn = ds.getConnection()){
             Optional<Workspace> workspace = workspaceRepository.findById(conn, workspaceId);
             if (workspace.isEmpty()) {
-                throw new NotFoundException("워크스페이스를 찾지 못했습니다.");
+                throw new NotFoundException("워크스페이스가 존재하지 않습니다.");
             }
 
             return workspace;
@@ -74,8 +78,14 @@ public class WorkspaceServiceImpl implements WorkspaceService{
     }
 
     @Override
-    public void deleteWorkspace(Long workspaceId, Long memberId) {
+    public void deleteWorkspace(WorkspaceRequest dto) {
+
         try (Connection conn = ds.getConnection()){
+            if (workspaceMemberRepository.isLeader(conn, dto.userId(), dto.workspaceId()) != 1) {
+                throw new ForbiddenException("워크스페이스 삭제 권한이 없습니다.");
+            }
+
+            int res = workspaceRepository.delete(conn, dto.workspaceId());
 
         } catch (SQLException e) {
             throw new DBException("워크스페이스 삭제 중 error 발생", e);

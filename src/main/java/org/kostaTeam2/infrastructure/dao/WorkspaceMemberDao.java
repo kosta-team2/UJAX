@@ -2,7 +2,6 @@ package org.kostaTeam2.infrastructure.dao;
 
 import org.kostaTeam2.domain.workspace.WorkspaceMember;
 import org.kostaTeam2.domain.workspace.WorkspaceMemberRepository;
-import org.kostaTeam2.global.exception.DBException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -22,6 +21,18 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
             ps.setLong(1, ws_id);
             ps.setLong(2, member_id);
             ps.setBoolean(3, is_leader);
+
+            return ps.executeUpdate();
+        }
+    }
+
+    @Override
+    public int isLeader(Connection conn, Long memberId, Long workspaceId) throws SQLException {
+        String sql = "SELECT is_leader FROM workspace_member WHERE member_id = ? AND workspace_id = ?";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setLong(1, memberId);
+            ps.setLong(2, workspaceId);
 
             return ps.executeUpdate();
         }

@@ -10,7 +10,7 @@ WorkspaceRepository {
      * 워크스페이스 생성 후 워크스페이스 아이디 반환
      * @param conn
      * @param workspace
-     * @return workspaceId
+     * @return
      * @throws SQLException
      */
     Long save(Connection conn, Workspace workspace) throws SQLException;
@@ -18,8 +18,19 @@ WorkspaceRepository {
     /**
      * ID로 워크스페이스 찾기
      * @param conn
-     * @param id
+     * @param workspaceId
      * @return
+     * @throws SQLException
      */
-    Optional<Workspace> findById(Connection conn, Long id) throws SQLException;
+    Optional<Workspace> findById(Connection conn, Long workspaceId) throws SQLException;
+
+    /**
+     * 워크스페이스 삭제
+     *
+     * @param conn
+     * @param workspaceId
+     * @return
+     * @throws SQLException
+     */
+    int delete(Connection conn, Long workspaceId) throws SQLException;
 }

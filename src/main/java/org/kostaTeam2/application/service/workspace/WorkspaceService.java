@@ -1,7 +1,7 @@
 package org.kostaTeam2.application.service.workspace;
 
 import org.kostaTeam2.domain.workspace.Workspace;
-import org.kostaTeam2.dto.request.WorkspaceCreateRequest;
+import org.kostaTeam2.dto.request.WorkspaceRequest;
 
 import java.util.Optional;
 
@@ -11,7 +11,7 @@ public interface WorkspaceService {
      * @param dto
      * @return
      */
-    Optional<Workspace> createWorkspace(WorkspaceCreateRequest dto);
+    Optional<Workspace> createWorkspace(WorkspaceRequest dto);
 
     /**
      * 워크스페이스 아이디로 찾아 반환
@@ -22,8 +22,8 @@ public interface WorkspaceService {
 
     /**
      * 리더인지 확인하고, 워크스페이스 삭제
-     * @param workspaceId
-     * @param memberId
+     * @param dto
+     * @return
      */
-    void deleteWorkspace(Long workspaceId, Long memberId);
+    void deleteWorkspace(WorkspaceRequest dto);
 }
