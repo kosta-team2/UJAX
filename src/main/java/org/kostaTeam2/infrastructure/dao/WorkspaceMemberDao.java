@@ -5,6 +5,7 @@ import org.kostaTeam2.domain.workspace.WorkspaceMemberRepository;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class WorkspaceMemberDao implements WorkspaceMemberRepository {
@@ -15,7 +16,7 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
         Long member_id = workspaceMember.getMemberId();
         boolean is_leader = workspaceMember.isLeader();
 
-        String sql = "INSERT INTO workspace_member(ws_id, member_id, is_leader) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO workspace_member(ws_id, ws_member_id, is_leader) VALUES (?, ?, ?)";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, ws_id);
@@ -27,14 +28,38 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
     }
 
     @Override
-    public int isLeader(Connection conn, Long memberId, Long workspaceId) throws SQLException {
-        String sql = "SELECT is_leader FROM workspace_member WHERE member_id = ? AND workspace_id = ?";
+    public boolean isLeader(Connection conn, WorkspaceMember workspaceMember) throws SQLException {
+        String sql = "SELECT is_leader FROM workspace_member WHERE ws_member_id = ? AND ws_id = ?";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)){
-            ps.setLong(1, memberId);
-            ps.setLong(2, workspaceId);
+            ps.setLong(1, workspaceMember.getMemberId());
+            ps.setLong(2, workspaceMember.getWorkspaceId());
 
-            return ps.executeUpdate();
+            try (ResultSet rs = ps.executeQuery()){
+                if (rs.next()) {
+                    return rs.getBoolean("is_leader");
+                }
+
+                return false;
+            }
+        }
+    }
+
+    @Override
+    public boolean isMember(Connection conn, WorkspaceMember workspaceMember) throws SQLException {
+        String sql = "SELECT EXISTS (SELECT 1 FROM workspace_member WHERE ws_member_id = ? AND ws_id = ?) AS exist";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)){
+            ps.setLong(1, workspaceMember.getMemberId());
+            ps.setLong(2, workspaceMember.getWorkspaceId());
+
+            try (ResultSet rs = ps.executeQuery()){
+                if (rs.next()) {
+                    return rs.getBoolean("exist");
+                }
+
+                return false;
+            }
         }
     }
 

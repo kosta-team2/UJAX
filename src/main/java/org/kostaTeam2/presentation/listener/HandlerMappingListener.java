@@ -65,9 +65,12 @@ public class HandlerMappingListener implements ServletContextListener {
 					if (pts.length == 1 && pts[0] == MemberService.class) {
 						ctor.setAccessible(true);
 						con = ctor.newInstance(memberSvc);
-						con = ctor.newInstance(workspaceSvc);
 						break;
-					}
+					} else if (pts.length == 1 && pts[0] == WorkspaceService.class) {
+                        ctor.setAccessible(true);
+                        con = ctor.newInstance(workspaceSvc);
+                        break;
+                    }
 				}
 
 				//없으면 기본 생성자
@@ -90,9 +93,12 @@ public class HandlerMappingListener implements ServletContextListener {
 					if (pts.length == 1 && pts[0] == MemberService.class) {
 						ctor.setAccessible(true);
 						con = ctor.newInstance(memberSvc);
-						con = ctor.newInstance(workspaceSvc);
 						break;
-					}
+					} else if (pts.length == 1 && pts[0] == WorkspaceService.class) {
+                        ctor.setAccessible(true);
+                        con = ctor.newInstance(workspaceSvc);
+                        break;
+                    }
 				}
 
 				//없으면 기본 생성자

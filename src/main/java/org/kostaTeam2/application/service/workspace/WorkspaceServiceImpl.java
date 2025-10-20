@@ -71,6 +71,10 @@ public class WorkspaceServiceImpl implements WorkspaceService{
     @Override
     public Optional<Workspace> getWorkspaceById(WorkspaceRequest dto) {
         try (Connection conn = ds.getConnection()){
+            if (!workspaceMemberRepository.isMember(conn, new WorkspaceMember(dto.workspaceId(), dto.userId()))) {
+                throw new ForbiddenException("워크스페이스 멤버가 아닙니다.");
+            }
+
             Optional<Workspace> workspace = workspaceRepository.findById(conn, dto.workspaceId());
             if (workspace.isEmpty()) {
                 throw new SQLException();
@@ -85,7 +89,7 @@ public class WorkspaceServiceImpl implements WorkspaceService{
     @Override
     public Optional<Workspace> updateWorkspace(WorkspaceRequest dto) {
         try (Connection conn = ds.getConnection()){
-            if (workspaceMemberRepository.isLeader(conn, dto.userId(), dto.workspaceId()) != 1) {
+            if (!workspaceMemberRepository.isLeader(conn, new WorkspaceMember(dto.workspaceId(), dto.userId()))) {
                 throw new ForbiddenException("워크스페이스 수정 권한이 없습니다.");
             }
 
@@ -108,7 +112,7 @@ public class WorkspaceServiceImpl implements WorkspaceService{
     public void deleteWorkspace(WorkspaceRequest dto) {
 
         try (Connection conn = ds.getConnection()){
-            if (workspaceMemberRepository.isLeader(conn, dto.userId(), dto.workspaceId()) != 1) {
+            if (!workspaceMemberRepository.isLeader(conn, new WorkspaceMember(dto.workspaceId(), dto.userId()))) {
                 throw new ForbiddenException("워크스페이스 삭제 권한이 없습니다.");
             }
 

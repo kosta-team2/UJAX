@@ -2,7 +2,6 @@ package org.kostaTeam2.presentation.controller.page;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import org.kostaTeam2.application.service.workspace.WorkspaceService;
 import org.kostaTeam2.domain.workspace.Workspace;
 import org.kostaTeam2.dto.request.WorkspaceRequest;
@@ -12,7 +11,7 @@ import org.kostaTeam2.presentation.controller.dto.SessionUser;
 import org.kostaTeam2.presentation.view.ModelAndView;
 
 public class WorkspacePageController implements Controller {
-    private WorkspaceService workspaceService;
+    private final WorkspaceService workspaceService;
 
     public WorkspacePageController(WorkspaceService workspaceService) {
         this.workspaceService = workspaceService;
@@ -23,6 +22,8 @@ public class WorkspacePageController implements Controller {
             Exception {
         return switch (methodName) {
             case "create" -> createWorkspace(request, response);
+            case "show" -> showWorkspace(request, response);
+            case "update"  -> updateWorkspace(request, response);
             case "delete" -> deleteWorkspace(request, response);
             default -> throw new BadRequestException("workspace methodName이 올바르지 않습니다.");
         };
@@ -37,6 +38,19 @@ public class WorkspacePageController implements Controller {
 
         request.setAttribute("workspace", workspace);
         
+        String target = request.getContextPath() + "/workspace";
+        return new ModelAndView(target);
+    }
+
+    private ModelAndView showWorkspace(HttpServletRequest request, HttpServletResponse response) {
+        SessionUser sessionUser = (SessionUser) request.getSession().getAttribute("SessionUser");
+        var dto = WorkspaceRequest.showDto(request, sessionUser);
+
+        Workspace workspace = workspaceService.getWorkspaceById(dto)
+                .orElseThrow(() -> new AppException(500, "워크스페이스 수정에 실패 했습니다. 다시 시도해 주십시오."));
+
+        request.setAttribute("workspace", workspace);
+
         String target = request.getContextPath() + "/workspace";
         return new ModelAndView(target);
     }
