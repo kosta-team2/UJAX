@@ -20,4 +20,10 @@ public interface WorkspaceService {
      */
     Optional<Workspace> getWorkspaceById(Long workspaceId);
 
+    /**
+     * 리더인지 확인하고, 워크스페이스 삭제
+     * @param workspaceId
+     * @param memberId
+     */
+    void deleteWorkspace(Long workspaceId, Long memberId);
 }

@@ -24,10 +24,13 @@ public class WorkspaceDao implements WorkspaceRepository {
             ps.setString(1, ws_name);
             ps.setString(2, ws_lang.name());
             ps.setBoolean(3, is_hint_view);
-            ps.executeUpdate();
+            int res = ps.executeUpdate();
+            if (res == 0) {
+                throw new SQLException("워크스페이스 생성 실패.");
+            }
 
             try (ResultSet rs = ps.getGeneratedKeys()) {
-                if (!rs.next()) return null;
+                if (!rs.next()) throw new SQLException("워크스페이스 ID 반환 실패");
 
                 return rs.getLong(1);
             }
