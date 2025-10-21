@@ -7,4 +7,16 @@ import java.util.Optional;
 public interface MemberRepository {
 	Optional<Member> findByEmailAndPassword(Connection con, String email, String password)
 		throws SQLException;
+
+    Optional<Member> findByEmail(Connection con, String email) throws SQLException;
+
+    Optional<Member> findByNickname(Connection con, String nickname) throws SQLException;
+
+    Optional<Member> findById(Connection con, long id) throws SQLException;
+
+    void updateMember(Connection con, Member member) throws SQLException;
+
+    void saveMember(Connection con, Member member) throws SQLException;
+
+    void softDeleteById(Connection con, long memberId) throws SQLException;
 }

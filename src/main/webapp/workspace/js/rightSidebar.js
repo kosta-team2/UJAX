@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
              main.innerHTML = html;
 
                 // js 초기화
-                if (typeof reload === 'function') reload(page);
+                if (typeof reload === 'function') reload("mypage");
 
                 // 사이드바 버튼 활성화 해제
                 document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
