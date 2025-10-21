@@ -9,8 +9,14 @@ import javax.sql.DataSource;
 
 import org.kostaTeam2.application.service.MemberService;
 import org.kostaTeam2.application.service.MemberServiceImpl;
+import org.kostaTeam2.application.service.workspace.WorkspaceService;
+import org.kostaTeam2.application.service.workspace.WorkspaceServiceImpl;
 import org.kostaTeam2.domain.member.MemberRepository;
+import org.kostaTeam2.domain.workspace.WorkspaceMemberRepository;
+import org.kostaTeam2.domain.workspace.WorkspaceRepository;
 import org.kostaTeam2.infrastructure.dao.MemberDao;
+import org.kostaTeam2.infrastructure.dao.WorkspaceDao;
+import org.kostaTeam2.infrastructure.dao.WorkspaceMemberDao;
 import org.kostaTeam2.presentation.controller.api.RestController;
 import org.kostaTeam2.presentation.controller.page.Controller;
 
@@ -35,8 +41,11 @@ public class HandlerMappingListener implements ServletContextListener {
 			// 2) Repo/Service 싱글턴 조립
 			//Repository
 			MemberRepository memberRepo = new MemberDao();
+            WorkspaceRepository workspaceRepo = new WorkspaceDao();
+            WorkspaceMemberRepository workspaceMemberRepo = new WorkspaceMemberDao();
 			//Service
 			MemberService memberSvc = new MemberServiceImpl(ds, memberRepo);
+            WorkspaceService workspaceSvc = new WorkspaceServiceImpl(ds, workspaceRepo, workspaceMemberRepo);
 
 			ResourceBundle rb1 = ResourceBundle.getBundle(fileName);
 			ResourceBundle rb2 = ResourceBundle.getBundle(apiFileName);
@@ -57,7 +66,11 @@ public class HandlerMappingListener implements ServletContextListener {
 						ctor.setAccessible(true);
 						con = ctor.newInstance(memberSvc);
 						break;
-					}
+					} else if (pts.length == 1 && pts[0] == WorkspaceService.class) {
+                        ctor.setAccessible(true);
+                        con = ctor.newInstance(workspaceSvc);
+                        break;
+                    }
 				}
 
 				//없으면 기본 생성자
@@ -81,7 +94,11 @@ public class HandlerMappingListener implements ServletContextListener {
 						ctor.setAccessible(true);
 						con = ctor.newInstance(memberSvc);
 						break;
-					}
+					} else if (pts.length == 1 && pts[0] == WorkspaceService.class) {
+                        ctor.setAccessible(true);
+                        con = ctor.newInstance(workspaceSvc);
+                        break;
+                    }
 				}
 
 				//없으면 기본 생성자
