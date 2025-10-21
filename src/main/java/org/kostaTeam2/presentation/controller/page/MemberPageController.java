@@ -131,7 +131,8 @@ public class MemberPageController implements Controller {
         // memberId, newNickname, newPassword 검증 dto
         var dto = UpdateUserRequest.from(request);
         try {
-            memberService.updateMember(dto.memberId(), dto.nickname(), dto.password());
+            memberService.updateMember(dto.memberId(), dto.password(), dto.newNickname(), dto.newPassword());
+            request.setAttribute("message", "회원 정보가 정상적으로 수정되었습니다.");
             return new ModelAndView(request.getContextPath() + "/workspace/mypage.jsp", true);
         } catch (BadRequestException e) {
             request.setAttribute("error", e.getMessage());

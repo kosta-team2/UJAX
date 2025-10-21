@@ -13,15 +13,15 @@
 
         <!-- 현재 비밀번호 -->
         <div class="pi-field">
-            <label for="currentPw">현재 비밀번호</label>
-            <input type="password" id="currentPw" name="currentPw" placeholder="현재 비밀번호를 입력하세요" required>
+            <label for="password">현재 비밀번호</label>
+            <input type="password" id="password" name="password" placeholder="현재 비밀번호를 입력하세요" required>
             <p class="pi-hint">본인 확인을 위해 현재 사용 중인 비밀번호를 입력해주세요.</p>
         </div>
 
         <!-- 새 비밀번호 -->
         <div class="pi-field">
-            <label for="newPw">새 비밀번호</label>
-            <input type="password" id="newPw" name="newPw" placeholder="새 비밀번호를 입력하세요" required>
+            <label for="newPassword">새 비밀번호</label>
+            <input type="password" id="newPassword" name="newPassword" placeholder="새 비밀번호를 입력하세요" required>
         </div>
 
         <!-- 새 비밀번호 확인 -->
