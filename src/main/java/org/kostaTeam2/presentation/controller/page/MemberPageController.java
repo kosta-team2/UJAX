@@ -84,12 +84,6 @@ public class MemberPageController implements Controller {
     private ModelAndView delete(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(false);
 
-        // 세션이 만료된 상태에서 접근 시 로그인 페이지로 리다이렉트
-        if (session == null || session.getAttribute("SessionUser") == null) {
-            request.setAttribute("error", "로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
-            return new ModelAndView("/auth/login.jsp", true);
-        }
-
         SessionUser user = (SessionUser) session.getAttribute("SessionUser");
 
         try {
@@ -113,11 +107,6 @@ public class MemberPageController implements Controller {
     private ModelAndView getInfo(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(false);
 
-        if (session == null || session.getAttribute("SessionUser") == null) {
-            request.setAttribute("error", "로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
-            return new ModelAndView("/auth/login.jsp", true);
-        }
-
         SessionUser user = (SessionUser) session.getAttribute("SessionUser");
 
         try {
@@ -131,14 +120,14 @@ public class MemberPageController implements Controller {
     }
 
     private ModelAndView updateUser(HttpServletRequest request, HttpServletResponse response) {
-        HttpSession session = request.getSession(false);
+        //HttpSession session = request.getSession(false);
 
         // login session 남아있는지부터 체크
-        if (session == null || session.getAttribute("SessionUser") == null) {
-            request.setAttribute("error", "로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
-            return new ModelAndView("/auth/login.jsp", true);
-        }
-
+        // TODO : filter 로 처리할거임
+//        if (session == null || session.getAttribute("SessionUser") == null) {
+//            request.setAttribute("error", "로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
+//            return new ModelAndView("/auth/login.jsp", true);
+//        }
         // memberId, newNickname, newPassword 검증 dto
         var dto = UpdateUserRequest.from(request);
         try {
