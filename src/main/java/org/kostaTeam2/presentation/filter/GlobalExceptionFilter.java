@@ -38,6 +38,7 @@ public class GlobalExceptionFilter implements Filter {
 			chain.doFilter(request, response);
 
 		} catch (AppException ae) {
+			ae.printStackTrace();
 			int status = ae.getStatus() > 0 ? ae.getStatus() : HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
 			if (res.isCommitted())
 				return;

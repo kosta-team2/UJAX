@@ -9,6 +9,12 @@ import javax.sql.DataSource;
 
 import org.kostaTeam2.application.service.MemberService;
 import org.kostaTeam2.application.service.MemberServiceImpl;
+import org.kostaTeam2.application.service.ProblemService;
+import org.kostaTeam2.application.service.ProblemServiceImpl;
+import org.kostaTeam2.domain.member.MemberRepository;
+import org.kostaTeam2.domain.problem.ProblemRepository;
+import org.kostaTeam2.infrastructure.dao.MemberDao;
+import org.kostaTeam2.infrastructure.dao.ProblemDao;
 import org.kostaTeam2.application.service.workspace.WorkspaceService;
 import org.kostaTeam2.application.service.workspace.WorkspaceServiceImpl;
 import org.kostaTeam2.domain.member.MemberRepository;
@@ -41,6 +47,10 @@ public class HandlerMappingListener implements ServletContextListener {
 			// 2) Repo/Service 싱글턴 조립
 			//Repository
 			MemberRepository memberRepo = new MemberDao();
+			ProblemRepository problemRepo = new ProblemDao();
+			//Service
+			MemberService memberSvc = new MemberServiceImpl(ds, memberRepo);
+			ProblemService problemSvc = new ProblemServiceImpl(ds, problemRepo);
             WorkspaceRepository workspaceRepo = new WorkspaceDao();
             WorkspaceMemberRepository workspaceMemberRepo = new WorkspaceMemberDao();
 			//Service
@@ -66,6 +76,13 @@ public class HandlerMappingListener implements ServletContextListener {
 						ctor.setAccessible(true);
 						con = ctor.newInstance(memberSvc);
 						break;
+					}
+
+					if (pts.length == 1 && pts[0] == ProblemService.class) {
+						ctor.setAccessible(true);
+						con = ctor.newInstance(problemSvc);
+						break;
+					}
 					} else if (pts.length == 1 && pts[0] == WorkspaceService.class) {
                         ctor.setAccessible(true);
                         con = ctor.newInstance(workspaceSvc);
@@ -94,6 +111,13 @@ public class HandlerMappingListener implements ServletContextListener {
 						ctor.setAccessible(true);
 						con = ctor.newInstance(memberSvc);
 						break;
+					}
+
+					if (pts.length == 1 && pts[0] == ProblemService.class) {
+						ctor.setAccessible(true);
+						con = ctor.newInstance(problemSvc);
+						break;
+					}
 					} else if (pts.length == 1 && pts[0] == WorkspaceService.class) {
                         ctor.setAccessible(true);
                         con = ctor.newInstance(workspaceSvc);
@@ -112,6 +136,7 @@ public class HandlerMappingListener implements ServletContextListener {
 			application.setAttribute("controllerMap", controllerMap);
 			application.setAttribute("apiControllerMap", apiControllerMap);
 			application.setAttribute("path", application.getContextPath());
+			application.setAttribute("problemService", problemSvc);
 
 		} catch (Exception e) {
 			throw new RuntimeException("HandlerMapping 초기화 실패", e);
