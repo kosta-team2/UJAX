@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<link rel="stylesheet" href="css/mypage.css"> <!-- Test용임, 이후 통합 환경에서 사용할때는 제거해도 됨 -->
+<link rel="stylesheet" href="css/mypage.css">
+
 <div class="page" id="mypage-root">
     <div class="page-head">
         <h1 class="title">내 프로필 (My Page)</h1>
@@ -55,22 +56,6 @@
             <button class="btn btn-ghost" id="cancelConfirm">취소</button>
         </div>
     </div>
-</div>
-
-<!-- Result Modal -->
-<div class="modal" id="resultModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="resultTitle">
-    <div class="dialog">
-        <h3 class="card-title" id="resultTitle">정상적으로 탈퇴 처리되었습니다.</h3>
-        <div class="actions" style="justify-content:flex-end;margin-top:8px">
-            <button class="btn btn-ghost" id="closeResult">확인</button>
-        </div>
-    </div>
-</div>
-
-<!-- Page Alert -->
-<div class="page-alert" id="pageAlert" role="alert">
-    <span class="msg">정상적으로 탈퇴 처리되었습니다.</span>
-    <button class="close" id="closeAlert" aria-label="알림 닫기">×</button>
 </div>
 
 <script defer src="${pageContext.request.contextPath}/workspace/js/mypage.js"></script>

@@ -2,10 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const editBtn = document.getElementById('editBtn');
     const deleteBtn = document.getElementById('deleteBtn');
     const confirmModal = document.getElementById('confirmModal');
-    const resultModal = document.getElementById('resultModal');
     const okConfirm = document.getElementById('okConfirm');
     const cancelConfirm = document.getElementById('cancelConfirm');
-    const closeResult = document.getElementById('closeResult');
 
     const openModal = (modal) => {
         modal.classList.add('open');
@@ -19,18 +17,22 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.style.overflow = '';
     };
 
+    // 개인정보 변경 페이지로 이동
     editBtn?.addEventListener('click', () => {
-        top.location.href = '/workspace/personal-info.jsp';
+        location.href = '/workspace/personal-info.jsp';
     });
 
+    // 탈퇴 확인 모달 열기
     deleteBtn?.addEventListener('click', () => {
         openModal(confirmModal);
     });
 
+    // 모달 닫기
     cancelConfirm?.addEventListener('click', () => {
         closeModal(confirmModal);
     });
 
+    // 확인 클릭 시 폼 제출 (서버로 POST)
     okConfirm?.addEventListener('click', () => {
         closeModal(confirmModal);
 
@@ -54,14 +56,5 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.appendChild(form);
 
         form.submit();
-
-        // 혹시 redirect 되지 않는 경우를 대비한 보조 처리
-        openModal(resultModal);
-    });
-
-    // 이후에 iframe 처리할거라 top.location을 로그인 페이지로 설정.
-    closeResult?.addEventListener('click', () => {
-        closeModal(resultModal);
-        top.location.href = '/auth/login.jsp';
     });
 });
