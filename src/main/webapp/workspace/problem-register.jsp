@@ -1,4 +1,11 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<c:if test="${not empty sessionScope.flashMessageJs}">
+    <script>
+        alert('${sessionScope.flashMessageJs}');
+    </script>
+    <c:remove var="flashMessageJs" scope="session"/>
+</c:if>
 
 <link rel="stylesheet" id="theme-style" href="../common/css/darkmode.css">
 <link rel="stylesheet" href="css/problem-register.css">

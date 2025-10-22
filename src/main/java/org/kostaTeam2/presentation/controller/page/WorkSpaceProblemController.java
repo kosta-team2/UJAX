@@ -6,6 +6,7 @@ import org.kostaTeam2.application.service.workspace.WorkspaceProblemService;
 import org.kostaTeam2.domain.workspace.WorkspaceProblem;
 import org.kostaTeam2.dto.request.WorkspaceProblemRequest;
 import org.kostaTeam2.global.exception.BadRequestException;
+import org.kostaTeam2.global.exception.common.ValidationException;
 import org.kostaTeam2.presentation.view.ModelAndView;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,8 +43,8 @@ public class WorkSpaceProblemController implements Controller {
 		), dto.problemNum());
 
 		if (save == null) {
-			request.setAttribute("error", "문제 번호에 해당하는 백준 문제가 존재하지 않습니다!");
-			return new ModelAndView("/workspace/problem-register.jsp");
+			throw new ValidationException("해당하는 문제 번호가 존재하지 않습니다.",
+				"/workspace/problem-register.jsp");
 		}
 
 		return new ModelAndView("/workspace/problem.jsp", true);

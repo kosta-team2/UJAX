@@ -12,6 +12,7 @@ public class Workspace {
     private LocalDateTime updatedAt;
     private boolean isDeleted;
     private List<WorkspaceMember> workspaceMemberList;
+    private List<WorkspaceProblem> workspaceProblemList;
 
     public Workspace(String workspaceName, WorkspaceLanguage workspaceLanguage, Boolean isHintView) {
         this.workspaceName = workspaceName;

@@ -16,7 +16,7 @@ import org.kostaTeam2.global.exception.DBException;
 public class ProblemDao implements ProblemRepository {
 
 	@Override
-	public Long findProblemIdByProblemNum(Connection con, int problemNum) {
+		public Long findProblemIdByProblemNum(Connection con, int problemNum) {
 		String sql = "SELECT problem_id FROM problem where problem_num = ?";
 
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
