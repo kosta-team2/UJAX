@@ -7,12 +7,12 @@ import org.kostaTeam2.domain.workspace.WorkspaceRepository;
 import org.kostaTeam2.dto.request.WorkspaceRequest;
 import org.kostaTeam2.global.exception.DBException;
 import org.kostaTeam2.global.exception.ForbiddenException;
-import org.kostaTeam2.global.exception.NotFoundException;
 import org.kostaTeam2.global.exception.common.AppException;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 public class WorkspaceServiceImpl implements WorkspaceService{
@@ -68,8 +68,13 @@ public class WorkspaceServiceImpl implements WorkspaceService{
         }
     }
 
+    /**
+     * 워크스페이스 기본 정보 가져오고, 해당 워크스페이스의 멤버 정보 담아서 request로 전송
+     * @param dto
+     * @return workspace
+     */
     @Override
-    public Optional<Workspace> getWorkspaceById(WorkspaceRequest dto) {
+    public Optional<Workspace> getWorkspaceInfo(WorkspaceRequest dto) {
         try (Connection conn = ds.getConnection()){
             if (!workspaceMemberRepository.isMember(conn, new WorkspaceMember(dto.workspaceId(), dto.userId()))) {
                 throw new ForbiddenException("워크스페이스 멤버가 아닙니다.");
@@ -79,6 +84,10 @@ public class WorkspaceServiceImpl implements WorkspaceService{
             if (workspace.isEmpty()) {
                 throw new SQLException();
             }
+
+            long workspaceId = workspace.get().getWorkspaceId();
+            List<WorkspaceMember> workspaceMembers = workspaceMemberRepository.getAllMembers(conn, workspaceId);
+            workspace.get().setWorkspaceMemberList(workspaceMembers);
 
             return workspace;
         } catch (SQLException e) {

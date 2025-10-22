@@ -1,5 +1,5 @@
-/* 개인정보 변경 페이지 전용 (scope: #personalInfoRoot) */
-#personalInfoRoot {
+/* ---------- ROOT VARIABLES ---------- */
+:root {
     --bg: #1F2230;
     --surface: #2A2E3E;
     --surface-sub: #202433;
@@ -14,221 +14,157 @@
     --shadow: 0 6px 24px rgba(0, 0, 0, .30);
 }
 
-#personalInfoRoot .pi-top {
+/* ---------- GLOBAL BASE ---------- */
+*, *::before, *::after {
+    box-sizing: border-box
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0
+}
+
+body {
+    background: var(--bg);
+    color: var(--text);
+    font: 16px/1.5 "Pretendard", "Apple SD Gothic Neo", "Noto Sans KR", sans-serif;
+}
+
+/* ---------- PAGE LAYOUT ---------- */
+.pi-page {
+    width: 100%;
+    min-height: 100vh;
+    padding: 60px 8vw;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 16px;
-    margin-bottom: 18px
+    justify-content: flex-start;
+    background: var(--bg);
 }
 
-#personalInfoRoot .pi-back {
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
+.pi-top {
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    margin-bottom: 8px;
+}
+
+.pi-back {
     background: var(--surface);
-    border: 1px solid var(--border);
-    color: var(--text)
+    border: none;
+    color: var(--text);
+    font-size: 20px;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background 0.2s;
 }
 
-#personalInfoRoot .pi-title {
+.pi-back:hover {
+    background: var(--input);
+}
+
+/* ---------- CARD FORM ---------- */
+.pi-title {
+    text-align: left;
+    width: 100%;
+    font-size: 22px;
     font-weight: 800;
-    font-size: 36px;
-    letter-spacing: -.02em;
-    text-align: center;
-    margin: 10px 0 22px
+    margin: 12px 0 20px;
+    padding-left: 4px;
 }
 
-#personalInfoRoot .pi-panel {
-    background: var(--surface-sub);
+.pi-card {
+    width: 100%;
+    background: linear-gradient(180deg, var(--surface) 0%, var(--surface-sub) 100%);
     border: 1px solid var(--border);
     border-radius: var(--radius);
-    padding: 24px;
-    box-shadow: var(--shadow)
+    box-shadow: var(--shadow);
+    padding: 32px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
-#personalInfoRoot .pi-form {
-    display: grid;
-    gap: 18px
+/* ---------- INPUT FIELDS ---------- */
+.pi-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
-#personalInfoRoot .pi-field {
-    display: grid;
-    gap: 10px
-}
-
-#personalInfoRoot label {
+.pi-field label {
     font-weight: 600;
-    color: var(--text)
+    color: var(--text);
 }
 
-#personalInfoRoot .pi-hint {
-    color: var(--muted);
-    font-size: 13px
-}
-
-#personalInfoRoot .pi-input {
-    width: 100%;
-    height: 52px;
-    border-radius: 12px;
+.pi-field input {
     background: var(--input);
     border: 1px solid var(--border);
     color: var(--text);
-    padding: 0 14px;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 15px;
     outline: none;
-    transition: border-color .15s ease, box-shadow .15s ease
+    transition: border 0.2s, background 0.2s;
 }
 
-#personalInfoRoot .pi-input::placeholder {
-    color: #8D96B5
-}
-
-#personalInfoRoot .pi-input:focus {
+.pi-field input:focus {
     border-color: var(--accent);
-    box-shadow: 0 0 0 3px rgba(91, 134, 229, .25)
+    background: #252a3d;
 }
 
-#personalInfoRoot .pi-divider {
-    height: 1px;
-    background: var(--border);
-    opacity: .8;
-    margin: 6px 0 2px;
-    border-radius: 1px
-}
-
-#personalInfoRoot .pi-actions {
-    margin-top: 8px
-}
-
-#personalInfoRoot .pi-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 100%;
-    height: 56px;
-    border-radius: 14px;
-    border: 1px solid transparent;
-    cursor: pointer;
-    font-weight: 800;
-    font-size: 16px;
-    letter-spacing: .02em;
-    background: var(--accent);
-    color: #fff;
-    text-decoration: none;
-    box-shadow: 0 10px 24px rgba(91, 134, 229, .28);
-    padding: 0 22px
-}
-
-#personalInfoRoot .pi-btn:hover {
-    filter: brightness(1.05)
-}
-
-#personalInfoRoot .pi-btn:active {
-    transform: translateY(1px)
-}
-
-#personalInfoRoot .pi-btn-secondary {
-    background: transparent;
-    border-color: var(--border);
-    color: var(--text)
-}
-
-#personalInfoRoot .pi-input-wrap {
-    position: relative
-}
-
-#personalInfoRoot .pi-input.pi-hasAdornment {
-    padding-right: 42px
-}
-
-#personalInfoRoot .pi-input-check {
-    position: absolute;
-    right: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 20px;
-    height: 20px;
-    color: var(--success);
-    background: rgba(57, 217, 138, .12);
-    border: 1px solid rgba(57, 217, 138, .45);
-    border-radius: 999px;
-    padding: 2px;
-    box-shadow: 0 0 0 3px rgba(57, 217, 138, .12);
-    display: none;
-    pointer-events: none
-}
-
-#personalInfoRoot .pi-input-check.pi-show {
-    display: block
-}
-
-#personalInfoRoot .pi-input.pi-errorPh::placeholder {
-    color: #F97066
-}
-
-/* 모달 */
-#personalInfoRoot .pi-modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, .55);
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 40px 20px
-}
-
-#personalInfoRoot .pi-modal[hidden] {
-    display: none
-}
-
-#personalInfoRoot .pi-dialog {
-    width: min(520px, 100%);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    box-shadow: 0 16px 40px rgba(0, 0, 0, .45);
-    padding: 24px
-}
-
-#personalInfoRoot .pi-dialog-head {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 8px
-}
-
-#personalInfoRoot .pi-check {
-    width: 28px;
-    height: 28px;
-    color: var(--success)
-}
-
-#personalInfoRoot .pi-dialog-title {
-    font-weight: 800;
-    font-size: 18px;
-    margin: 0
-}
-
-#personalInfoRoot .pi-dialog-body {
+.pi-hint {
+    font-size: 13px;
     color: var(--muted);
-    margin-top: 6px;
-    margin-bottom: 18px
 }
 
-#personalInfoRoot .pi-dialog-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 8px
+/* ---------- BUTTONS ---------- */
+.pi-actions {
+    text-align: center;
+    margin-top: 8px;
 }
 
-@media (max-width: 420px) {
-    #personalInfoRoot .pi-title {
-        font-size: 28px
+.pi-btn {
+    background: var(--accent);
+    border: none;
+    color: white;
+    font-weight: 700;
+    font-size: 15px;
+    border-radius: 12px;
+    padding: 14px 0;
+    width: 100%;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.pi-btn:hover {
+    background: #6c9af0;
+    box-shadow: 0 0 12px rgba(91, 134, 229, 0.4);
+}
+
+/* ---------- FOOTER TEXT ---------- */
+.pi-footer-hint {
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: -6px;
+}
+
+/* ---------- RESPONSIVE ---------- */
+@media (max-width: 768px) {
+    .pi-page {
+        padding: 40px 20px;
     }
 
-    #personalInfoRoot .pi-btn {
-        height: 52px
+    .pi-card {
+        padding: 24px;
+        gap: 16px;
+    }
+
+    .pi-title {
+        font-size: 20px;
     }
 }
