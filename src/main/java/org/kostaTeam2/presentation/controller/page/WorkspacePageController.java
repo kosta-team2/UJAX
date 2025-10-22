@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.kostaTeam2.application.service.workspace.WorkspaceService;
 import org.kostaTeam2.domain.workspace.Workspace;
 import org.kostaTeam2.dto.request.WorkspaceRequest;
+import org.kostaTeam2.dto.request.DelegateLeaderRequest;
 import org.kostaTeam2.global.exception.BadRequestException;
 import org.kostaTeam2.global.exception.common.AppException;
 import org.kostaTeam2.presentation.controller.dto.SessionUser;
@@ -25,6 +26,7 @@ public class WorkspacePageController implements Controller {
             case "show" -> showWorkspace(request, response);
             case "update"  -> updateWorkspace(request, response);
             case "delete" -> deleteWorkspace(request, response);
+            case "updateRole" -> delegateLeader(request, response);
             default -> throw new BadRequestException("workspace methodName이 올바르지 않습니다.");
         };
 	}
@@ -74,6 +76,16 @@ public class WorkspacePageController implements Controller {
         workspaceService.deleteWorkspace(dto);
 
         String target = request.getContextPath() + "/workspace";
+        return new ModelAndView(target, true);
+    }
+
+    private ModelAndView delegateLeader(HttpServletRequest request, HttpServletResponse response) {
+        SessionUser sessionUser = (SessionUser) request.getSession().getAttribute("SessionUser");
+        var dto = DelegateLeaderRequest.delegateDto(request, sessionUser);
+
+        workspaceService.delegateLeader(dto);
+
+        String target = request.getContextPath() + "/workspace/info.jsp";
         return new ModelAndView(target, true);
     }
 }

@@ -24,4 +24,9 @@ public interface WorkspaceMemberRepository {
      * 워크스페이스 멤버 불러오기
      */
     List<WorkspaceMember> getAllMembers(Connection conn, long workspaceId) throws SQLException;
+
+    /**
+     * 리더 위임하기
+     */
+    boolean delegateLeader(Connection con, long workspaceId, long currentLeaderId, long newLeaderId) throws SQLException;
 }
