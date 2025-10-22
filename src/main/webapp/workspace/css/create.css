@@ -1,11 +1,12 @@
-/* create.jsp 전용 */
 * {
     box-sizing: border-box;
 }
+
 html,
 body {
     height: 100%;
 }
+
 body {
     margin: 0;
     background: var(--bg);
@@ -13,6 +14,7 @@ body {
     font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
     "Noto Sans KR", Helvetica, Arial;
 }
+
 h1 {
     font-weight: 800;
     font-size: 36px;
@@ -20,17 +22,21 @@ h1 {
     text-align: center;
     margin: 10px 0 22px;
 }
+
 .page {
     max-width: 720px;
+    width: 100%;
     margin: 0 auto;
     padding: 32px 20px 64px;
 }
+
 .top {
     display: flex;
     align-items: center;
     gap: 16px;
     margin-bottom: 18px;
 }
+
 .back {
     width: 44px;
     height: 44px;
@@ -52,17 +58,21 @@ h1 {
     padding: 24px;
     box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
 }
+
 form {
     display: grid;
     gap: 18px;
 }
+
 .field {
     display: grid;
     gap: 10px;
 }
+
 label {
     font-weight: 600;
 }
+
 .input,
 .select {
     width: 100%;
@@ -75,9 +85,11 @@ label {
     outline: none;
     transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
+
 .input::placeholder {
     color: #8d96b5;
 }
+
 .input:focus,
 .select:focus {
     border-color: var(--accent);
@@ -87,6 +99,7 @@ label {
 .actions {
     margin-top: 8px;
 }
+
 .btn {
     display: inline-flex;
     align-items: center;
@@ -103,12 +116,15 @@ label {
     color: #fff;
     box-shadow: 0 10px 24px rgba(91, 134, 229, 0.28);
 }
+
 .btn:hover {
     filter: brightness(1.05);
 }
+
 .btn:active {
     transform: translateY(1px);
 }
+
 .foot {
     color: #a8b3cf;
     text-align: center;
@@ -125,9 +141,11 @@ label {
     align-items: center;
     justify-content: center;
 }
+
 .modal.show {
     display: flex;
 }
+
 .dialog {
     width: min(520px, calc(100% - 40px));
     background: var(--surface);
@@ -136,30 +154,36 @@ label {
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
     padding: 24px;
 }
+
 .dialog-head {
     display: flex;
     align-items: center;
     gap: 12px;
     margin-bottom: 8px;
 }
+
 .check {
     width: 28px;
     height: 28px;
     color: #39d98a;
 }
+
 .dialog-title {
     font-weight: 800;
     font-size: 18px;
     margin: 0;
 }
+
 .dialog-body {
     color: #a8b3cf;
     margin: 6px 0 18px;
 }
+
 .dialog-actions {
     display: flex;
     justify-content: flex-end;
 }
+
 .btn-close {
     display: inline-flex;
     align-items: center;
