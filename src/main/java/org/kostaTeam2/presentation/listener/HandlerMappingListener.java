@@ -11,16 +11,20 @@ import org.kostaTeam2.application.service.MemberService;
 import org.kostaTeam2.application.service.MemberServiceImpl;
 import org.kostaTeam2.application.service.ProblemService;
 import org.kostaTeam2.application.service.ProblemServiceImpl;
+import org.kostaTeam2.application.service.workspace.WorkspaceProblemService;
+import org.kostaTeam2.application.service.workspace.WorkspaceProblemServiceImpl;
 import org.kostaTeam2.application.service.workspace.WorkspaceService;
 import org.kostaTeam2.application.service.workspace.WorkspaceServiceImpl;
 import org.kostaTeam2.domain.member.MemberRepository;
 import org.kostaTeam2.domain.problem.ProblemRepository;
 import org.kostaTeam2.domain.workspace.WorkspaceMemberRepository;
+import org.kostaTeam2.domain.workspace.WorkspaceProblemRepository;
 import org.kostaTeam2.domain.workspace.WorkspaceRepository;
 import org.kostaTeam2.infrastructure.dao.MemberDao;
 import org.kostaTeam2.infrastructure.dao.ProblemDao;
 import org.kostaTeam2.infrastructure.dao.WorkspaceDao;
 import org.kostaTeam2.infrastructure.dao.WorkspaceMemberDao;
+import org.kostaTeam2.infrastructure.dao.WorkspaceProblemDao;
 import org.kostaTeam2.presentation.controller.api.RestController;
 import org.kostaTeam2.presentation.controller.page.Controller;
 
@@ -47,10 +51,12 @@ public class HandlerMappingListener implements ServletContextListener {
             ProblemRepository problemRepo = new ProblemDao();
             WorkspaceRepository workspaceRepo = new WorkspaceDao();
             WorkspaceMemberRepository workspaceMemberRepo = new WorkspaceMemberDao();
+            WorkspaceProblemRepository workspaceProblemRepo = new WorkspaceProblemDao();
 
             MemberService memberSvc = new MemberServiceImpl(ds, memberRepo);
             ProblemService problemSvc = new ProblemServiceImpl(ds, problemRepo);
             WorkspaceService workspaceSvc = new WorkspaceServiceImpl(ds, workspaceRepo, workspaceMemberRepo);
+            WorkspaceProblemService workspaceProblemSvc = new WorkspaceProblemServiceImpl(ds, workspaceProblemRepo, problemRepo);
 
             // 3) properties 파일 로드
             ResourceBundle rb1 = ResourceBundle.getBundle(fileName);
@@ -80,6 +86,10 @@ public class HandlerMappingListener implements ServletContextListener {
                     } else if (pts.length == 1 && pts[0] == WorkspaceService.class) {
                         ctor.setAccessible(true);
                         controllerInstance = ctor.newInstance(workspaceSvc);
+                        break;
+                    } else if (pts.length == 1 && pts[0] == WorkspaceProblemService.class) {
+                        ctor.setAccessible(true);
+                        controllerInstance = ctor.newInstance(workspaceProblemSvc);
                         break;
                     }
                 }
@@ -112,6 +122,10 @@ public class HandlerMappingListener implements ServletContextListener {
                     } else if (pts.length == 1 && pts[0] == WorkspaceService.class) {
                         ctor.setAccessible(true);
                         controllerInstance = ctor.newInstance(workspaceSvc);
+                        break;
+                    } else if (pts.length == 1 && pts[0] == WorkspaceProblemService.class) {
+                        ctor.setAccessible(true);
+                        controllerInstance = ctor.newInstance(workspaceProblemSvc);
                         break;
                     }
                 }

@@ -31,8 +31,12 @@
 }
 
 #register-problem-fragment .card-header h1 {
-    font-size: 22px; /* WS와 동일 */
+    font-size: 22px;
     margin: 0;
+}
+
+#register-problem-fragment .card-header a {
+    text-decoration: none;
 }
 
 /* 뒤로가기 버튼: WS .btn 계열 톤에 맞춤(ghost 느낌) */
@@ -197,9 +201,8 @@
     outline-offset: 2px;
 }
 
-/* 알람 옵션 (ON일 때 보임) */
 #register-problem-fragment .alarm-options {
-    display: none;
+    display: grid;
     margin-top: 12px;
     padding: 14px;
     border: 1px dashed var(--border);
@@ -209,16 +212,16 @@
     gap: 14px;
 }
 
-#register-problem-fragment .alarm-options.show {
-    display: grid;
+#register-problem-fragment .alarm-options[hidden] {
+    display: none !important;
 }
 
-#register-problem-fragment .alarm-options .opt label {
-    display: block;
-    margin: 0 0 8px 2px;
-    color: var(--muted);
-    font-weight: 600;
-    font-size: 14px; /* WS와 동일 */
+#alarmOptions[hidden] {
+    display: none !important;
+}
+
+#alarmOptions.show {
+    display: grid !important;
 }
 
 #register-problem-fragment .opt-row {
@@ -282,3 +285,21 @@
         grid-template-columns: 1fr;
     }
 }
+
+
+#alarmOptions[hidden] {
+    display: none !important;
+}
+
+#alarmOptions.show {
+    display: grid !important;
+}
+
+.radio-item {
+    pointer-events: auto;
+}
+
+.radio-item .dot, .radio-item .txt {
+    pointer-events: none;
+}
+
