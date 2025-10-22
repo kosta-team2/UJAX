@@ -15,8 +15,9 @@ document.addEventListener('DOMContentLoaded', () => {
     if (menu) menu.classList.add('open');
     if (nameBtn) nameBtn.classList.add('active');
 
-    if (homeLink) {
-        homeLink.classList.add('active');
-        frame.src = homeLink.href;
-    }
+    // todo create.jsp 버튼 생성 후 다시 활성화 할 예정
+    // if (homeLink) {
+    //     homeLink.classList.add('active');
+    //     frame.src = homeLink.href;
+    // }
 });
