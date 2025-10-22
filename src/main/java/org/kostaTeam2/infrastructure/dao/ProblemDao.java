@@ -35,19 +35,20 @@ public class ProblemDao implements ProblemRepository {
 	@Override
 	public long saveProblem(Connection con, Problem problem) {
 		String sql = """
-			INSERT INTO problem(problem_num, title, time_limit_raw, memory_limit_raw, problem_desc, problem_input, problem_output, url)
-			values (?, ?, ?, ?, ?, ?, ?, ?)
+			INSERT INTO problem(problem_num, title, tier, time_limit_raw, memory_limit_raw, problem_desc, problem_input, problem_output, url)
+			values (?, ?, ?, ?, ?, ?, ?, ?, ?)
 			""";
 
 		try (PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 			ps.setInt(1, problem.getProblemNum());
 			ps.setString(2, problem.getTitle());
-			ps.setString(3, problem.getTimeLimit());
-			ps.setString(4, problem.getMemoryLimit());
-			ps.setString(5, problem.getProblemDesc());
-			ps.setString(6, problem.getProblemInput());
-			ps.setString(7, problem.getProblemOutput());
-			ps.setString(8, problem.getUrl());
+			ps.setString(3, problem.getTier());
+			ps.setString(4, problem.getTimeLimit());
+			ps.setString(5, problem.getMemoryLimit());
+			ps.setString(6, problem.getProblemDesc());
+			ps.setString(7, problem.getProblemInput());
+			ps.setString(8, problem.getProblemOutput());
+			ps.setString(9, problem.getUrl());
 			ps.executeUpdate();
 
 			try (ResultSet rs = ps.getGeneratedKeys()) {
