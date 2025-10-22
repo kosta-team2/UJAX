@@ -18,7 +18,7 @@ public interface WorkspaceService {
      * @param dto
      * @return
      */
-    Optional<Workspace> getWorkspaceById(WorkspaceRequest dto);
+    Optional<Workspace> getWorkspaceInfo(WorkspaceRequest dto);
 
     /**
      * 리더인지 확인하고, 워크스페이스 삭제

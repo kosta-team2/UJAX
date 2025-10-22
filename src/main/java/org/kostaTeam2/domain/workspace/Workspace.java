@@ -1,6 +1,7 @@
 package org.kostaTeam2.domain.workspace;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 public class Workspace {
     private Long workspaceId;
@@ -10,6 +11,7 @@ public class Workspace {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean isDeleted;
+    private List<WorkspaceMember> workspaceMemberList;
 
     public Workspace(String workspaceName, WorkspaceLanguage workspaceLanguage, Boolean isHintView) {
         this.workspaceName = workspaceName;
@@ -60,5 +62,9 @@ public class Workspace {
 
     public Boolean getDeleted() {
         return isDeleted;
+    }
+
+    public void setWorkspaceMemberList(List<WorkspaceMember> workspaceMemberList) {
+        this.workspaceMemberList = workspaceMemberList;
     }
 }
