@@ -29,6 +29,7 @@
     padding: 18px 20px;
     border-bottom: 1px solid var(--border);
 }
+
 #register-problem-fragment .card-header h1 {
     font-size: 22px; /* WS와 동일 */
     margin: 0;
@@ -45,6 +46,7 @@
     transition: .25s;
     font: inherit;
 }
+
 #register-problem-fragment .back-link:not(:disabled):hover {
     border-color: var(--accent);
 }
@@ -61,10 +63,12 @@
     padding: 12px 14px;
     color: var(--muted);
 }
+
 #register-problem-fragment .promo b {
     color: var(--accent);
     cursor: pointer;
 }
+
 #register-problem-fragment .refresh {
     margin-left: auto;
     background: transparent;
@@ -76,6 +80,7 @@
     cursor: pointer;
     transition: .25s;
 }
+
 #register-problem-fragment .refresh:hover {
     border-color: var(--accent);
 }
@@ -87,6 +92,7 @@
     grid-template-columns: 1fr 1fr;
     gap: 16px; /* WS와 동일 간격 */
 }
+
 #register-problem-fragment .form-col {
     display: flex;
     flex-direction: column;
@@ -114,13 +120,16 @@
     outline: none;
     font: inherit; /* 폰트/사이즈 전역 상속(WS와 동일 체감) */
 }
+
 #register-problem-fragment input::placeholder {
     color: #8fa0c0; /* muted 톤에 맞춘 플레이스홀더 */
 }
+
 #register-problem-fragment input:focus,
 #register-problem-fragment select:focus {
     border-color: var(--accent);
 }
+
 #register-problem-fragment .hint {
     margin: 0.35rem 0 0;
     color: var(--muted);
@@ -138,6 +147,7 @@
     padding: 8px 16px;
     min-height: 54px;
 }
+
 #register-problem-fragment .radio-item {
     display: inline-flex;
     align-items: center;
@@ -147,11 +157,13 @@
     font-size: 16px; /* WS 기본 텍스트 대비 강조 크기 */
     color: var(--text);
 }
+
 #register-problem-fragment .radio-item input {
     position: absolute;
     opacity: 0;
     pointer-events: none;
 }
+
 #register-problem-fragment .radio-item .dot {
     width: 22px;
     height: 22px;
@@ -161,6 +173,7 @@
     align-items: center;
     justify-content: center;
 }
+
 #register-problem-fragment .radio-item .dot::after {
     content: "";
     width: 11px;
@@ -169,15 +182,18 @@
     background: var(--accent);
     opacity: 0;
 }
+
 #register-problem-fragment .radio-item input:checked + .dot {
     border-color: var(--accent);
     box-shadow: 0 0 0 3px rgba(91, 134, 229, 0.25);
 }
+
 #register-problem-fragment .radio-item input:checked + .dot::after {
     opacity: 1;
 }
+
 #register-problem-fragment .radio-item input:focus-visible + .dot {
-    outline: 2px solid rgba(91,134,229,.45);
+    outline: 2px solid rgba(91, 134, 229, .45);
     outline-offset: 2px;
 }
 
@@ -192,7 +208,11 @@
     grid-template-columns: 1fr;
     gap: 14px;
 }
-#register-problem-fragment .alarm-options.show { display: grid; }
+
+#register-problem-fragment .alarm-options.show {
+    display: grid;
+}
+
 #register-problem-fragment .alarm-options .opt label {
     display: block;
     margin: 0 0 8px 2px;
@@ -200,11 +220,13 @@
     font-weight: 600;
     font-size: 14px; /* WS와 동일 */
 }
+
 #register-problem-fragment .opt-row {
     display: flex;
     align-items: center;
     gap: 10px;
 }
+
 #register-problem-fragment .opt-row input[type="number"] {
     width: 120px;
     background: var(--input);
@@ -214,6 +236,7 @@
     color: var(--text);
     font: inherit;
 }
+
 #register-problem-fragment .opt-row .unit {
     color: var(--muted);
 }
@@ -222,29 +245,33 @@
 #register-problem-fragment .actions {
     grid-column: 1 / -1;
     display: flex;
-    gap: 8px;                 /* WS와 동일 */
+    gap: 8px; /* WS와 동일 */
     justify-content: flex-end;
     margin-top: 10px;
     padding-top: 10px;
     border-top: 1px dashed var(--border);
 }
+
 #register-problem-fragment .btn {
     border: 1px solid var(--border);
     background: var(--surface-sub);
     color: var(--text);
-    padding: 10px 14px;       /* WS와 동일 */
+    padding: 10px 14px; /* WS와 동일 */
     border-radius: 10px;
     cursor: pointer;
     transition: .25s;
-    font: inherit;            /* 폰트/사이즈 상속: WS와 동일 체감 */
+    font: inherit; /* 폰트/사이즈 상속: WS와 동일 체감 */
 }
+
 #register-problem-fragment .btn:not(:disabled):hover {
     border-color: var(--accent);
 }
+
 #register-problem-fragment .btn.primary {
     background: var(--accent);
     border-color: transparent;
 }
+
 #register-problem-fragment .btn.primary:not(:disabled):hover {
     background: var(--accent2);
 }

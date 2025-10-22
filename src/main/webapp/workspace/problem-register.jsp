@@ -1,4 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+
+<link rel="stylesheet" id="theme-style" href="../common/css/darkmode.css">
 <link rel="stylesheet" href="css/problem-register.css">
 
 <section class="register-problem-section" id="register-problem-fragment">

@@ -1,3 +1,73 @@
+/* 카드 컨테이너 */
+.left-sidebar .workspace-toggle {
+    background: var(--surface-sub);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden; /* 내부를 카드 라운드에 맞춰 잘라줌 */
+    margin-bottom: 0.75rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+/* 상단 버튼 */
+.left-sidebar .workspace-name {
+    display: block;
+    width: 100%;
+    background: transparent;
+    text-decoration: none;
+    border: 0;
+    color: var(--text);
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.9rem 1rem;
+    text-align: left;
+    cursor: pointer;
+}
+
+/* 활성화 시 상단과 하단이 자연스럽게 이어지도록 하단 라운드 제거 */
+.left-sidebar .workspace-name.active {
+    background: var(--accent);
+    color: #fff;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+/* 펼쳐지는 메뉴 컨테이너 */
+.left-sidebar .workspace-menu {
+    display: none;
+    flex-direction: column;
+    background: var(--surface-sub);
+    /* ↓ 이중 경계/단차 원인 제거 */
+    border-top: 0; /* 기존 1px 경계 제거 */
+    padding: 6px; /* 좌우 단차 줄이고 내부 항목에 패딩 위임 */
+    gap: 6px; /* 항목 간격은 gap으로 관리 */
+}
+
+/* 열렸을 때 표시 */
+.left-sidebar .workspace-menu.open {
+    display: flex;
+}
+
+/* 드롭다운 내부 링크 */
+.left-sidebar .workspace-menu .nav-btn {
+    display: block; /* a 태그는 block으로 */
+    width: 90%;
+    text-decoration: none;
+    color: var(--text);
+    background: transparent;
+    border: 0; /* 이중 보더 제거 (겉 카드가 이미 border 가짐) */
+    padding: 10px 12px; /* 내부 여백은 여기서 */
+    border-radius: 8px; /* 항목 자체 라운드 */
+}
+
+/* 호버/활성화 상태 */
+.left-sidebar .workspace-menu .nav-btn:hover,
+.left-sidebar .workspace-menu .nav-btn.active {
+    background: var(--accent);
+    color: #fff;
+}
+
+
+/* 사이드바 기본들 (있던 값 유지, 필요시 조정) */
 .left-sidebar {
     width: 280px;
     flex-shrink: 0;
@@ -10,91 +80,15 @@
     border-radius: 0.75rem;
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
+
 .nav-links {
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
-}
-
-.workspace-toggle {
-    background: var(--surface-sub);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    margin-bottom: 0.75rem;
-    overflow: hidden;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    transition: background 0.2s, transform 0.1s;
-}
-
-.workspace-toggle:hover {
-    background: var(--surface-hover, var(--accent2));
-    box-shadow: var(--shadow-hover);
-    transform: translateY(-1px);
-}
-
-.workspace-name {
-    width: 100%;
-    background: transparent;
-    border: none;
-    color: var(--text);
-    font-weight: 600;
-    font-size: 1rem;
-    padding: 0.9rem 1rem;
-    text-align: left;
-    cursor: pointer;
-    border-radius: 8px;
-    transition: background 0.2s, color 0.2s;
-}
-
-.workspace-name:hover {
-    background: var(--hover, rgba(70, 130, 250, 0.15));
-    color: var(--text-hover, #fff);
-}
-
-.workspace-name.active {
-    background-color: var(--accent);
-    color: #fff;
-}
-
-.workspace-menu {
-    display: none;
-    flex-direction: column;
-    background: var(--surface-menu);
-    border-top: 1px solid var(--border);
-    padding: 0.5rem 0.8rem;
-}
-
-.workspace-menu.open {
-    display: flex;
-}
-
-.nav-btn {
-    width: 100%;
-    padding: 0.75rem;
-    border-radius: 0.5rem;
-    border: 1px solid var(--border);
-    background: var(--surface-sub);
-    font-size: 0.9rem;
-    color: var(--text);
-    text-align: left;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.2s, transform 0.1s;
-}
-
-.nav-btn:hover {
-    background: var(--accent);
-    color: #fff;
-}
-
-.nav-btn.active {
-    background: var(--accent);
-    color: white;
-    transform: translateX(3px);
+    gap: .25rem;
 }
 
 .sidebar-divider {
     border: none;
     border-top: 1px solid var(--border);
-    margin: 0.75rem 0;
+    margin: .75rem 0;
 }

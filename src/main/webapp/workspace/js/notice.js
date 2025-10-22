@@ -1,69 +1,84 @@
-// notice.js
-window.initNotice = async function () {
-    const grid = document.getElementById('noticeGrid');
-    if (!grid) return;
+(function () {
+    function bindModal() {
+        const modal = document.getElementById('noticeModal');
+        if (!modal || modal.dataset.boundInit === '1') return;
+        modal.dataset.boundInit = '1';
 
-    try {
-        const res = await fetch(`/mock/notice.json`);
-        const notices = await res.json();
+        const viewSection = modal.querySelector('#viewSection');
+        const editSection = modal.querySelector('#editSection');
+        const titleInput = modal.querySelector('#noticeTitleInput');
+        const contentInput = modal.querySelector('#noticeContentInput');
+        const saveBtn = modal.querySelector('#saveNoticeBtn');
+        const closeBtn = modal.querySelector('#modalClose');
 
-        grid.innerHTML = notices.map(n => `
-      <div class="notice-card">
-        <strong>${n.title}</strong>
-        <p>${n.content}</p>
-      </div>
-    `).join('');
+        function close() {
+            modal.style.display = 'none';
+            document.body.style.overflow = '';
+        }
 
-        // 카드 클릭 → 모달 열기
-        grid.querySelectorAll('.notice-card').forEach((card, idx) => {
-            card.addEventListener('click', () => {
-                window.openNoticeModal?.(notices[idx]);
-            });
+        closeBtn?.addEventListener('click', close);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) close();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') close();
         });
 
-    } catch (err) {
-        console.error('❌ 공지 불러오기 실패:', err);
-        grid.innerHTML = '<p>공지사항을 불러올 수 없습니다.</p>';
+        // 전역 오픈 (읽기)
+        window.openNoticeModal = function (notice) {
+            modal.querySelector('#modalTitle').textContent = notice?.title ?? '';
+            modal.querySelector('#modalContent').textContent = notice?.content ?? '';
+            viewSection.style.display = 'block';
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        };
+
+        window.openNoticeEditor = function () {
+            modal.querySelector('#modalTitle').textContent = '공지 등록';
+            titleInput.value = '';
+            contentInput.value = '';
+            viewSection.style.display = 'none';
+            editSection.style.display = 'block';
+            modal.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        };
+
+        saveBtn?.addEventListener('click', () => {
+            const title = titleInput.value.trim();
+            const content = contentInput.value.trim();
+            if (!title || !content) {
+                alert('제목과 내용을 모두 입력하세요.');
+                return;
+            }
+            const newNotice = {title, content, date: new Date().toISOString().slice(0, 10)};
+            window.refreshNoticeList?.(newNotice);
+            close();
+        });
     }
 
-    document.querySelector('.register-btn')
-        ?.addEventListener('click', () => {
-            window.openNoticeEditor?.();
-        });
-
-    document.querySelector('.sort-btn')
-        ?.addEventListener('click', () => alert('정렬 기능 실행'));
-
-    // 렌더링 함수
-    function renderNotices(list) {
-        grid.innerHTML = list.map(n => `
-      <div class="notice-card">
-        <strong>${n.title}</strong>
-        <p>${n.content}</p>
-      </div>
-    `).join('');
-
-        // 카드 클릭 시 모달 열기
-        grid.querySelectorAll('.notice-card').forEach((card, idx) => {
-            card.addEventListener('click', () => {
-                window.openNoticeModal?.(list[idx]);
+    function bindGrid() {
+        const grid = document.getElementById('noticeGrid');
+        if (!grid) return;
+        grid.addEventListener('click', (e) => {
+            const card = e.target.closest('.notice-card');
+            if (!card) return;
+            e.preventDefault();
+            window.openNoticeModal?.({
+                title: card.dataset.title || card.querySelector('strong')?.textContent || '',
+                content: card.dataset.content || card.querySelector('p')?.textContent || ''
             });
         });
     }
 
-    // 등록된 공지를 다시 렌더링할 수 있도록 전역 함수 등록
-    window.refreshNoticeList = function (newNotice) {
-        notices.unshift(newNotice);
-        renderNotices(notices);
-    };
-};
+    document.getElementById('openEditorBtn')?.addEventListener('click', () => {
+        window.openNoticeEditor?.();
+    });
 
-// 모달 열기 유틸
-window.openNoticeModal = function (notice) {
-    const modal = document.getElementById('noticeModal');
-    if (!modal) return;
+    document.addEventListener('DOMContentLoaded', () => {
+        bindModal();
+        bindGrid();
+    });
 
-    modal.querySelector('#modalTitle').textContent = notice.title ?? '';
-    modal.querySelector('#modalContent').textContent = notice.content ?? '';
-    modal.style.display = 'flex';
-};
+    bindModal();
+    bindGrid();
+})();

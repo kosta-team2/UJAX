@@ -2,6 +2,9 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 
+<link rel="stylesheet" id="theme-style" href="../common/css/darkmode.css">
+<link rel="stylesheet" href="css/info.css">
+
 
 <!-- ✅ mock 데이터 (추후 Controller 세션/리퀘스트 연동 예정) -->
 <c:set var="currentUser" value="${sessionScope.user != null ? sessionScope.user : { 'id': 1, 'name': 'testuser123', 'leader': true } }" />
@@ -165,5 +168,3 @@
         </div>
     </div>
 </section>
-
-<link rel="stylesheet" href="css/info.css" />
