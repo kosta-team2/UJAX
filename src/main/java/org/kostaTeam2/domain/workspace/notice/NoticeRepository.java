@@ -1,13 +1,12 @@
 package org.kostaTeam2.domain.workspace.notice;
 
+import java.sql.Connection;
 import java.util.List;
-import java.util.Optional;
 
 public interface NoticeRepository {
 
-    Notice save(Notice notice);
-    Optional<Notice> findById(Long noticeId);
-    List<Notice> findAll(Long workspaceId, int offset, int limit);
-    void delete(Long noticeId, Long workspaceId);
+    int save(Connection conn, Notice notice);
+    List<Notice> findNoticePageByWorkspaceId(Connection conn, Long workspaceId, int offset, int limit);
+    int delete(Connection conn, Long noticeId);
 
 }

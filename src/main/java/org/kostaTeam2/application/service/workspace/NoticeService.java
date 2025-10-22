@@ -6,9 +6,7 @@ import org.kostaTeam2.dto.request.NoticeRequest;
 import java.util.List;
 
 public interface NoticeService {
-    Notice create(NoticeRequest dto);
-    Notice delete(NoticeRequest dto);
-    Notice getNoticeById(Long noticeId);
-    List<Notice> getPageNotices(Long workspaceId, int page, int size);
-
+    void create(NoticeRequest dto);
+    void delete(NoticeRequest dto);
+    List<Notice> getPageNotices(NoticeRequest dto);
 }

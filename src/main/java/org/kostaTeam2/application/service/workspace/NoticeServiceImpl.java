@@ -1,11 +1,15 @@
 package org.kostaTeam2.application.service.workspace;
 
+import org.kostaTeam2.domain.workspace.WorkspaceMember;
 import org.kostaTeam2.domain.workspace.WorkspaceMemberRepository;
 import org.kostaTeam2.domain.workspace.notice.Notice;
+import org.kostaTeam2.domain.workspace.notice.NoticeContent;
 import org.kostaTeam2.domain.workspace.notice.NoticeRepository;
+import org.kostaTeam2.domain.workspace.notice.NoticeTitle;
 import org.kostaTeam2.dto.request.NoticeRequest;
 import org.kostaTeam2.global.exception.DBException;
 import org.kostaTeam2.global.exception.ForbiddenException;
+import org.kostaTeam2.global.exception.NotFoundException;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -24,31 +28,53 @@ public class NoticeServiceImpl implements NoticeService {
     }
 
     @Override
-    public Notice create(NoticeRequest dto) {
-        try (Connection conn = ds.getConnection()){
-            if(!workspaceMemberRepository.isLeader(dto.memberId(), dto.workspaceId)) {
-                throw new ForbiddenException("리더가 아닙니다.");
-            }
-            Notice notice = new Notice(dto.workspcaeId(), dto.title, dto.content);
+    public void create(NoticeRequest dto) {
+        try (Connection conn = ds.getConnection()) {
+            WorkspaceMember workspaceMember = new WorkspaceMember(dto.userId(), dto.workspaceId());
+            // todo isLeader 서비스 이동
+//            if (!workspaceMemberRepository.isLeader(conn, workspaceMember)) {
+//                throw new ForbiddenException("리더가 아닙니다.");
+//            }
 
-            if(noticeRepository.save(notice) != 1) throw new DBException();
+            Notice notice = Notice
+                    .create(
+                            dto.workspaceId(),
+                            new NoticeTitle(dto.title()),
+                            new NoticeContent(dto.content())
+                    );
+
+            noticeRepository.save(conn, notice);
         } catch (SQLException e) {
-            throw new DBException("공지 생성에 실패했습니다.");
+            throw new DBException("공지 생성 실패");
         }
     }
 
     @Override
-    public Notice delete(NoticeRequest dto) {
-        return null;
+    public void delete(NoticeRequest dto) {
+        try (Connection conn = ds.getConnection()) {
+            WorkspaceMember workspaceMember = new WorkspaceMember(dto.userId(), dto.workspaceId());
+//            if (!workspaceMemberRepository.isLeader(conn, workspaceMember)) {
+//                throw new ForbiddenException("리더가 아닙니다.");
+//            }
+
+            if (noticeRepository.delete(conn, dto.noticeId()) == 0) throw new NotFoundException("삭제할 공지가 없습니다.");
+        } catch (SQLException e) {
+            throw new DBException("공지 삭제 실패");
+        }
     }
 
     @Override
-    public Notice getNoticeById(Long noticeId) {
-        return null;
-    }
+    public List<Notice> getPageNotices(NoticeRequest dto) {
+        Long workspaceId = dto.workspaceId();
+//        String sort = dto.sort(); todo 정렬기능 미구현
+        int page = dto.page();
+        int limit = dto.limit();
+        int offset = page*limit;
 
-    @Override
-    public List<Notice> getPageNotices(Long workspaceId, int page, int size) {
-        return List.of();
+        try (Connection conn = ds.getConnection()) {
+            return noticeRepository.findNoticePageByWorkspaceId(conn, dto.workspaceId(), offset, limit);
+        } catch (SQLException e) {
+            throw new DBException("공지 불러오기 실패");
+        }
     }
 }

@@ -17,17 +17,14 @@ public class Notice {
         this.createdAt = createdAt;
     }
 
-    // save 전 객체
-    public  static Notice create(Long workspaceId, NoticeTitle title, NoticeContent content) {
+    public static Notice create(Long workspaceId, NoticeTitle title, NoticeContent content) {
         return new Notice(null, workspaceId, title, content, LocalDateTime.now());
     }
 
-    // save후 객체
-    public Notice withNoticeId(Long noticeId) {
-        return new Notice(noticeId, workspaceId, title, content, createdAt);
+    public static Notice read(Long noticeId, Long workspaceId, NoticeTitle title, NoticeContent content) {
+        return new Notice(noticeId, workspaceId, title, content, LocalDateTime.now());
     }
 
-    // getter
     public Long getNoticeId() {
         return noticeId;
     }

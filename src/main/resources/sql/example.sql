@@ -6,7 +6,7 @@ CREATE TABLE workspace_member
     ws_member_id BIGINT PRIMARY KEY AUTO_INCREMENT,
     ws_id        BIGINT      NOT NULL,
     member_id    BIGINT      NOT NULL,
-    is_leader    TINYINT(1)  NOT NULL,
+    is_leader    TINYINT(1)  NOT NULL DEFAULT 0,
     created_at   DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     updated_at   DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
     is_deleted   TINYINT(1)  NOT NULL DEFAULT 0
