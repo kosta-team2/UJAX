@@ -39,7 +39,7 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
 
     @Override
     public boolean isLeader(Connection conn, WorkspaceMember workspaceMember) throws SQLException {
-        String sql = "SELECT is_leader FROM workspace_member WHERE ws_member_id = ? AND ws_id = ?";
+        String sql = "SELECT is_leader FROM workspace_member WHERE ws_member_id = ? AND ws_id = ? AND is_deleted = 0";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, workspaceMember.getMemberId());
@@ -57,7 +57,7 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
 
     @Override
     public boolean isMember(Connection conn, WorkspaceMember workspaceMember) throws SQLException {
-        String sql = "SELECT EXISTS (SELECT 1 FROM workspace_member WHERE ws_member_id = ? AND ws_id = ?) AS exist";
+        String sql = "SELECT EXISTS (SELECT 1 FROM workspace_member WHERE ws_member_id = ? AND ws_id = ? AND is_deleted = 0) AS exist";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, workspaceMember.getMemberId());
@@ -79,7 +79,8 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
         String sql = """
                 SELECT ws_member_id, member_id, is_leader, email, nickname
                 FROM workspace_member
-                WHERE ws_id = ?;
+                WHERE ws_id = ?
+                AND is_deleted = 0;
                 """;
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -137,6 +138,55 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
             throw e;
         } finally {
             con.setAutoCommit(true);
+        }
+    }
+
+    @Override
+    public boolean amIOnlyPerson(Connection con, long workspaceId) throws SQLException {
+        String sql = """
+                SELECT COUNT(*) AS cnt
+                FROM workspace_member
+                WHERE ws_id = ?
+                AND is_deleted = 0
+                """;
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setLong(1, workspaceId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    int count = rs.getInt("cnt");
+                    return count == 1;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    @Override
+    public int kickUser(Connection con, long workspaceId, long wsMemberId) throws SQLException {
+        String sql = """
+                UPDATE workspace_member
+                SET is_deleted = 1
+                WHERE ws_Id = ? AND ws_member_id = ?;
+                """;
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setLong(1, workspaceId);
+            ps.setLong(2, wsMemberId);
+            return ps.executeUpdate();
+        }
+    }
+
+    @Override
+    public int exitWorkspace(Connection con, long workspaceId, long wsMemberId) throws SQLException {
+        String sql = """
+                UPDATE workspace_member
+                SET is_deleted = 1
+                WHERE ws_Id = ? AND ws_member_id = ?;
+                """;
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setLong(1, workspaceId);
+            ps.setLong(2, wsMemberId);
+            return ps.executeUpdate();
         }
     }
 

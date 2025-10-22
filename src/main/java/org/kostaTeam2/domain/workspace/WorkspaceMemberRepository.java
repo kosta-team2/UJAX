@@ -1,5 +1,7 @@
 package org.kostaTeam2.domain.workspace;
 
+import org.kostaTeam2.dto.request.WorkspaceUserRequest;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
@@ -29,4 +31,19 @@ public interface WorkspaceMemberRepository {
      * 리더 위임하기
      */
     boolean delegateLeader(Connection con, long workspaceId, long currentLeaderId, long newLeaderId) throws SQLException;
+
+    /**
+     * 멤버 방출하기
+     */
+    int kickUser(Connection con, long workspaceId, long wsMemberId) throws SQLException;
+
+    /**
+     * 워크스페이스 나가기
+     */
+    int exitWorkspace(Connection con, long workspaceId, long wsMemberId) throws SQLException;
+
+    /**
+     * 워크스페이스에 1명만 남아있는지 확인
+     */
+    boolean amIOnlyPerson(Connection con, long workspaceId) throws SQLException;
 }

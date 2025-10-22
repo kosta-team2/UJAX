@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.kostaTeam2.application.service.workspace.WorkspaceService;
 import org.kostaTeam2.domain.workspace.Workspace;
 import org.kostaTeam2.dto.request.WorkspaceRequest;
-import org.kostaTeam2.dto.request.DelegateLeaderRequest;
+import org.kostaTeam2.dto.request.WorkspaceUserRequest;
 import org.kostaTeam2.global.exception.BadRequestException;
 import org.kostaTeam2.global.exception.common.AppException;
 import org.kostaTeam2.presentation.controller.dto.SessionUser;
@@ -27,6 +27,8 @@ public class WorkspacePageController implements Controller {
             case "update"  -> updateWorkspace(request, response);
             case "delete" -> deleteWorkspace(request, response);
             case "updateRole" -> delegateLeader(request, response);
+            case "kickUser" -> kickUser(request, response);
+            case "exit" -> exitWorkspace(request, response);
             default -> throw new BadRequestException("workspace methodName이 올바르지 않습니다.");
         };
 	}
@@ -81,11 +83,40 @@ public class WorkspacePageController implements Controller {
 
     private ModelAndView delegateLeader(HttpServletRequest request, HttpServletResponse response) {
         SessionUser sessionUser = (SessionUser) request.getSession().getAttribute("SessionUser");
-        var dto = DelegateLeaderRequest.delegateDto(request, sessionUser);
+        var dto = WorkspaceUserRequest.needAuthDto(request, sessionUser);
 
         workspaceService.delegateLeader(dto);
 
+        // 리더 위임 성공했으면 성공 메세지 담아서 forward
+        String message = "리더를 성공적으로 위임했습니다.";
+        request.setAttribute("message", message);
         String target = request.getContextPath() + "/workspace/info.jsp";
         return new ModelAndView(target, true);
+    }
+
+    private ModelAndView kickUser(HttpServletRequest request, HttpServletResponse response) {
+        SessionUser sessionUser = (SessionUser) request.getSession().getAttribute("SessionUser");
+        var dto = WorkspaceUserRequest.needAuthDto(request, sessionUser);
+
+        workspaceService.kickUser(dto);
+
+        // 방출 성공 했으면 성공 메세지 담아서 forward
+        String target = request.getContextPath() + "/workspace/info.jsp";
+        String message = "해당 유저를 성공적으로 방출했습니다.";
+        request.setAttribute("message", message);
+        return new ModelAndView(target);
+    }
+
+    private ModelAndView exitWorkspace(HttpServletRequest request, HttpServletResponse response) {
+        SessionUser sessionUser = (SessionUser) request.getSession().getAttribute("SessionUser");
+        var dto = WorkspaceUserRequest.exitDto(request, sessionUser);
+
+        workspaceService.exitWorkspace(dto);
+
+        // 탈퇴 성공 했으면 성공 메세지 담아서 forward
+        String target = request.getContextPath() + "/workspace/";
+        String message = "워크스페이스에서 성공적으로 탈퇴했습니다.";
+        request.setAttribute("message", message);
+        return new ModelAndView(target);
     }
 }
