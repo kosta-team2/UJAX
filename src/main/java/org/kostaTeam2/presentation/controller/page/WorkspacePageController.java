@@ -46,8 +46,8 @@ public class WorkspacePageController implements Controller {
         SessionUser sessionUser = (SessionUser) request.getSession().getAttribute("SessionUser");
         var dto = WorkspaceRequest.showDto(request, sessionUser);
 
-        Workspace workspace = workspaceService.getWorkspaceById(dto)
-                .orElseThrow(() -> new AppException(500, "워크스페이스 수정에 실패 했습니다. 다시 시도해 주십시오."));
+        Workspace workspace = workspaceService.getWorkspaceInfo(dto)
+                .orElseThrow(() -> new AppException(500, "워크스페이스 조회에 실패 했습니다. 다시 시도해 주십시오."));
 
         request.setAttribute("workspace", workspace);
 
