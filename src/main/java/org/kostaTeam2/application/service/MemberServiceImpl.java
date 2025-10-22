@@ -77,8 +77,8 @@ public class MemberServiceImpl implements MemberService {
             }
 
             Member update = new Member(memberId, newNickname, newPassword);
-            repository.saveMember(con, update);
-            
+            repository.updateMember(con, update);
+
         } catch (SQLException e) {
             throw new DBException("회원 정보 수정 처리 중 DB 오류가 발생했습니다.", e);
         }
