@@ -11,11 +11,13 @@
     align-items: center;
     margin-bottom: 1.5rem;
 }
+
 .notice-header h3 {
     font-size: 1.3rem;
     font-weight: 700;
     color: var(--text);
 }
+
 .register-btn {
     background: #22c55e;
     color: #fff;
@@ -26,6 +28,7 @@
     cursor: pointer;
     transition: background 0.2s ease;
 }
+
 .register-btn:hover {
     background: #16a34a;
 }
@@ -67,6 +70,7 @@
     cursor: pointer;
     transition: background 0.2s ease;
 }
+
 .sort-btn:hover {
     background: var(--accent2);
     color: #fff;
@@ -78,12 +82,15 @@
     gap: 1.5rem;
     width: 100%;
 }
+
 .notice-card {
     background: var(--surface-sub);
     border: 1px solid var(--border);
     border-radius: 1rem;
     padding: 2rem;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
     transition: transform 0.2s, box-shadow 0.2s;
     cursor: pointer;
     height: 100px;
@@ -91,10 +98,12 @@
     flex-direction: column;
     justify-content: flex-start;
 }
+
 .notice-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.08);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.08);
 }
+
 .notice-card strong {
     display: block;
     font-size: 1.25rem;
@@ -102,6 +111,7 @@
     color: var(--text);
     margin-bottom: 0.75rem;
 }
+
 .notice-card p {
     font-size: 1rem;
     color: var(--muted);
@@ -123,6 +133,7 @@
     gap: 0.5rem;
     margin-top: 2rem;
 }
+
 .pagination button {
     background: var(--accent2);
     color: #fff;
@@ -132,10 +143,178 @@
     cursor: pointer;
     transition: background 0.2s ease;
 }
+
 .pagination button:hover {
     background: #1d6fe8;
 }
+
 .pagination span {
     color: var(--muted);
     font-weight: 600;
+}
+
+/* ===== 중앙 팝업 ===== */
+.ws-modal {
+    position: fixed;
+    inset: 0;
+    display: none; /* JS에서 'flex'로 변경 */
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, .4);
+    z-index: 9999;
+}
+
+.ws-dialog {
+    position: relative;
+    width: min(560px, 92vw);
+    max-height: 80vh;
+    overflow: auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+}
+
+.ws-dialog .modal-close {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: transparent;
+    border: 0;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--muted);
+}
+
+.m-title {
+    margin: 0 0 10px 0;
+}
+
+.m-body {
+    white-space: pre-wrap;
+    line-height: 1.6;
+}
+
+.ws-modal.open {
+    display: flex;
+}
+
+.ws-dialog .m-title {
+    color: #ffffff;
+}
+
+.ws-dialog .m-body {
+    color: rgba(255, 255, 255, 0.88);
+}
+
+.ws-dialog {
+    max-height: 90vh;
+    min-height: 20vh;
+}
+
+.ws-dialog .m-body {
+    max-height: calc(90vh - 120px);
+    overflow: auto;
+}
+
+.go-btn {
+    text-decoration: none;
+}
+
+h2, h3 {
+    color: #A8B3CF;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: .35rem;
+    margin-top: 2rem;
+}
+
+.pagination .page-btn,
+.pagination button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2.25rem;
+    height: 2.25rem;
+    padding: 0 .6rem;
+    background: var(--surface-sub);
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: .6rem;
+    font-weight: 700;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.pagination .page-btn:hover {
+    background: var(--accent2);
+    color: #fff;
+    border-color: transparent;
+}
+
+.pagination .current {
+    background: var(--accent2);
+    color: #fff;
+    border-color: transparent;
+    cursor: default;
+}
+
+.pagination .disabled {
+    opacity: .45;
+    pointer-events: none;
+}
+
+.ws-modal {
+    position: fixed;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, .4);
+    z-index: 9999;
+}
+
+.ws-modal.open {
+    display: flex;
+}
+
+.ws-dialog {
+    position: relative;
+    width: min(640px, 94vw);
+    max-height: 90vh;
+    overflow: auto;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+}
+
+.ws-dialog .modal-close {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: transparent;
+    border: 0;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+    color: var(--muted);
+}
+
+.m-title {
+    margin: 0 0 10px 0;
+    color: #fff;
+}
+
+.m-body {
+    white-space: pre-wrap;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, .9);
 }

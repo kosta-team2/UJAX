@@ -1,29 +1,34 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+
+<link rel="stylesheet" href="../common/css/darkmode.css"/>
 <link rel="stylesheet" href="css/rightSidebar.css">
+
+<jsp:include page="${pageContext.request.contextPath}/mock">
+    <jsp:param name="key" value="rightSidebar"/>
+    <jsp:param name="methodName" value="view"/>
+</jsp:include>
+
+
 <aside class="right-sidebar">
     <div class="profile-box" id="profileBox" page="mypage">
-        <div class="profile-header">
-            <div class="nickname">testuser123</div>
-        </div>
-        <div class="level">LV.3 · EXP 1,240 / 2,000</div>
-        <div class="progress">
-            <div class="bar" style="width: 62%;"></div>
-        </div>
-        <div class="stats">정답률 74% · 연속 5일</div>
-    </div>
-
-    <div class="ranking-box">
-        <div class="title">팀 순위</div>
-        <ol class="ranking-list">
-            <li><strong>1</strong> Eunju <span>level 42</span></li>
-            <li><strong>2</strong> Jungmin <span>level 38</span></li>
-            <li><strong>3</strong> Dohyun <span>level 33</span></li>
-            <li><strong>4</strong> Mira <span>level 28</span></li>
-            <li><strong>5</strong> testuser123 <span>level 28</span></li>
-        </ol>
-    </div>
-
-    <div class="ads-box">
-
+        <a href="${pageContext.request.contextPath}/workspace/mypage.jsp">
+            <div class="profile-header">
+                <div class="nickname"><c:out value="${profile.nickname}"/></div>
+            </div>
+            <div class="level">
+                LV.<c:out value="${profile.level}"/>
+                · EXP <c:out value="${profile.exp}"/> / <c:out value="${profile.expMax}"/>
+            </div>
+            <div class="progress">
+                <div class="progress">
+                    <div class="bar" style="width: <c:out value='${profile.expPercent}'/>%;"></div>
+                </div>
+                <div class="stats">정답률 <c:out value="${profile.accuracy}"/>%</div>
+            </div>
+        </a>
     </div>
 </aside>
+
+
+<script defer src="js/notice.js"></script>

@@ -371,19 +371,19 @@
     display: flex;
     align-items: center;
     gap: 10px;
-    flex-wrap: nowrap;         /* 줄바꿈 금지 */
+    flex-wrap: nowrap; /* 줄바꿈 금지 */
 }
 
 /* 검색 인풋은 남는 공간을 차지하면서 필요하면 수축 */
 .ws-settings .member-toolbar .search {
     flex: 1 1 auto;
-    min-width: 0;              /* ✅ 이게 없으면 인풋이 줄어들지 않아 버튼이 밀립니다 */
+    min-width: 0; /* ✅ 이게 없으면 인풋이 줄어들지 않아 버튼이 밀립니다 */
 }
 
 /* "멤버 추가" 버튼은 수축 금지 + 줄바꿈 금지 */
 .ws-settings .member-toolbar #ws-openInvite {
-    flex: 0 0 auto;            /* 수축 금지 */
-    white-space: nowrap;       /* 줄바꿈 금지 */
-    display: inline-flex;      /* 텍스트 한 줄 정렬 안정화 */
+    flex: 0 0 auto; /* 수축 금지 */
+    white-space: nowrap; /* 줄바꿈 금지 */
+    display: inline-flex; /* 텍스트 한 줄 정렬 안정화 */
     align-items: center;
 }

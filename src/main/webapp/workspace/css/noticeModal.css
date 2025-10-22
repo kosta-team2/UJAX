@@ -37,6 +37,7 @@
     cursor: pointer;
     transition: 0.2s;
 }
+
 .notice-modal .modal-close:hover {
     color: var(--text);
 }
@@ -116,6 +117,7 @@
     background-color: var(--accent);
     color: #fff;
 }
+
 #saveNoticeBtn:hover {
     background-color: var(--accent2);
     transform: translateY(-1px);
@@ -126,6 +128,7 @@
     background-color: #c0392b;
     color: #fff;
 }
+
 .notice-delete-btn:hover {
     background-color: #a33225;
     transform: translateY(-1px);
