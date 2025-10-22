@@ -13,7 +13,7 @@ public class MemberDao implements MemberRepository {
 
     public Optional<Member> findByEmailAndPassword(Connection con, String email, String password) throws SQLException {
         String sql = """
-                SELECT member_id, email, nickname
+                SELECT *
                 FROM member
                 WHERE email = ? and password = ? and is_deleted = 0
                 LIMIT 1
@@ -34,7 +34,7 @@ public class MemberDao implements MemberRepository {
     @Override
     public Optional<Member> findByEmail(Connection con, String email) throws SQLException {
         String sql = """
-                SELECT * FROM member 
+                SELECT * FROM member
                 WHERE email = ? AND is_deleted = 0
                 """;
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -51,7 +51,7 @@ public class MemberDao implements MemberRepository {
     @Override
     public Optional<Member> findByNickname(Connection con, String nickname) throws SQLException {
         String sql = """
-                SELECT * FROM member 
+                SELECT * FROM member
                 WHERE nickname = ? AND is_deleted = 0
                 """;
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -100,7 +100,7 @@ public class MemberDao implements MemberRepository {
     @Override
     public void saveMember(Connection con, Member member) throws SQLException {
         String sql = """
-                INSERT INTO member (email, password, nickname) 
+                INSERT INTO member (email, password, nickname)
                 VALUES (?, ?, ?)
                 """;
         try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -114,8 +114,8 @@ public class MemberDao implements MemberRepository {
     @Override
     public void softDeleteById(Connection con, long memberId) throws SQLException {
         String sql = """
-                UPDATE member 
-                SET is_deleted = 1 
+                UPDATE member
+                SET is_deleted = 1
                 WHERE member_id = ?
                 """;
         try (PreparedStatement ps = con.prepareStatement(sql)) {

@@ -17,29 +17,35 @@
     cursor: pointer;
     transition: background 0.2s, transform 0.2s;
 }
+
 .profile-box:hover {
     background: var(--surface);
     transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
 }
+
 .profile-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 0.5rem;
 }
+
 .profile-box .nickname {
-    background: var(--input);
     padding: 0.5rem;
     border-radius: 0.5rem;
+    text-decoration: none;
+    color: #A8B3CF;
     margin-bottom: 0.5rem;
     font-weight: bold;
 }
+
 .profile-box .level {
     font-size: 0.75rem;
     margin-bottom: 0.25rem;
     color: var(--muted);
 }
+
 .profile-box .progress {
     background: var(--border);
     height: 6px;
@@ -47,10 +53,12 @@
     overflow: hidden;
     margin-bottom: 0.25rem;
 }
+
 .profile-box .bar {
     background: var(--accent2);
     height: 100%;
 }
+
 .profile-box .stats {
     font-size: 0.75rem;
     color: var(--muted);
@@ -64,15 +72,18 @@
     border: 1px solid var(--border);
     margin-top: 1rem;
 }
+
 .ranking-box .title {
     font-weight: bold;
     margin-bottom: 0.5rem;
 }
+
 .ranking-list {
     list-style: none;
     padding: 0;
     margin: 0;
 }
+
 .ranking-list li {
     display: flex;
     justify-content: space-between;
@@ -86,10 +97,14 @@
     border-radius: 1rem;
     padding: 1rem;
     margin-top: 1rem;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
     min-height: 160px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+}
+
+a {
+    text-decoration: none;
 }

@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.kostaTeam2.domain.member.Member;
 
 public interface MemberService {
-	Optional<Member> login(String email, String password);
+    Optional<Member> login(String email, String password);
 
     Optional<Member> getInfo(long id);
 
@@ -14,5 +14,6 @@ public interface MemberService {
 
     void softDelete(long memberId);
 
-    void updateMember(long memberId, String nickname, String password);
+    void updateMember(long memberId, String password, String newNickname, String newPassword);
+
 }
