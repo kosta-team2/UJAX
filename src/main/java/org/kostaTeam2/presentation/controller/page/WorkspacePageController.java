@@ -92,8 +92,8 @@ public class WorkspacePageController implements Controller {
 
         workspaceService.deleteWorkspace(dto);
 
-        String target = request.getContextPath() + "/workspace";
-        return new ModelAndView(target, true);
+        request.setAttribute("target", request.getContextPath() + "/workspace");
+        return new ModelAndView("common/top-redirect.jsp");
     }
 
     private ModelAndView delegateLeader(HttpServletRequest request, HttpServletResponse response) {
@@ -125,7 +125,7 @@ public class WorkspacePageController implements Controller {
 
         workspaceService.exitWorkspace(dto);
 
-        String target = request.getContextPath() + "/workspace/";
-        return new ModelAndView(target, true);
+        request.setAttribute("target", request.getContextPath() + "/workspace");
+        return new ModelAndView("common/top-redirect.jsp");
     }
 }
