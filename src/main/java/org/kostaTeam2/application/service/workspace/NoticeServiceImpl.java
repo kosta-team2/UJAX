@@ -13,8 +13,8 @@ import org.kostaTeam2.domain.workspace.notice.NoticeContent;
 import org.kostaTeam2.domain.workspace.notice.NoticeRepository;
 import org.kostaTeam2.domain.workspace.notice.NoticeTitle;
 import org.kostaTeam2.dto.request.NoticeRequest;
+import org.kostaTeam2.dto.response.NoticePage;
 import org.kostaTeam2.global.exception.DBException;
-import org.kostaTeam2.global.exception.ForbiddenException;
 import org.kostaTeam2.global.exception.NotFoundException;
 
 public class NoticeServiceImpl implements NoticeService {
@@ -67,15 +67,39 @@ public class NoticeServiceImpl implements NoticeService {
 	}
 
 	@Override
-	public List<Notice> getPageNotices(NoticeRequest dto) {
+	public NoticePage getPaged(NoticeRequest dto) {
 		Long workspaceId = dto.workspaceId();
 		//        String sort = dto.sort(); todo 정렬기능 미구현
 		int page = dto.page();
-		int limit = dto.limit();
-		int offset = page * limit;
+		int size = dto.size();
 
 		try (Connection conn = ds.getConnection()) {
-			return noticeRepository.findNoticePageByWorkspaceId(conn, dto.workspaceId(), offset, limit);
+			int total = noticeRepository.countByWorkspace(conn, workspaceId);
+			int totalPages = (int)Math.ceil(total / (double)size);
+			if (totalPages == 0) {
+				totalPages = 1;
+			}
+
+			page = Math.max(1, Math.min(totalPages, page));
+			int offset = (page - 1) * size;
+
+			List<Notice> list = noticeRepository.findPageByWorkspace(conn, workspaceId, offset, size);
+
+			int window = 5;
+			int startPage = Math.max(1, page - window / 2);
+			int endPage = Math.min(totalPages, startPage + window - 1);
+			startPage = Math.max(1, endPage - window + 1);
+
+			boolean hasPrev = page > 1;
+			boolean hasNext = page < totalPages;
+
+			return new NoticePage(
+				list, page, size, totalPages,
+				hasPrev, hasNext,
+				Math.max(1, page - 1),
+				Math.min(totalPages, page + 1),
+				startPage, endPage
+			);
 		} catch (SQLException e) {
 			throw new DBException("공지 불러오기 실패");
 		}
