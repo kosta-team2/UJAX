@@ -7,10 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class WorkspaceMemberDao implements WorkspaceMemberRepository {
 
@@ -38,11 +35,36 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
     }
 
     @Override
+    public Optional<Long> findWsMemberIdByWsIdAndMemberId(Connection conn, long wsId, long memberId) throws SQLException {
+        String sql = """
+                    SELECT ws_member_id
+                    FROM workspace_member
+                    WHERE ws_id = ? AND member_id = ? AND is_deleted = 0
+                    LIMIT 1
+                """;
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setLong(1, wsId);
+            ps.setLong(2, memberId);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return Optional.of(rs.getLong(1));
+                }
+            }
+        }
+        return Optional.empty();
+    }
+
+    @Override
     public boolean isLeader(Connection conn, WorkspaceMember workspaceMember) throws SQLException {
         String sql = "SELECT is_leader FROM workspace_member WHERE ws_member_id = ? AND ws_id = ? AND is_deleted = 0";
 
+        Optional<Long> wsMemberId = findWsMemberIdByWsIdAndMemberId(conn, workspaceMember.getWorkspaceId(), workspaceMember.getMemberId());
+        if (wsMemberId.isEmpty()) {
+            return false;
+        }
+
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, workspaceMember.getMemberId());
+            ps.setLong(1, wsMemberId.get());
             ps.setLong(2, workspaceMember.getWorkspaceId());
 
             try (ResultSet rs = ps.executeQuery()) {
@@ -59,15 +81,19 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
     public boolean isMember(Connection conn, WorkspaceMember workspaceMember) throws SQLException {
         String sql = "SELECT EXISTS (SELECT 1 FROM workspace_member WHERE ws_member_id = ? AND ws_id = ? AND is_deleted = 0) AS exist";
 
+        Optional<Long> wsMemberId = findWsMemberIdByWsIdAndMemberId(conn, workspaceMember.getWorkspaceId(), workspaceMember.getMemberId());
+        if (wsMemberId.isEmpty()) {
+            return false;
+        }
+
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, workspaceMember.getMemberId());
+            ps.setLong(1, wsMemberId.get());
             ps.setLong(2, workspaceMember.getWorkspaceId());
 
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     return rs.getBoolean("exist");
                 }
-
                 return false;
             }
         }
@@ -75,25 +101,33 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
 
     @Override
     public List<WorkspaceMember> getAllMembers(Connection conn, long workspaceId) throws SQLException {
-        List<WorkspaceMember> workspaceMembers = new ArrayList<>();
+        List<WorkspaceMember> list = new ArrayList<>();
         String sql = """
-                SELECT ws_member_id, member_id, is_leader, email, nickname
-                FROM workspace_member
-                WHERE ws_id = ?
-                AND is_deleted = 0;
+                    SELECT ws_member_id, ws_id, member_id, is_leader, email, nickname
+                    FROM workspace_member
+                    WHERE ws_id = ?
+                      AND is_deleted = 0
                 """;
-
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, workspaceId);
-
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                    workspaceMembers.add(new WorkspaceMember(rs.getLong(1), rs.getLong(2), rs.getBoolean(3), rs.getString(4), rs.getString(5)));
+                    long wsMemberId = rs.getLong("ws_member_id");
+                    long wsId = rs.getLong("ws_id");
+                    long memberId = rs.getLong("member_id");
+                    boolean leader = rs.getBoolean("is_leader");
+                    String email = rs.getString("email");
+                    String nickname = rs.getString("nickname");
+
+                    WorkspaceMember m = new WorkspaceMember(wsId, memberId, leader, nickname, email);
+                    m.setWorkspaceMemberId(wsMemberId); //
+                    list.add(m);
                 }
             }
         }
-        return workspaceMembers;
+        return list;
     }
+
 
     @Override
     public boolean delegateLeader(Connection con, long workspaceId, long currentLeaderId, long newLeaderId) throws SQLException {
@@ -109,6 +143,10 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
                 """;
 
         int result = 0;
+        Optional<Long> currentLeaderWsId = findWsMemberIdByWsIdAndMemberId(con, workspaceId, currentLeaderId);
+        if (currentLeaderWsId.isEmpty()) {
+            return false;
+        }
 
         try (
                 PreparedStatement ps1 = con.prepareStatement(sql1);
@@ -117,7 +155,7 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
             con.setAutoCommit(false); // 트랜잭션 시작
 
             // 1. 기존 리더 해제
-            ps1.setLong(1, currentLeaderId);
+            ps1.setLong(1, currentLeaderWsId.get());
             ps1.setLong(2, workspaceId);
             result += ps1.executeUpdate();
 
@@ -167,7 +205,7 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
         String sql = """
                 UPDATE workspace_member
                 SET is_deleted = 1
-                WHERE ws_Id = ? AND ws_member_id = ?;
+                WHERE ws_id = ? AND ws_member_id = ?;
                 """;
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setLong(1, workspaceId);
@@ -177,15 +215,19 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
     }
 
     @Override
-    public int exitWorkspace(Connection con, long workspaceId, long wsMemberId) throws SQLException {
+    public int exitWorkspace(Connection con, long workspaceId, long memberId) throws SQLException {
         String sql = """
                 UPDATE workspace_member
                 SET is_deleted = 1
-                WHERE ws_Id = ? AND ws_member_id = ?;
+                WHERE ws_id = ? AND ws_member_id = ?;
                 """;
+        Optional<Long> wsMemberId = findWsMemberIdByWsIdAndMemberId(con, workspaceId, memberId);
+        if (wsMemberId.isEmpty()) {
+            return 0;
+        }
         try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setLong(1, workspaceId);
-            ps.setLong(2, wsMemberId);
+            ps.setLong(2, wsMemberId.get());
             return ps.executeUpdate();
         }
     }
