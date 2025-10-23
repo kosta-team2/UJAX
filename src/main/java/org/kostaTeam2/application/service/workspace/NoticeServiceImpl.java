@@ -15,6 +15,7 @@ import org.kostaTeam2.domain.workspace.notice.NoticeTitle;
 import org.kostaTeam2.dto.request.NoticeRequest;
 import org.kostaTeam2.dto.response.NoticePage;
 import org.kostaTeam2.global.exception.DBException;
+import org.kostaTeam2.global.exception.ForbiddenException;
 import org.kostaTeam2.global.exception.NotFoundException;
 
 public class NoticeServiceImpl implements NoticeService {
