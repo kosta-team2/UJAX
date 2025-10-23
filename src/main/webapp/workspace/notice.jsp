@@ -46,7 +46,7 @@
                            data-title="<c:out value='${not empty n.title ? n.title.value : ""}'/>"
                            data-content="<c:out value='${not empty n.content ? n.content.value : ""}'/>">
                             <strong><c:out value='${not empty n.title ? n.title.value : ""}'/></strong>
-                            <p><c:out value='${not empty n.content ? n.content.value : ""}'/></p>
+                            <p class="preview"><c:out value='${not empty n.content ? n.content.value : ""}'/></p>
                         </a>
                     </c:forEach>
                 </div>

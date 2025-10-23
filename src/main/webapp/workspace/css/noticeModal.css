@@ -112,6 +112,20 @@
     transition: background-color 0.2s, transform 0.15s;
 }
 
+/* 모달 박스 크기/스크롤 */
+.notice-modal .modal-content {
+    max-width: 560px; /* 필요시 조정 */
+    width: min(90vw, 560px);
+}
+
+#viewSection .m-body {
+    white-space: pre-wrap; /* 줄바꿈/개행 보존 */
+    word-break: break-word; /* 긴 단어 강제 줄바꿈 */
+    overflow-wrap: anywhere; /* 어디서든 줄바꿈 허용 */
+    max-height: 40vh; /* 내용이 매우 길면 내부 스크롤 */
+    overflow: auto;
+}
+
 /* 등록 버튼 */
 #saveNoticeBtn {
     background-color: var(--accent);

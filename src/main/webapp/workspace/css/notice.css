@@ -125,6 +125,19 @@
     -webkit-box-orient: vertical;
 }
 
+.notice-card .preview{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;          /* 한 줄로 */
+}
+
+/* 2줄까지 자르고 싶으면(문자 수 고정 X) */
+.notice-card .preview--2line{
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    white-space: normal;
 
 .pagination {
     display: flex;
