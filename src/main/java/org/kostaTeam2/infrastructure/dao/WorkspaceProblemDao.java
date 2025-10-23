@@ -39,7 +39,7 @@ public class WorkspaceProblemDao implements WorkspaceProblemRepository {
 			select ws_problem_id, ws_id , problem_id, deadline
 			from workspace_problem
 			where ws_id = ? and is_deleted = 0
-			order by deadline desc
+			order by deadline
 			limit ? offset ?
 			""";
 
