@@ -18,6 +18,7 @@
         <section class="panel">
             <form id="createForm"
                   action="${pageContext.request.contextPath}/front?key=workspace&methodName=create"
+                  target="_top"
                   method="post" novalidate>
 
                 <div class="field">
@@ -44,7 +45,7 @@
 
                 <div class="field">
                     <label class="checkbox">
-                        <input type="checkbox" id="isHintView" name="isHintView" checked/>
+                        <input type="checkbox" id="isHintView" name="isHintView" value="true" checked/>
                         힌트 공개 (팀원에게 풀이 힌트를 보이기)
                     </label>
                 </div>
@@ -56,23 +57,6 @@
             </form>
         </section>
 
-        <%--        todo 현재 redirect로 완료 모달이 안보임 하지만 생성되면 새로 생긴 워크스페이스로 이동할테니 없애는 것도 고려--%>
-        <!-- 생성 완료 모달 -->
-        <%--        <div class="dialog-backdrop" id="createdBackdrop" hidden>--%>
-        <%--            <div class="dialog" id="createdDialog" role="dialog" aria-labelledby="modalTitle" aria-modal="true">--%>
-        <%--                <div class="dialog-head">--%>
-        <%--                    <svg class="check" viewBox="0 0 24 24" fill="none" stroke="currentColor"--%>
-        <%--                         stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">--%>
-        <%--                        <path d="M20 6L9 17l-5-5"/>--%>
-        <%--                    </svg>--%>
-        <%--                    <h2 id="modalTitle" class="dialog-title">워크스페이스가 생성되었습니다</h2>--%>
-        <%--                </div>--%>
-        <%--                <p class="dialog-body">이제 멤버가 초대장을 통해 참여할 수 있어요.</p>--%>
-        <%--                <div class="dialog-actions">--%>
-        <%--                    <button type="button" class="btn-close btn-primary" id="modalOk">확인</button>--%>
-        <%--                </div>--%>
-        <%--            </div>--%>
-        <%--        </div>--%>
     </div>
 </main>
 
