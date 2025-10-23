@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('pi-form');
-    const newPw = document.getElementById('newPw');
+    const newPw = document.getElementById('newPassword');
     const confirmPw = document.getElementById('confirmPw');
     const backBtn = document.getElementById('pi-backBtn');
 
