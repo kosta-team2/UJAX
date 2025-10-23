@@ -42,10 +42,10 @@
                     <c:forEach items="${notices}" var="n">
                         <a href="#"
                            class="notice-card"
-                           data-title="${n.title != null ? n.title.value : ''}"
-                           data-content="${n.content != null ? n.content.value : ''}">
-                            <strong><c:out value="${n.title != null ? n.title.value : ''}"/></strong>
-                            <p><c:out value="${n.content != null ? n.content.value : ''}"/></p>
+                           data-title="<c:out value='${not empty n.title ? n.title.value : ""}'/>"
+                           data-content="<c:out value='${not empty n.content ? n.content.value : ""}'/>">
+                            <strong><c:out value='${not empty n.title ? n.title.value : ""}'/></strong>
+                            <p><c:out value='${not empty n.content ? n.content.value : ""}'/></p>
                         </a>
                     </c:forEach>
                 </div>
@@ -134,12 +134,10 @@
     </form>
     </div>
 
-    <%--    <%@ include file="/WEB-INF/views/workspace/notice-modal.jspf" %>--%>
 </main>
-
-
-<script defer src="${pageContext.request.contextPath}/workspace/js/notice.js"></script>
+<jsp:include page="/workspace/notice-modal.jsp"/>
 <script defer src="${pageContext.request.contextPath}/workspace/js/noticeModal.js"></script>
+<script defer src="${pageContext.request.contextPath}/workspace/js/notice.js"></script>
 
 </body>
 </html>
