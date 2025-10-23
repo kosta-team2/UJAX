@@ -6,6 +6,7 @@ import org.kostaTeam2.domain.workspace.WorkspaceMemberRepository;
 import org.kostaTeam2.domain.workspace.WorkspaceRepository;
 import org.kostaTeam2.dto.request.WorkspaceUserRequest;
 import org.kostaTeam2.dto.request.WorkspaceRequest;
+import org.kostaTeam2.dto.response.SidebarInfoResponse;
 import org.kostaTeam2.global.exception.BadRequestException;
 import org.kostaTeam2.global.exception.DBException;
 import org.kostaTeam2.global.exception.ForbiddenException;
@@ -14,6 +15,7 @@ import org.kostaTeam2.global.exception.common.AppException;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -225,4 +227,27 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             throw new DBException("워크스페이스 삭제 실패했습니다.", e);
         }
     }
+
+    @Override
+    public List<SidebarInfoResponse> getSidebarInfo(Long memberId) {
+        List<SidebarInfoResponse> list = new ArrayList<>();
+        try (Connection con = ds.getConnection()) {
+            List<WorkspaceMember> members = workspaceMemberRepository.findByMemberId(con, memberId);
+            for (WorkspaceMember member : members) {
+                Optional<Workspace> ws = workspaceRepository.findById(con, member.getWorkspaceId());
+				ws.ifPresent(workspace -> list.add(
+					new SidebarInfoResponse(
+						member.getWorkspaceId(),
+						member.getWorkspaceMemberId(),
+						member.isLeader(),
+						workspace.getWorkspaceName()
+					)));
+            }
+        } catch (SQLException e) {
+            throw new DBException("워크스페이스 삭제 실패했습니다.", e);
+        }
+        return list;
+    }
+
+
 }

@@ -53,4 +53,6 @@ public interface WorkspaceMemberRepository {
      * session 통해 dto 로 받아올때는 workspace_member_id 못 가져와서 만듬
      */
     Optional<Long> findWsMemberIdByWsIdAndMemberId(Connection conn, long wsId, long memberId) throws SQLException;
+
+    List<WorkspaceMember> findByMemberId(Connection conn, Long memberId);
 }

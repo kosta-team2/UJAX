@@ -56,6 +56,7 @@ public class PageFrontControllerServlet extends HttpServlet {
 		if (mv.isRedirect()) {
 			response.sendRedirect(mv.getViewName());
 		} else {
+			if(mv.getViewName().equals("none")) return;
 			request.getRequestDispatcher(mv.getViewName()).forward(request, response);
 		}
 

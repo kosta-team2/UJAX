@@ -30,7 +30,7 @@
               id="registerForm">
             <input type="hidden" name="key" value="problem"/>
             <input type="hidden" name="methodName" value="create"/>
-            <input type="hidden" name="workspaceId" value="${param.wsId}"/>
+            <input type="hidden" name="workspaceId" value="${param.workspaceId}"/>
 
             <div class="form-col">
                 <div class="field">

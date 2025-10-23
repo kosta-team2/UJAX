@@ -1,5 +1,6 @@
 package org.kostaTeam2.infrastructure.dao;
 
+import org.kostaTeam2.domain.workspace.Workspace;
 import org.kostaTeam2.domain.workspace.WorkspaceMember;
 import org.kostaTeam2.domain.workspace.WorkspaceMemberRepository;
 
@@ -79,15 +80,10 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
 
     @Override
     public boolean isMember(Connection conn, WorkspaceMember workspaceMember) throws SQLException {
-        String sql = "SELECT EXISTS (SELECT 1 FROM workspace_member WHERE ws_member_id = ? AND ws_id = ? AND is_deleted = 0) AS exist";
-
-        Optional<Long> wsMemberId = findWsMemberIdByWsIdAndMemberId(conn, workspaceMember.getWorkspaceId(), workspaceMember.getMemberId());
-        if (wsMemberId.isEmpty()) {
-            return false;
-        }
+        String sql = "SELECT EXISTS (SELECT 1 FROM workspace_member WHERE member_id = ? AND ws_id = ? AND is_deleted = 0) AS exist";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, wsMemberId.get());
+            ps.setLong(1, workspaceMember.getMemberId());
             ps.setLong(2, workspaceMember.getWorkspaceId());
 
             try (ResultSet rs = ps.executeQuery()) {
@@ -251,5 +247,31 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
             }
         }
         return infoMap;
+    }
+
+    @Override
+    public List<WorkspaceMember> findByMemberId(Connection conn, Long memberId) {
+        List<WorkspaceMember> list = new ArrayList<>();
+        String sql = """
+                SELECT ws_member_id, is_leader, ws_id
+                FROM workspace_member
+                WHERE member_id = ?;
+                """;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setLong(1, memberId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+					list.add(new WorkspaceMember(
+						rs.getLong("ws_member_id"),
+						rs.getBoolean("is_leader"),
+						rs.getLong("ws_id")
+						));
+                }
+            }
+        } catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		return list;
     }
 }
