@@ -1,5 +1,6 @@
-CREATE DATABASE ujax;
-USE ujax;
+# CREATE DATABASE ujax;
+# USE ujax;
+# DROP DATABASE ujax;
 
 CREATE TABLE workspace_member
 (
@@ -98,7 +99,7 @@ CREATE TABLE reward
 
 CREATE TABLE gift
 (
-    product_id    VARCHAR(255) PRIMARY KEY,
+    product_id    BIGINT PRIMARY KEY AUTO_INCREMENT,
     product_name  VARCHAR(50)    NOT NULL,
     product_price DECIMAL(10, 2) NOT NULL,
     product_image BLOB           NOT NULL,
@@ -107,7 +108,7 @@ CREATE TABLE gift
 
 CREATE TABLE barcode
 (
-    product_id    VARCHAR(255) PRIMARY KEY,
+    product_id    BIGINT PRIMARY KEY,
     barcode_image BLOB NOT NULL
 );
 
@@ -231,7 +232,8 @@ ALTER TABLE algorithm
 
 
 INSERT INTO member (email, password, nickname, reward, xp)
-VALUES ('alice@example.com', 'pass1234', 'alice', 0.00, 120),
+VALUES ('test@example.com', '123123123', 'test', 9999999, 999999),
+       ('alice@example.com', 'pass1234', 'alice', 0.00, 120),
        ('bob@example.com', 'pass1234', 'bob', 5.50, 80),
        ('carol@example.com', 'pass1234', 'carol', 10.00, 200),
        ('dave@example.com', 'pass1234', 'dave', 0.00, 40),
