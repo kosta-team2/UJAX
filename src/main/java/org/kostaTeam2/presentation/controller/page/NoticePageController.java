@@ -42,7 +42,8 @@ public class NoticePageController implements Controller {
 				content
 			));
 
-		String target = request.getContextPath() + "/workspace";
+		String target =
+			request.getContextPath() + "front?key=notice&methodName=getNotices&wsId=1&page=1&size=12&sort=latest";
 		return new ModelAndView(target, true);
 	}
 

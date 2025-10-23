@@ -15,7 +15,6 @@ import org.kostaTeam2.domain.workspace.notice.NoticeTitle;
 import org.kostaTeam2.dto.request.NoticeRequest;
 import org.kostaTeam2.dto.response.NoticePage;
 import org.kostaTeam2.global.exception.DBException;
-import org.kostaTeam2.global.exception.ForbiddenException;
 import org.kostaTeam2.global.exception.NotFoundException;
 
 public class NoticeServiceImpl implements NoticeService {
@@ -34,10 +33,10 @@ public class NoticeServiceImpl implements NoticeService {
 	public void create(NoticeRequest dto) {
 		try (Connection conn = ds.getConnection()) {
 			WorkspaceMember workspaceMember = new WorkspaceMember(dto.userId(), dto.workspaceId());
-			// todo isLeader 서비스 이동
-			if (!workspaceMemberRepository.isLeader(conn, workspaceMember)) {
-				throw new ForbiddenException("리더가 아닙니다.");
-			}
+			// todo 리더 검사 수정 예정
+			// if (!workspaceMemberRepository.isLeader(conn, workspaceMember)) {
+			// 	throw new ForbiddenException("리더가 아닙니다.");
+			// }
 
 			Notice notice = Notice
 				.create(
@@ -56,9 +55,10 @@ public class NoticeServiceImpl implements NoticeService {
 	public void delete(NoticeRequest dto) {
 		try (Connection conn = ds.getConnection()) {
 			WorkspaceMember workspaceMember = new WorkspaceMember(dto.userId(), dto.workspaceId());
-			if (!workspaceMemberRepository.isLeader(conn, workspaceMember)) {
-				throw new ForbiddenException("리더가 아닙니다.");
-			}
+			// todo
+			// if (!workspaceMemberRepository.isLeader(conn, workspaceMember)) {
+			// 	throw new ForbiddenException("리더가 아닙니다.");
+			// }
 
 			if (noticeRepository.delete(conn, dto.noticeId()) == 0)
 				throw new NotFoundException("삭제할 공지가 없습니다.");

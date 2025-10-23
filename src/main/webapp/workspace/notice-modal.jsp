@@ -7,6 +7,9 @@
         <div id="viewSection">
             <h3 id="modalTitle" class="m-title"></h3>
             <div id="modalContent" class="m-body"></div>
+            <div class="modal-actions">
+                <button type="button" class="notice-delete-btn" id="deleteNoticeBtn">삭제</button>
+            </div>
         </div>
 
         <!-- 등록 모드 -->
@@ -22,9 +25,13 @@
 
 <form id="noticeCreateForm"
       method="post"
-      action="${pageContext.request.contextPath}/front?key=notice&methodName=createNotice"
-      style="display:none;">
-    <input type="hidden" name="wsId" value="${param.wsId}"/>
-    <input type="hidden" name="noticeTitle"/>
-    <input type="hidden" name="noticeContent"/>
+      action="${pageContext.request.contextPath}/front"
+      accept-charset="UTF-8"
+      style=" display:none;
+">
+    <input type="hidden" name="key" value="notice">
+    <input type="hidden" name="methodName" value="createNotice">
+    <input type="hidden" name="wsId" value="${empty param.wsId ? '' : param.wsId}">
+    <input type="hidden" name="noticeTitle">
+    <input type="hidden" name="noticeContent">
 </form>
