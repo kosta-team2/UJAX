@@ -10,6 +10,7 @@ import org.kostaTeam2.global.exception.BadRequestException;
 import org.kostaTeam2.global.exception.DBException;
 import org.kostaTeam2.global.exception.ForbiddenException;
 import org.kostaTeam2.global.exception.common.AppException;
+import org.kostaTeam2.global.exception.common.ValidationException;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
@@ -196,7 +197,8 @@ public class WorkspaceServiceImpl implements WorkspaceService {
             if (workspaceMemberRepository.isLeader(con, new WorkspaceMember(wsId, whoAmI))) {
                 //워크스페이스에 남아 있는 사람이 1명인지 check
                 if (!workspaceMemberRepository.amIOnlyPerson(con, wsId)) {
-                    throw new BadRequestException("리더를 위임하고 탈퇴하세요.");
+                    throw new ValidationException("리더를 위임하고 탈퇴하세요.",
+                            "/front?key=workspace&methodName=show&workspaceId="+dto.wsId());
                 }
             }
 
