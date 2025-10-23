@@ -27,6 +27,13 @@ public class WorkspaceProblem {
 		this.scheduleAt = scheduleAt;
 	}
 
+	public WorkspaceProblem(Long wsProblemId, Long wsId, Long problemId, LocalDateTime deadLine) {
+		this.wsProblemId = wsProblemId;
+		this.wsId = wsId;
+		this.problemId = problemId;
+		this.deadLine = deadLine;
+	}
+
 	public Long getWsProblemId() {
 		return wsProblemId;
 	}

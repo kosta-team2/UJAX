@@ -56,7 +56,7 @@ public class HandlerMappingListener implements ServletContextListener {
             MemberService memberSvc = new MemberServiceImpl(ds, memberRepo);
             ProblemService problemSvc = new ProblemServiceImpl(ds, problemRepo);
             WorkspaceService workspaceSvc = new WorkspaceServiceImpl(ds, workspaceRepo, workspaceMemberRepo);
-            WorkspaceProblemService workspaceProblemSvc = new WorkspaceProblemServiceImpl(ds, workspaceProblemRepo, problemRepo);
+            WorkspaceProblemService workspaceProblemSvc = new WorkspaceProblemServiceImpl(ds, workspaceRepo, workspaceProblemRepo, problemRepo);
 
             // 3) properties 파일 로드
             ResourceBundle rb1 = ResourceBundle.getBundle(fileName);

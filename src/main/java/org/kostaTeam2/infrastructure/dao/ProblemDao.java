@@ -5,18 +5,21 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.kostaTeam2.domain.problem.AlgorithmTag;
 import org.kostaTeam2.domain.problem.Problem;
 import org.kostaTeam2.domain.problem.ProblemRepository;
 import org.kostaTeam2.domain.problem.Sample;
+import org.kostaTeam2.domain.workspace.WorkspaceProblem;
 import org.kostaTeam2.global.exception.DBException;
 
 public class ProblemDao implements ProblemRepository {
 
 	@Override
-		public Long findProblemIdByProblemNum(Connection con, int problemNum) {
+	public Long findProblemIdByProblemNum(Connection con, int problemNum) {
 		String sql = "SELECT problem_id FROM problem where problem_num = ?";
 
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
@@ -29,6 +32,90 @@ public class ProblemDao implements ProblemRepository {
 			}
 		} catch (SQLException e) {
 			throw new DBException("findIdByProblemNum DB 오류", e);
+		}
+	}
+
+	@Override
+	public Optional<Problem> findProblemByProblemId(Connection con, Long problemId) {
+		String sql = "SELECT * FROM problem where problem_id = ?";
+
+		try (PreparedStatement ps = con.prepareStatement(sql)) {
+			ps.setLong(1, problemId);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next()) {
+					return Optional.of(new Problem(
+						rs.getLong(1),
+						rs.getInt(2),
+						rs.getString(3),
+						rs.getString(4),
+						rs.getString(5),
+						rs.getString(6),
+						rs.getString(7),
+						rs.getString(8),
+						rs.getString(9),
+						rs.getString(10)
+					));
+				}
+				return Optional.empty();
+			}
+		} catch (SQLException e) {
+			throw new DBException("findIdByProblemNum DB 오류", e);
+		}
+	}
+
+	@Override
+	public List<AlgorithmTag> findAlgorithmTagsByProblemId(Connection con, Long problemId) {
+		String sql = """
+			SELECT a.algorithm_name
+			FROM problem_algorithm pa
+			JOIN algorithm a ON a.algorithm_id = pa.algorithm_id
+			WHERE pa.problem_id = ?
+			ORDER BY pa.algorithm_id desc
+			LIMIT 2
+			""";
+
+		try (PreparedStatement ps = con.prepareStatement(sql)) {
+			ps.setLong(1, problemId);
+
+			try (ResultSet rs = ps.executeQuery()) {
+				List<AlgorithmTag> list = new ArrayList<>();
+				while (rs.next()) {
+					list.add(new AlgorithmTag(
+						rs.getString(1)
+					));
+				}
+				return list;
+			}
+		} catch (SQLException e) {
+			throw new DBException("findAlgorithmTagsByProblemId DB 에러", e);
+		}
+	}
+
+	@Override
+	public List<Sample> findSamplesByProblemId(Connection con, Long problemId) {
+		String sql = """
+			SELECT sample_index, sample_input, sample_output
+			FROM sample
+			WHERE sample.problem_id = ?
+			ORDER BY sample.sample_input
+			""";
+
+		try (PreparedStatement ps = con.prepareStatement(sql)) {
+			ps.setLong(1, problemId);
+
+			try (ResultSet rs = ps.executeQuery()) {
+				List<Sample> list = new ArrayList<>();
+				while (rs.next()) {
+					list.add(new Sample(
+						rs.getInt(1),
+						rs.getString(2),
+						rs.getString(3)
+					));
+				}
+				return list;
+			}
+		} catch (SQLException e) {
+			throw new DBException("findAlgorithmTagsByProblemId DB 에러", e);
 		}
 	}
 

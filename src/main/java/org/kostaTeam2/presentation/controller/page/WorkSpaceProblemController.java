@@ -1,10 +1,13 @@
 package org.kostaTeam2.presentation.controller.page;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.kostaTeam2.application.service.workspace.WorkspaceProblemService;
 import org.kostaTeam2.domain.workspace.WorkspaceProblem;
+import org.kostaTeam2.dto.request.WorkspaceProblemPageRequest;
 import org.kostaTeam2.dto.request.WorkspaceProblemRequest;
+import org.kostaTeam2.dto.response.WorkspaceProblemPageResponse;
 import org.kostaTeam2.global.exception.BadRequestException;
 import org.kostaTeam2.global.exception.common.ValidationException;
 import org.kostaTeam2.presentation.view.ModelAndView;
@@ -24,6 +27,7 @@ public class WorkSpaceProblemController implements Controller {
 		Exception {
 		return switch (methodName) {
 			case "create" -> create(request, response);
+			case "getProblems" -> getProblems(request, response);
 			default -> throw new BadRequestException("methodName이 올바르지 않습니다.");
 		};
 	}
@@ -47,6 +51,24 @@ public class WorkSpaceProblemController implements Controller {
 				"/workspace/problem-register.jsp");
 		}
 
-		return new ModelAndView("/workspace/problem.jsp", true);
+		return new ModelAndView("/front?key=problem&methodName=getProblems&wsId=1&wsMbId=1&page=1&size=6", true);
+	}
+
+	public ModelAndView getProblems(HttpServletRequest request, HttpServletResponse response) {
+		var dto = WorkspaceProblemPageRequest.from(request);
+
+		List<WorkspaceProblemPageResponse> problems = service.getWorkspaceProblemList(
+			dto.workspaceId(),
+			dto.workspaceMemberId(),
+			dto.page(),
+			dto.size()
+		);
+
+		//TODO: 페이징 dto로 변경
+		request.setAttribute("problems", problems);
+		request.setAttribute("page", problems.get(0).getPage());
+		request.setAttribute("totalPages", problems.get(0).getTotalPages());
+
+		return new ModelAndView("/workspace/problem.jsp");
 	}
 }

@@ -152,14 +152,45 @@
     text-shadow: 0 0 2px rgba(255, 255, 255, 0.6);
 }
 
-.difficulty-level.gold {
+.difficulty-level.Unrated {
+    background: linear-gradient(135deg, #9CA3AF, #6B7280);
+    color: #111827;
+    border: 1px solid rgba(156, 163, 175, 0.6);
+}
+
+.difficulty-level.Ruby {
+    background: linear-gradient(135deg, #F87171, #EF4444);
+    color: #3F0D12;
+    border: 1px solid rgba(239, 68, 68, 0.6);
+}
+
+.difficulty-level.Diamond {
+    background: linear-gradient(135deg, #93C5FD, #38BDF8);
+    color: #0A2540;
+    border: 1px solid rgba(56, 189, 248, 0.6);
+}
+
+
+.difficulty-level.Platinum {
+    background: linear-gradient(135deg, #A7F3D0, #34D399);
+    color: #053B2B;
+    border: 1px solid rgba(52, 211, 153, 0.6);
+}
+
+.difficulty-level.Gold {
     background: linear-gradient(135deg, #FFD700, #FFC107);
     color: #2C1A00;
 }
 
-.difficulty-level.silver {
+.difficulty-level.Silver {
     background: linear-gradient(135deg, #C0C0C0, #E0E0E0);
     color: #1C1C1C;
+}
+
+.difficulty-level.Bronze {
+    background: linear-gradient(135deg, #CD7F32, #D29B6A);
+    color: #2C1A00;
+    border: 1px solid rgba(205, 127, 50, 0.6);
 }
 
 .tags {

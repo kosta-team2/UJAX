@@ -242,6 +242,3 @@ VALUES ('alice@example.com', 'pass1234', 'alice', 0.00, 120),
        ('heidi@example.com', 'pass1234', 'heidi', 0.00, 95),
        ('ivan@example.com', 'pass1234', 'ivan', 12.00, 220),
        ('judy@example.com', 'pass1234', 'judy', 0.00, 10);
-
-INSERT INTO workspace(ws_id, ws_name, ws_lang, is_hint_view)
-VALUES (1, '나는', 'JAVA', true)

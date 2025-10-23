@@ -14,7 +14,7 @@
     <div class="card">
         <div class="card-header">
             <a class="back-link" id="backBtn"
-               href="${pageContext.request.contextPath}/workspace/problem.jsp?wsId=${param.wsId}">←
+               onclick="history.back()">←
                 돌아가기</a>
             <h1>문제 등록</h1>
         </div>
