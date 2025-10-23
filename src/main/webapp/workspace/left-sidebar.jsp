@@ -22,10 +22,16 @@
                                    href="${pageContext.request.contextPath}/workspace/home.jsp?wsId=${ws.id}">
                                     워크스페이스 홈
                                 </a>
-                                <a class="nav-btn" target="mainFrame"
-                                   href="${pageContext.request.contextPath}/workspace/notice.jsp?wsId=${ws.id}">
-                                    공지 전체 보기
-                                </a>
+                                <c:url var="noticeUrl" value="${pageContext.request.contextPath}/front">
+                                    <c:param name="key" value="notice"/>
+                                    <c:param name="methodName" value="getNotices"/>
+                                    <c:param name="wsId" value="${ws.id}"/> <!-- 여기가 핵심 -->
+                                    <c:param name="page" value="1"/>
+                                    <c:param name="size" value="12"/>
+                                    <c:param name="sort" value="latest"/>
+                                </c:url>
+
+                                <a class="nav-btn" target="mainFrame" href="${noticeUrl}">공지 전체 보기</a>
                                 <a class="nav-btn" target="mainFrame"
                                    href="${pageContext.request.contextPath}/workspace/problem.jsp?wsId=${ws.id}">
                                     문제 전체 보기

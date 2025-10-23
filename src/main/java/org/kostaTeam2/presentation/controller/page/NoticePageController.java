@@ -1,7 +1,5 @@
 package org.kostaTeam2.presentation.controller.page;
 
-import java.util.List;
-
 import org.kostaTeam2.application.service.workspace.NoticeService;
 import org.kostaTeam2.dto.request.NoticeRequest;
 import org.kostaTeam2.dto.response.NoticePage;
@@ -44,7 +42,7 @@ public class NoticePageController implements Controller {
 				content
 			));
 
-		String target = request.getContextPath() + "/workspace/";
+		String target = request.getContextPath() + "/workspace";
 		return new ModelAndView(target, true);
 	}
 
@@ -61,9 +59,11 @@ public class NoticePageController implements Controller {
 				page,
 				limit
 			));
+		request.setAttribute("wsId", workspaceId);
 		request.setAttribute("notices", noticePage.getNotices());
 		request.setAttribute("page", noticePage.getPage());
 		request.setAttribute("size", noticePage.getSize());
+		request.setAttribute("sort", sort == null ? "latest" : sort);
 		request.setAttribute("totalPages", noticePage.getTotalPages());
 		request.setAttribute("hasPrev", noticePage.isHasPrev());
 		request.setAttribute("hasNext", noticePage.isHasNext());

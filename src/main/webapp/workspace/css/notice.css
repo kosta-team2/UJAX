@@ -12,7 +12,7 @@
     margin-bottom: 1.5rem;
 }
 
-.notice-header h3 {
+.notice-header h1 {
     font-size: 1.3rem;
     font-weight: 700;
     color: var(--text);
@@ -221,10 +221,6 @@
 
 .go-btn {
     text-decoration: none;
-}
-
-h2, h3 {
-    color: #A8B3CF;
 }
 
 .pagination {
