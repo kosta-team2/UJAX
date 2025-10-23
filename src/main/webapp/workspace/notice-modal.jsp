@@ -23,15 +23,26 @@
     </div>
 </div>
 
+<%--공지 생성용 숨은 폼--%>
 <form id="noticeCreateForm"
       method="post"
       action="${pageContext.request.contextPath}/front"
       accept-charset="UTF-8"
-      style=" display:none;
-">
+      style=" display:none;">
     <input type="hidden" name="key" value="notice">
     <input type="hidden" name="methodName" value="createNotice">
     <input type="hidden" name="wsId" value="${empty param.wsId ? '' : param.wsId}">
     <input type="hidden" name="noticeTitle">
     <input type="hidden" name="noticeContent">
+</form>
+
+<%--공지 삭제용 숨은 폼--%>
+<form id="noticeDeleteForm"
+      method="post"
+      action="${pageContext.request.contextPath}/front"
+      style="display:none;">
+    <input type="hidden" name="key" value="notice"/>
+    <input type="hidden" name="methodName" value="deleteNotice"/>
+    <input type="hidden" name="wsId" value="${empty param.wsId ? '' : param.wsId}"/>
+    <input type="hidden" name="noticeId"/>
 </form>

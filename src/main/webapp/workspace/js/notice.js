@@ -8,7 +8,15 @@
             if (!card) return;
             e.preventDefault();
 
+            // ✅ noticeId 우선, 없으면 id, data-id까지 폭넓게 시도
+            const nid =
+                card.dataset.noticeId ||
+                card.dataset.id ||
+                card.getAttribute('data-id') ||
+                '';
+
             window.openNoticeModal?.({
+                noticeId: nid, // ✅ 반드시 넘김
                 title: card.dataset.title || card.querySelector('strong')?.textContent || '',
                 content: card.dataset.content || card.querySelector('p')?.textContent || ''
             });
@@ -16,11 +24,9 @@
     }
 
     document.addEventListener('DOMContentLoaded', () => {
-        // ✅ 모달은 오직 여기서 한 번만 초기화
         window.initNoticeModal?.();
         bindGrid();
 
-        // "공지 등록" 버튼으로 에디터 열기
         document.getElementById('openEditorBtn')?.addEventListener('click', () => {
             window.openNoticeEditor?.();
         });

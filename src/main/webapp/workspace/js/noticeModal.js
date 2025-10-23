@@ -1,4 +1,4 @@
-// noticeModal.js — 최종본
+// noticeModal.js — 최종본(등록 + 보기 + 삭제)
 (function () {
     function initNoticeModal() {
         if (window.__noticeModalInited) return;
@@ -10,6 +10,7 @@
         const editSection = document.getElementById('editSection');
         const closeBtn = modal?.querySelector('.modal-close');
         const saveBtn = document.getElementById('saveNoticeBtn');
+        const deleteBtn = document.getElementById('deleteNoticeBtn');        // ✅ 삭제 버튼
         const titleInput = document.getElementById('noticeTitleInput');
         const contentInput = document.getElementById('noticeContentInput');
         const modalTitle = document.getElementById('modalTitle');
@@ -37,8 +38,11 @@
         }
 
         // ====== 공개 API ======
-        function openNoticeModal({title = '', content = ''} = {}) {
+        function openNoticeModal({id = '', noticeId = '', title = '', content = ''} = {}) {
             if (!modal) return;
+            // id/noticeId 둘 다 받아서 우선순위로 결정
+            const nid = (noticeId || id || '').toString();
+            modal.dataset.noticeId = nid;      // 삭제 버튼에서 여기 값을 사용
             showViewMode();
             if (modalTitle) modalTitle.textContent = title;
             if (modalContent) modalContent.textContent = content;
@@ -61,6 +65,7 @@
             if (e.target === modal) hideModal();
         });
 
+        // ====== 저장(등록) → /front ======
         saveBtn?.addEventListener('click', () => {
             const title = (titleInput?.value || '').trim();
             const content = (contentInput?.value || '').trim();
@@ -99,14 +104,14 @@
             ensureHidden('key', 'notice');
             ensureHidden('methodName', 'createNotice');
 
-            // wsId: 폼 히든이 비어있으면 URL 또는 data-*에서 가져와 채움
+            // wsId: 폼 히든 → URL → body data-* 순
             const urlWsId = new URLSearchParams(location.search).get('wsId');
-            const domWsId = document.querySelector('#noticeCreateForm input[name="wsId"]')?.value || '';
-            const bodyWsId = document.body?.dataset?.wsid; // 선택: <body data-wsid="...">
+            const domWsId = form.querySelector('input[name="wsId"]')?.value || '';
+            const bodyWsId = document.body?.dataset?.wsid || '';
             const resolvedWsId = domWsId || urlWsId || bodyWsId || '1';
             ensureHidden('wsId', resolvedWsId);
 
-            // noticeTitle/noticeContent 없으면 생성 후 값 세팅
+            // noticeTitle/noticeContent 값 세팅(없으면 생성)
             let titleField = form.querySelector('input[name="noticeTitle"]');
             if (!titleField) {
                 titleField = document.createElement('input');
@@ -126,17 +131,80 @@
 
             // 제출 전 로깅
             const data = new FormData(form);
-            console.group('[Notice] Submit preview');
+            console.group('[Notice] Submit preview - create');
             console.log('METHOD:', (form.getAttribute('method') || 'GET').toUpperCase());
             console.log('ACTION:', form.action);
             for (const [k, v] of data.entries()) console.log(`${k}:`, v);
             console.groupEnd();
 
-            // 제출
+            // iframe 내부일 수 있으므로 상위로 보낼 수도 있음 (원하면 주석 해제)
+            // form.target = '_top';
+
             if (typeof form.requestSubmit === 'function') form.requestSubmit();
             else form.submit();
         });
 
+        // ====== 삭제 → /front ======
+        deleteBtn?.addEventListener('click', () => {
+            console.log('[Delete] nid =', document.getElementById('noticeModal')?.dataset?.noticeId);
+            const noticeId = modal?.dataset?.noticeId || '';
+            if (!noticeId) {
+                alert('공지 ID를 찾을 수 없습니다.');
+                return;
+            }
+            if (!confirm('정말 삭제하시겠습니까?')) return;
+
+            const dform = document.getElementById('noticeDeleteForm');
+            if (!dform) {
+                alert('삭제 폼(#noticeDeleteForm)을 찾을 수 없습니다.');
+                return;
+            }
+
+            // 보정 유틸(삭제 폼용)
+            const ensureHiddenDel = (name, defaultValue) => {
+                let el = dform.querySelector(`input[name="${name}"]`);
+                if (!el) {
+                    el = document.createElement('input');
+                    el.type = 'hidden';
+                    el.name = name;
+                    el.value = defaultValue ?? '';
+                    dform.appendChild(el);
+                }
+                if (!el.value && defaultValue != null) el.value = defaultValue;
+                return el;
+            };
+
+            ensureHiddenDel('key', 'notice');
+            ensureHiddenDel('methodName', 'deleteNotice');
+
+            // wsId 보정: 폼 히든 → URL → body data-*
+            const urlWsId = new URLSearchParams(location.search).get('wsId');
+            const domWsId = dform.querySelector('input[name="wsId"]')?.value || '';
+            const bodyWsId = document.body?.dataset?.wsid || '';
+            const resolvedWsId = domWsId || urlWsId || bodyWsId || '1';
+            ensureHiddenDel('wsId', resolvedWsId);
+
+            // noticeId 설정
+            let idField = dform.querySelector('input[name="noticeId"]');
+            if (!idField) {
+                idField = document.createElement('input');
+                idField.type = 'hidden';
+                idField.name = 'noticeId';
+                dform.appendChild(idField);
+            }
+            idField.value = String(noticeId);
+
+            // 제출 전 로깅
+            const data = new FormData(dform);
+            console.group('[Notice] Submit preview - delete');
+            console.log('METHOD:', (dform.getAttribute('method') || 'GET').toUpperCase());
+            console.log('ACTION:', dform.action);
+            for (const [k, v] of data.entries()) console.log(`${k}:`, v);
+            console.groupEnd();
+
+            if (typeof dform.requestSubmit === 'function') dform.requestSubmit();
+            else dform.submit();
+        });
 
         // ====== 접근성: 입력에서 Enter로 저장 (Ctrl+Enter는 내용 입력에서도 허용) ======
         titleInput?.addEventListener('keydown', (e) => {

@@ -43,7 +43,9 @@ public class NoticePageController implements Controller {
 			));
 
 		String target =
-			request.getContextPath() + "front?key=notice&methodName=getNotices&wsId=1&page=1&size=12&sort=latest";
+			request.getContextPath() + "/front?key=notice&methodName=getNotices&wsId=" + workspaceId
+				+ "&page=1&size=12&sort=latest";
+
 		return new ModelAndView(target, true);
 	}
 
@@ -89,8 +91,11 @@ public class NoticePageController implements Controller {
 				noticeId
 			));
 
-		String target = request.getContextPath() + "/workspace/notice.jsp";
-		return new ModelAndView(target);
+		String target =
+			request.getContextPath() + "/front?key=notice&methodName=getNotices&wsId=" + workspaceId
+				+ "&page=1&size=12&sort=latest";
+
+		return new ModelAndView(target, true);
 	}
 
 }

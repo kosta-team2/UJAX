@@ -42,6 +42,7 @@
                     <c:forEach items="${notices}" var="n">
                         <a href="#"
                            class="notice-card"
+                           data-notice-id="${n.noticeId}"
                            data-title="<c:out value='${not empty n.title ? n.title.value : ""}'/>"
                            data-content="<c:out value='${not empty n.content ? n.content.value : ""}'/>">
                             <strong><c:out value='${not empty n.title ? n.title.value : ""}'/></strong>
