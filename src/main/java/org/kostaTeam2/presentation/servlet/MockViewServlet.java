@@ -98,16 +98,23 @@ public class MockViewServlet extends HttpServlet {
 			int endPage = Math.min(totalPages, startPage + window - 1);
 			startPage = Math.max(1, endPage - window + 1);
 
+			// req.setAttribute("problems", pageList);
+			// req.setAttribute("page", page);
+			// req.setAttribute("size", size);
+			// req.setAttribute("totalPages", totalPages);
+			// req.setAttribute("hasPrev", page > 1);
+			// req.setAttribute("hasNext", page < totalPages);
+			// req.setAttribute("prevPage", page - 1);
+			// req.setAttribute("nextPage", page + 1);
+			// req.setAttribute("startPage", startPage);
+			// req.setAttribute("endPage", endPage);
+
 			req.setAttribute("problems", pageList);
 			req.setAttribute("page", page);
 			req.setAttribute("size", size);
 			req.setAttribute("totalPages", totalPages);
 			req.setAttribute("hasPrev", page > 1);
 			req.setAttribute("hasNext", page < totalPages);
-			req.setAttribute("prevPage", page - 1);
-			req.setAttribute("nextPage", page + 1);
-			req.setAttribute("startPage", startPage);
-			req.setAttribute("endPage", endPage);
 		}
 
 		if ("notice".equals(key) && "getNotices".equals(method)) {

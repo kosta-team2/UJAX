@@ -64,6 +64,18 @@ public class Workspace {
         return isDeleted;
     }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public Boolean getHintView() {
+        return isHintView;
+    }
+
+    public List<WorkspaceMember> getWorkspaceMemberList() {
+        return workspaceMemberList;
+    }
+
     public void setWorkspaceMemberList(List<WorkspaceMember> workspaceMemberList) {
         this.workspaceMemberList = workspaceMemberList;
     }

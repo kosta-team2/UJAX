@@ -19,6 +19,7 @@ CREATE TABLE problem
     problem_id       BIGINT PRIMARY KEY AUTO_INCREMENT,
     problem_num      INT          NOT NULL UNIQUE,
     title            VARCHAR(255) NOT NULL,
+    tier             VARCHAR(50)  NOT NULL,
     time_limit_raw   VARCHAR(50)  NULL,
     memory_limit_raw VARCHAR(50)  NULL,
     problem_desc     TEXT         NOT NULL,
