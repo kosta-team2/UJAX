@@ -12,7 +12,7 @@
 
 <aside class="right-sidebar">
     <div class="profile-box" id="profileBox" page="mypage">
-        <a href="${pageContext.request.contextPath}/workspace/mypage.jsp">
+        <a href="${pageContext.request.contextPath}/workspace/mypage.jsp" target="mainFrame">
             <div class="profile-header">
                 <div class="nickname"><c:out value="${profile.nickname}"/></div>
             </div>

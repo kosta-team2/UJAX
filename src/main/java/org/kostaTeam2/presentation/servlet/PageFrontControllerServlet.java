@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.kostaTeam2.global.exception.common.AppException;
+import org.kostaTeam2.global.exception.common.ValidationException;
 import org.kostaTeam2.presentation.controller.page.Controller;
 import org.kostaTeam2.presentation.view.ModelAndView;
 
@@ -46,8 +47,8 @@ public class PageFrontControllerServlet extends HttpServlet {
 		ModelAndView mv;
 		try {
 			mv = controller.handle(method, request, response);
-		} catch (AppException ae) {
-			throw ae;
+		} catch (ValidationException | AppException e) {
+			throw e;
 		} catch (Exception e) {
 			throw new ServletException(e);
 		}
@@ -55,6 +56,7 @@ public class PageFrontControllerServlet extends HttpServlet {
 		if (mv.isRedirect()) {
 			response.sendRedirect(mv.getViewName());
 		} else {
+			if(mv.getViewName().equals("none")) return;
 			request.getRequestDispatcher(mv.getViewName()).forward(request, response);
 		}
 

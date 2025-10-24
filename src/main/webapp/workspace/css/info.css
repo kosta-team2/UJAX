@@ -15,7 +15,7 @@
     box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
 }
 
-
+/* header */
 .ws-settings .card-header {
     display: flex;
     align-items: center;
@@ -29,6 +29,7 @@
     margin: 0;
 }
 
+/* 공통 내부 패딩 (기본정보/위험구역/멤버를 모두 같은 규격으로) */
 .ws-settings .stack {
     display: flex;
     flex-direction: column;
@@ -36,6 +37,7 @@
     padding: 20px;
 }
 
+/* block */
 .ws-settings .block {
     background: var(--surface-sub);
     border: 1px solid var(--border);
@@ -55,6 +57,7 @@
     margin-bottom: 10px;
 }
 
+/* 위험구역 배너도 동일 좌우 규격로 보이게 (stack 안에 들어와 패딩 동일) */
 .ws-settings .danger-banner {
     border: 1px solid #5a1d1d;
     background: #2b1d1d;
@@ -69,6 +72,7 @@
     color: #ffc7c7;
 }
 
+/* fields */
 .ws-settings .field label {
     display: block;
     margin: 0 0 8px 2px;
@@ -102,6 +106,7 @@
     }
 }
 
+/* actions */
 .ws-settings .actions {
     display: flex;
     gap: 8px;
@@ -113,16 +118,31 @@
     justify-content: flex-start;
 }
 
+/* member toolbar */
 .ws-settings .member-toolbar {
     display: flex;
     gap: 10px;
     align-items: center;
+    flex-wrap: nowrap;
 }
 
 .ws-settings .search {
     min-width: 240px;
 }
 
+.ws-settings .member-toolbar .search {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.ws-settings .member-toolbar #ws-openInvite {
+    flex: 0 0 auto;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+}
+
+/* table */
 .ws-settings .table {
     width: 100%;
     border-collapse: separate;
@@ -145,18 +165,6 @@
     border-bottom: none;
 }
 
-.ws-settings .col-user {
-    width: auto;
-}
-
-.ws-settings .col-role {
-    width: 120px;
-}
-
-.ws-settings .col-actions {
-    width: 220px;
-}
-
 .ws-settings .table th.th-user, .ws-settings .table td:nth-child(1) {
     text-align: left;
 }
@@ -165,10 +173,14 @@
     text-align: center;
 }
 
-.ws-settings .table th.th-actions, .ws-settings .table td:nth-child(3) {
+/* ✅ 버튼 열은 항상 오른쪽 끝 정렬 */
+.ws-settings .table th.th-actions,
+.ws-settings .table td:nth-child(3),
+.ws-settings .actions-cell {
     text-align: right;
 }
 
+/* badges */
 .ws-settings .badge {
     display: inline-block;
     padding: 4px 8px;
@@ -184,16 +196,21 @@
     color: #9fc5ff;
 }
 
+/* ✅ 행 내 액션 버튼을 오른쪽에 딱 붙게 */
 .ws-settings .row-actions {
     display: inline-flex;
     gap: 8px;
+    justify-content: flex-end; /* 오른쪽 정렬 */
+    width: 100%;
 }
 
+/* table foot */
 .ws-settings .table-foot {
     padding: 12px;
     color: var(--muted);
 }
 
+/* leave / danger zones */
 .ws-settings .leave-zone {
     margin-top: 14px;
     border: 1px dashed #374151;
@@ -236,7 +253,7 @@
     color: #ffdedf;
 }
 
-/* 버튼 */
+/* buttons */
 .ws-settings .btn {
     border: 1px solid var(--border);
     background: var(--surface-sub);
@@ -284,7 +301,7 @@
     background: #7a2a2a44;
 }
 
-/* modal & toast (필요 시) */
+/* modal */
 .ws-settings .modal {
     position: fixed;
     inset: 0;
@@ -318,72 +335,78 @@
     margin-top: 12px;
 }
 
-
-/* =========================
-   Toast Notifications
-========================= */
-.ws-settings .toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(40px);
-    background: #2b3348;
-    color: #e2e8f0;
-    padding: 12px 22px;
-    border-radius: 12px;
-    font-weight: 600;
-    font-size: 15px;
-    opacity: 0;
-    transition: all .4s ease;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
-    z-index: 4200;
-    white-space: nowrap;
-    pointer-events: none;
-}
-
-.ws-settings .toast.visible {
-    transform: translateX(-50%) translateY(0);
-    opacity: 1;
-}
-
-.ws-settings .toast.success {
-    background: #16a34a;
-    color: #fff;
-}
-
-.ws-settings .toast.warn {
-    background: #b91c1c;
-    color: #fff;
-}
-
-.ws-settings .toast.info {
-    background: #3b82f6;
-    color: #fff;
-}
-
-/* 숨김 유틸 */
+/* util */
 .ws-settings .hidden {
     display: none !important;
 }
 
-/* 툴바 한 줄 유지 */
-.ws-settings .member-toolbar {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: nowrap; /* 줄바꿈 금지 */
+/* =========================
+   힌트보기 라디오 세그먼트 (꽉 찬 배경)
+========================= */
+.ws-settings .hint-radio-group {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* On / Off 균등폭 */
+    border-radius: 10px;
+    overflow: hidden;              /* 둥근 모서리 안쪽으로 잘라냄 */
+    background: var(--surface-sub);/* 기본 배경 */
+}
+/* 실제 보더는 오버레이 레이어로 그려 가운데 공간(여백) 제거 */
+.ws-settings .hint-radio-group::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    pointer-events: none;
 }
 
-/* 검색 인풋은 남는 공간을 차지하면서 필요하면 수축 */
-.ws-settings .member-toolbar .search {
-    flex: 1 1 auto;
-    min-width: 0; /* ✅ 이게 없으면 인풋이 줄어들지 않아 버튼이 밀립니다 */
+.ws-settings .hint-radio-group input[type="radio"] {
+    display: none;
 }
 
-/* "멤버 추가" 버튼은 수축 금지 + 줄바꿈 금지 */
-.ws-settings .member-toolbar #ws-openInvite {
-    flex: 0 0 auto; /* 수축 금지 */
-    white-space: nowrap; /* 줄바꿈 금지 */
-    display: inline-flex; /* 텍스트 한 줄 정렬 안정화 */
+.ws-settings .hint-radio-group label {
+    margin: 0;                     /* ✅ 모서리 잘림 방지 */
+    display: flex;                 /* 셀을 꽉 채우게 */
     align-items: center;
+    justify-content: center;
+    padding: 12px 0;               /* 세로 여백 */
+    cursor: pointer;
+    background: transparent;       /* 선택 전 투명 */
+    color: var(--text);
+    font-weight: 600;
+    font-size: 14px;
+    user-select: none;
+    transition: background .2s ease, color .2s ease, filter .2s ease;
 }
+
+/* 선택된 라벨이 셀 전체를 “가득” 칠함 */
+.ws-settings .hint-radio-group input[type="radio"]:checked + label {
+    background: var(--accent);
+    color: #fff;
+}
+
+.ws-settings .hint-radio-group label:hover {
+    filter: brightness(1.08);
+}
+
+/* 비활성화(리더 아님) */
+.ws-settings .hint-radio-group input[disabled] + label {
+    opacity: .6;
+    cursor: not-allowed;
+}
+
+
+/* base font */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+input, select, button, textarea {
+    font: inherit;
+}
+
+/*ㅇㅇ*/

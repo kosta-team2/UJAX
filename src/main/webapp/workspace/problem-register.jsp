@@ -1,17 +1,24 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<c:if test="${not empty sessionScope.flashMessageJs}">
+    <script>
+        alert('${sessionScope.flashMessageJs}');
+    </script>
+    <c:remove var="flashMessageJs" scope="session"/>
+</c:if>
 
 <link rel="stylesheet" id="theme-style" href="../common/css/darkmode.css">
 <link rel="stylesheet" href="css/problem-register.css">
 
 <section class="register-problem-section" id="register-problem-fragment">
     <div class="card">
-        <!-- 헤더 -->
         <div class="card-header">
-            <button class="back-link" id="backBtn">← 돌아가기</button>
+            <a class="back-link" id="backBtn"
+               onclick="history.back()">←
+                돌아가기</a>
             <h1>문제 등록</h1>
         </div>
 
-        <!-- 추천 영역 -->
         <div class="promo" id="recommendBox">
       <span id="recommendText">
         추천: <b class="problem-link">백준 11724</b> — 연결 요소의 개수 (유형: graph)
@@ -19,15 +26,18 @@
             <button id="refreshRecommend" class="refresh" aria-label="추천 새로고침">↻</button>
         </div>
 
-        <!-- 폼 -->
-        <form id="registerForm" class="grid-form" novalidate>
-            <!-- 좌측 -->
+        <form method="post" action="${pageContext.request.contextPath}/front" class="grid-form"
+              id="registerForm">
+            <input type="hidden" name="key" value="problem"/>
+            <input type="hidden" name="methodName" value="create"/>
+            <input type="hidden" name="workspaceId" value="${param.workspaceId}"/>
+
             <div class="form-col">
                 <div class="field">
-                    <label for="problemNumber">문제 번호</label>
+                    <label for="problemNum">문제 번호</label>
                     <input
-                            id="problemNumber"
-                            name="problemNumber"
+                            id="problemNum"
+                            name="problemNum"
                             type="text"
                             placeholder="문제 번호를 입력하세요"
                             required
@@ -47,49 +57,111 @@
                 </div>
             </div>
 
-            <!-- 우측 -->
             <div class="form-col">
                 <div class="field">
                     <label>알람 설정</label>
                     <div class="alarm-pill" role="radiogroup" aria-label="알림 설정">
                         <label class="radio-item">
-                            <input type="radio" name="alarm" value="on" />
-                            <span class="dot" aria-hidden="true"></span>
-                            <span class="txt">On</span>
+                            <input type="radio" name="alarm" value="on" id="alarmOn"/>
+                            <span class="dot"></span><span class="txt">On</span>
                         </label>
-
                         <label class="radio-item">
-                            <input type="radio" name="alarm" value="off" checked />
-                            <span class="dot" aria-hidden="true"></span>
-                            <span class="txt">Off</span>
+                            <input type="radio" name="alarm" value="off" id="alarmOff" checked/>
+                            <span class="dot"></span><span class="txt">Off</span>
                         </label>
                     </div>
                 </div>
 
-                <!-- ▽ 알람 옵션(ON일 때만 표시) -->
-                <div id="alarmOptions" class="alarm-options">
+                <div id="alarmOptions" class="alarm-options" hidden>
                     <div class="opt">
-                        <label for="startHours">마감 몇 시간 전부터</label>
+                        <label for="alarmAt">마감 몇 시간 전부터</label>
                         <div class="opt-row">
-                            <input
-                                    id="startHours"
-                                    type="number"
-                                    min="1"
-                                    max="24"
-                                    step="1"
-                                    value="1"
-                                    inputmode="numeric"
-                            />
+                            <input id="alarmAt" name="alarmAt" type="number" min="1" max="24" step="1" value="1"
+                                   inputmode="numeric"/>
                             <span class="unit">시간 전</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- 제출 버튼 -->
             <div class="actions">
                 <button type="submit" class="btn primary">등록</button>
             </div>
         </form>
     </div>
+
 </section>
+
+<%--TODO: 알람 시간 받아오는 내용을 def로 받아오지 못해 일단 생으로 삽입--%>
+<script>
+    (() => {
+        console.info('[problem-register] loaded');
+
+        function syncAlarmUI(form) {
+            if (!form) return;
+            const options = form.querySelector('#alarmOptions');
+            const alarmAt = form.querySelector('#alarmAt');
+            const checked = form.querySelector('input[name="alarm"]:checked');
+            const isOn = !!checked && checked.value === 'on';
+
+            if (options) {
+                options.hidden = !isOn;             // 속성 기반
+                options.classList.toggle('show', isOn); // 클래스 기반 (CSS 충돌 대비)
+            }
+            if (alarmAt) {
+                alarmAt.disabled = !isOn;  // off면 전송 안 됨
+                alarmAt.required = isOn;
+            }
+        }
+
+        function bindForm(form) {
+            if (!form || form.dataset._alarmBound === '1') return;
+            form.dataset._alarmBound = '1';
+
+            syncAlarmUI(form);
+
+            const onAny = () => syncAlarmUI(form);
+            form.addEventListener('change', (e) => {
+                const t = e.target;
+                if (t && t.name === 'alarm') onAny();
+            });
+            form.addEventListener('input', (e) => {
+                const t = e.target;
+                if (t && t.name === 'alarm') onAny();
+            });
+            form.addEventListener('click', (e) => {
+                // 라벨 클릭이 들어와도 반응하도록 보강
+                const label = e.target.closest?.('.radio-item');
+                if (label && label.querySelector('input[name="alarm"]')) {
+                    // 브라우저 토글 직후에 동기화
+                    setTimeout(onAny, 0);
+                }
+            });
+
+            console.info('[problem-register] bound form');
+        }
+
+        function bindNow() {
+            const forms = document.querySelectorAll('#registerForm');
+            forms.forEach(bindForm);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', bindNow, {once: true});
+        } else {
+            bindNow();
+        }
+
+        const mo = new MutationObserver(() => bindNow());
+        mo.observe(document.documentElement, {childList: true, subtree: true});
+
+        let kicks = 0;
+        const kick = setInterval(() => {
+            bindNow();
+            document.querySelectorAll('#registerForm').forEach(syncAlarmUI);
+            if (++kicks > 20) clearInterval(kick); // 2초 정도만 보강
+        }, 100);
+
+        window.__problemRegisterSync = bindNow;
+    })();
+</script>

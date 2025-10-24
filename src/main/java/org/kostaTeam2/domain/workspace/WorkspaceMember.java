@@ -6,7 +6,7 @@ public class WorkspaceMember {
     private Long workspaceMemberId;
     private Long workspaceId;
     private Long memberId;
-    private boolean isLeader;
+    private boolean leader;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private boolean isDeleted;
@@ -21,13 +21,19 @@ public class WorkspaceMember {
     public WorkspaceMember(Long workspaceId, Long memberId, Boolean isLeader) {
         this.workspaceId = workspaceId;
         this.memberId = memberId;
-        this.isLeader = Boolean.TRUE.equals(isLeader);
+        this.leader = Boolean.TRUE.equals(isLeader);
+    }
+
+    public WorkspaceMember(Long workspaceMemberId, Boolean isLeader, Long workspaceId) {
+        this.workspaceMemberId = workspaceMemberId;
+        this.leader = Boolean.TRUE.equals(isLeader);
+        this.workspaceId = workspaceId;
     }
 
     public WorkspaceMember(Long workspaceId, Long memberId, Boolean isLeader, String nickname, String email) {
         this.workspaceId = workspaceId;
         this.memberId = memberId;
-        this.isLeader = Boolean.TRUE.equals(isLeader);
+        this.leader = Boolean.TRUE.equals(isLeader);
         this.nickname = nickname;
         this.email = email;
     }
@@ -44,8 +50,8 @@ public class WorkspaceMember {
         return memberId;
     }
 
-    public Boolean isLeader() {
-        return isLeader;
+    public boolean isLeader() {
+        return leader;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -56,7 +62,19 @@ public class WorkspaceMember {
         return updatedAt;
     }
 
-    public Boolean isDeleted() {
+    public String getNickname() {
+        return nickname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public boolean isDeleted() {
         return isDeleted;
+    }
+
+    public void setWorkspaceMemberId(Long workspaceMemberId) {
+        this.workspaceMemberId = workspaceMemberId;
     }
 }

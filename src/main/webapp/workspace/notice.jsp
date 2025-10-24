@@ -1,5 +1,6 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html lang="ko" data-theme="dark">
 <head>
@@ -8,23 +9,16 @@
 
     <link rel="stylesheet" href="${pageContext.request.contextPath}/common/css/darkmode.css"/>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/notice.css"/>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/noticeModal.css"/>
 
 </head>
 <body>
-
-<jsp:include page="${pageContext.request.contextPath}/mock">
-    <jsp:param name="key" value="notice"/>
-    <jsp:param name="methodName" value="getNotices"/>
-    <jsp:param name="wsId" value="${param.wsId}"/>
-    <jsp:param name="page" value="${empty param.page ? 1 : param.page}"/>
-    <jsp:param name="size" value="${empty param.size ? 6 : param.size}"/>
-</jsp:include>
-
 <main class="main-content">
     <section class="section notice-list-section">
 
         <div class="notice-header">
-            <h3>공지 사항</h3>
+            <h1>공지 사항</h1>
+            <%--            todo 사이드바의 isleader를 통해 공지 등록 보이고숨기기--%>
             <button class="register-btn" type="button" id="openEditorBtn">공지 등록</button>
         </div>
 
@@ -33,7 +27,7 @@
         <div class="notice-controls">
             <div class="search-sort">
                 <form method="get" action="${pageContext.request.contextPath}/workspace/notice.jsp">
-                    <input type="hidden" name="wsId" value="${param.wsId}"/>
+                    <input type="hidden" name="workspaceId" value="${param.workspaceId}"/>
                     <input type="hidden" name="size" value="${size}"/>
                 </form>
             </div>
@@ -46,71 +40,105 @@
             <c:otherwise>
                 <div class="notice-grid" id="noticeGrid">
                     <c:forEach items="${notices}" var="n">
-                        <a href="#" class="notice-card"
-                           data-title="${n.title}"
-                           data-content="${n.content}">
-                            <strong><c:out value="${n.title}"/></strong>
-                            <p><c:out value="${n.content}"/></p>
+                        <a href="#"
+                           class="notice-card"
+                           data-notice-id="${n.noticeId}"
+                           data-title="<c:out value='${not empty n.title ? n.title.value : ""}'/>"
+                           data-content="<c:out value='${not empty n.content ? n.content.value : ""}'/>">
+                            <strong><c:out value='${not empty n.title ? n.title.value : ""}'/></strong>
+                            <p class="preview"><c:out value='${not empty n.content ? n.content.value : ""}'/></p>
                         </a>
                     </c:forEach>
                 </div>
             </c:otherwise>
         </c:choose>
 
+        <%--    페이지네이션    --%>
         <c:if test="${totalPages > 1}">
             <div class="pagination">
-                <a class="page-btn ${!hasPrev ? 'disabled' : ''}"
-                   href="${pageContext.request.contextPath}/workspace/notice.jsp?wsId=${param.wsId}&page=1&size=${size}"
-                   aria-label="첫 페이지">&laquo;</a>
+                    <%-- 첫 페이지 --%>
+                <c:url var="firstUrl" value="${pageContext.request.contextPath}/front">
+                    <c:param name="key" value="notice"/>
+                    <c:param name="methodName" value="getNotices"/>
+                    <c:param name="wsId" value="${wsId}"/>
+                    <c:param name="page" value="1"/>
+                    <c:param name="size" value="${size}"/>
+                    <c:param name="sort" value="${sort}"/>
+                </c:url>
+                <a class="page-btn ${!hasPrev ? 'disabled' : ''}" href="${firstUrl}" aria-label="첫 페이지">&laquo;</a>
 
-                <a class="page-btn ${!hasPrev ? 'disabled' : ''}"
-                   href="${pageContext.request.contextPath}/workspace/notice.jsp?wsId=${param.wsId}&page=${hasPrev ? prevPage : page}&size=${size}"
-                   aria-label="이전">&lsaquo;</a>
+                    <%-- 이전 --%>
+                <c:url var="prevUrl" value="${pageContext.request.contextPath}/front">
+                    <c:param name="key" value="notice"/>
+                    <c:param name="methodName" value="getNotices"/>
+                    <c:param name="wsId" value="${wsId}"/>
+                    <c:param name="page" value="${hasPrev ? prevPage : page}"/>
+                    <c:param name="size" value="${size}"/>
+                    <c:param name="sort" value="${sort}"/>
+                </c:url>
+                <a class="page-btn ${!hasPrev ? 'disabled' : ''}" href="${prevUrl}" aria-label="이전">&lsaquo;</a>
 
+                    <%-- 숫자 버튼 --%>
                 <c:forEach var="pnum" begin="${startPage}" end="${endPage}">
                     <c:choose>
                         <c:when test="${pnum == page}">
                             <span class="page-btn current">${pnum}</span>
                         </c:when>
                         <c:otherwise>
-                            <a class="page-btn"
-                               href="${pageContext.request.contextPath}/workspace/notice.jsp?wsId=${param.wsId}&page=${pnum}&size=${size}">${pnum}</a>
+                            <c:url var="numUrl" value="${pageContext.request.contextPath}/front">
+                                <c:param name="key" value="notice"/>
+                                <c:param name="methodName" value="getNotices"/>
+                                <c:param name="wsId" value="${wsId}"/>
+                                <c:param name="page" value="${pnum}"/>
+                                <c:param name="size" value="${size}"/>
+                                <c:param name="sort" value="${sort}"/>
+                            </c:url>
+                            <a class="page-btn" href="${numUrl}">${pnum}</a>
                         </c:otherwise>
                     </c:choose>
                 </c:forEach>
 
-                <a class="page-btn ${!hasNext ? 'disabled' : ''}"
-                   href="${pageContext.request.contextPath}/workspace/notice.jsp?wsId=${param.wsId}&page=${hasNext ? nextPage : page}&size=${size}"
-                   aria-label="다음">&rsaquo;</a>
+                    <%-- 다음 --%>
+                <c:url var="nextUrl" value="${pageContext.request.contextPath}/front">
+                    <c:param name="key" value="notice"/>
+                    <c:param name="methodName" value="getNotices"/>
+                    <c:param name="wsId" value="${wsId}"/>
+                    <c:param name="page" value="${hasNext ? nextPage : page}"/>
+                    <c:param name="size" value="${size}"/>
+                    <c:param name="sort" value="${sort}"/>
+                </c:url>
+                <a class="page-btn ${!hasNext ? 'disabled' : ''}" href="${nextUrl}" aria-label="다음">&rsaquo;</a>
 
-                <a class="page-btn ${!hasNext ? 'disabled' : ''}"
-                   href="${pageContext.request.contextPath}/workspace/notice.jsp?wsId=${param.wsId}&page=${totalPages}&size=${size}"
-                   aria-label="마지막">&raquo;</a>
+                    <%-- 마지막 --%>
+                <c:url var="lastUrl" value="${pageContext.request.contextPath}/front">
+                    <c:param name="key" value="notice"/>
+                    <c:param name="methodName" value="getNotices"/>
+                    <c:param name="wsId" value="${wsId}"/>
+                    <c:param name="page" value="${totalPages}"/>
+                    <c:param name="size" value="${size}"/>
+                    <c:param name="sort" value="${sort}"/>
+                </c:url>
+                <a class="page-btn ${!hasNext ? 'disabled' : ''}" href="${lastUrl}" aria-label="마지막">&raquo;</a>
             </div>
         </c:if>
     </section>
-</main>
 
-<div id="noticeModal" class="ws-modal" style="display:none;">
-    <div class="ws-dialog" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
-        <button type="button" class="modal-close" id="modalClose" title="닫기">×</button>
-
-        <div id="viewSection">
-            <h3 id="modalTitle" class="m-title"></h3>
-            <div id="modalContent" class="m-body"></div>
-        </div>
-
-        <div id="editSection" style="display:none; margin-top:12px;">
-            <input type="text" id="noticeTitleInput" placeholder="제목 입력" style="width:100%; margin-bottom:8px;"/>
-            <textarea id="noticeContentInput" rows="6" placeholder="내용 입력" style="width:100%;"></textarea>
-            <div class="modal-actions" style="display:flex; justify-content:flex-end; gap:.5rem; margin-top:.75rem;">
-                <button class="btn" id="saveNoticeBtn" type="button">등록</button>
-            </div>
-        </div>
+    <!-- 동기 제출용 숨은 폼 -->
+    <form id="noticeCreateForm"
+          action="${pageContext.request.contextPath}/front"
+          key="notice"
+          methodName="createNotice"
+          method="post">
+        <input type="hidden" id="noticeWorkspaceIdHidden" name="wsId"/>
+        <input type="hidden" id="noticeTitleHidden" name="title"/>
+        <input type="hidden" id="noticeContentHidden" name="content"/>
+    </form>
     </div>
-</div>
 
-<script defer src="js/notice.js"></script>
+</main>
+<jsp:include page="/workspace/notice-modal.jsp"/>
+<script defer src="${pageContext.request.contextPath}/workspace/js/noticeModal.js"></script>
+<script defer src="${pageContext.request.contextPath}/workspace/js/notice.js"></script>
 
 </body>
 </html>
