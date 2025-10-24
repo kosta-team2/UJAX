@@ -30,8 +30,8 @@ public class GiftDao implements GiftRepository {
 
 				return new Gift(
 					rs.getString("product_name"),
-					rs.getBigDecimal("product_price"),
-					rs.getBlob("product_image")
+					rs.getLong("product_price"),
+					rs.getString("product_image")
 				);
 			}
 		}
@@ -53,13 +53,13 @@ public class GiftDao implements GiftRepository {
 
 	@Override
 	public List<Gift> findPages(Connection conn, int offset, int size) throws SQLException {
+		// todo 바코드가 하나라도 있는 기프티콘만 보여준다.
 		String sql = """
 				SELECT product_id, product_name, product_price, product_image
 				 FROM gift
 				ORDER BY created_at DESC, n_id DESC
 			 	LIMIT ? OFFSET ?;
 			""";
-		
 		try (PreparedStatement ps = conn.prepareStatement(sql)) {
 			ps.setInt(1, size);
 			ps.setInt(2, offset);
@@ -71,8 +71,8 @@ public class GiftDao implements GiftRepository {
 					Gift gift = new Gift(
 						rs.getLong("product_id"),
 						rs.getString("product_name"),
-						rs.getBigDecimal("product_price"),
-						rs.getBlob("product_image")
+						rs.getLong("product_price"),
+						rs.getString("product_image")
 					);
 
 					list.add(gift);

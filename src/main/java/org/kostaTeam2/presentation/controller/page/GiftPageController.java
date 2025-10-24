@@ -20,8 +20,8 @@ public class GiftPageController implements Controller {
 	public ModelAndView handle(String methodName, HttpServletRequest request, HttpServletResponse response) throws
 		Exception {
 		return switch (methodName) {
-			case "show" -> showGiftItem(request, response);
-			case "showPage" -> showGiftPage(request, response);
+			case "showGift" -> showGiftItem(request, response);
+			case "showGiftPage" -> showGiftPage(request, response);
 			default -> throw new BadRequestException("workspace methodName이 올바르지 않습니다.");
 		};
 	}

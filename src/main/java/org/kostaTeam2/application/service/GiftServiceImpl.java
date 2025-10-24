@@ -11,7 +11,8 @@ import org.kostaTeam2.domain.gift.GiftRepository;
 import org.kostaTeam2.dto.response.GiftPage;
 import org.kostaTeam2.global.exception.DBException;
 
-public class GiftServiceImpl implements GiftService {
+public class
+GiftServiceImpl implements GiftService {
 	private final DataSource ds;
 	private final GiftRepository giftRepository;
 

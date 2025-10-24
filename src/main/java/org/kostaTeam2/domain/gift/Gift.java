@@ -1,23 +1,21 @@
 package org.kostaTeam2.domain.gift;
 
-import java.math.BigDecimal;
-import java.sql.Blob;
 import java.time.LocalDateTime;
 
 public class Gift {
 	private Long productId;
 	private String productName;
-	private BigDecimal productPrice;
-	private Blob productImage;
+	private Long productPrice;
+	private String productImage;
 	private LocalDateTime createdAt;
 
-	public Gift(String productName, BigDecimal productPrice, Blob productImage) {
+	public Gift(String productName, Long productPrice, String productImage) {
 		this.productName = productName;
 		this.productPrice = productPrice;
 		this.productImage = productImage;
 	}
 
-	public Gift(Long productId, String productName, BigDecimal productPrice, Blob productImage) {
+	public Gift(Long productId, String productName, Long productPrice, String productImage) {
 		this.productId = productId;
 		this.productName = productName;
 		this.productPrice = productPrice;
@@ -32,11 +30,11 @@ public class Gift {
 		return productName;
 	}
 
-	public BigDecimal getProductPrice() {
+	public Long getProductPrice() {
 		return productPrice;
 	}
 
-	public Blob getProductImage() {
+	public String getProductImage() {
 		return productImage;
 	}
 

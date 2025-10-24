@@ -102,16 +102,20 @@ CREATE TABLE reward
 CREATE TABLE gift
 (
     product_id    BIGINT PRIMARY KEY AUTO_INCREMENT,
-    product_name  VARCHAR(50)    NOT NULL,
-    product_price DECIMAL(10, 2) NOT NULL,
-    product_image BLOB           NOT NULL,
-    created_at    DATETIME(3)    NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
+    product_name  VARCHAR(50)  NOT NULL,
+    product_price BIGINT       NOT NULL,
+    product_image VARCHAR(512) NOT NULL,
+    created_at    DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
 );
+
 
 CREATE TABLE barcode
 (
-    product_id    BIGINT PRIMARY KEY,
-    barcode_image BLOB NOT NULL
+    barcode_id    BIGINT PRIMARY KEY AUTO_INCREMENT,
+    product_id    BIGINT       NOT NULL,
+    barcode_image VARCHAR(512) NOT NULL,
+    status        TINYINT      NOT NULL DEFAULT 0,
+    created_at    DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
 );
 
 CREATE TABLE algorithm
@@ -154,7 +158,7 @@ CREATE TABLE member
     email      VARCHAR(100) NOT NULL UNIQUE,
     password   VARCHAR(60)  NOT NULL,
     nickname   VARCHAR(30)  NOT NULL UNIQUE,
-    reward     INT          NOT NULL DEFAULT 0,
+    reward     BIGINT       NOT NULL DEFAULT 0,
     xp         INT          NOT NULL DEFAULT 0,
     created_at DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     updated_at DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
@@ -235,13 +239,13 @@ ALTER TABLE algorithm
 
 INSERT INTO member (email, password, nickname, reward, xp)
 VALUES ('test@example.com', '123123123', 'test', 9999999, 999999),
-       ('alice@example.com', 'pass1234', 'alice', 0.00, 120),
-       ('bob@example.com', 'pass1234', 'bob', 5.50, 80),
-       ('carol@example.com', 'pass1234', 'carol', 10.00, 200),
-       ('dave@example.com', 'pass1234', 'dave', 0.00, 40),
-       ('erin@example.com', 'pass1234', 'erin', 2.75, 65),
-       ('frank@example.com', 'pass1234', 'frank', 0.00, 300),
-       ('grace@example.com', 'pass1234', 'grace', 1.25, 150),
-       ('heidi@example.com', 'pass1234', 'heidi', 0.00, 95),
-       ('ivan@example.com', 'pass1234', 'ivan', 12.00, 220),
-       ('judy@example.com', 'pass1234', 'judy', 0.00, 10);
+       ('alice@example.com', 'pass1234', 'alice', 0, 120),
+       ('bob@example.com', 'pass1234', 'bob', 5, 80),
+       ('carol@example.com', 'pass1234', 'carol', 10, 200),
+       ('dave@example.com', 'pass1234', 'dave', 0, 40),
+       ('erin@example.com', 'pass1234', 'erin', 2, 65),
+       ('frank@example.com', 'pass1234', 'frank', 0, 300),
+       ('grace@example.com', 'pass1234', 'grace', 1, 150),
+       ('heidi@example.com', 'pass1234', 'heidi', 0, 95),
+       ('ivan@example.com', 'pass1234', 'ivan', 12, 220),
+       ('judy@example.com', 'pass1234', 'judy', 0, 10);
