@@ -24,6 +24,12 @@ public class WorkspaceMember {
         this.leader = Boolean.TRUE.equals(isLeader);
     }
 
+    public WorkspaceMember(Long workspaceMemberId, Boolean isLeader, Long workspaceId) {
+        this.workspaceMemberId = workspaceMemberId;
+        this.leader = Boolean.TRUE.equals(isLeader);
+        this.workspaceId = workspaceId;
+    }
+
     public WorkspaceMember(Long workspaceId, Long memberId, Boolean isLeader, String nickname, String email) {
         this.workspaceId = workspaceId;
         this.memberId = memberId;

@@ -12,19 +12,11 @@
 </head>
 <body>
 
-<%--<jsp:include page="/front">--%>
-<%--    <jsp:param name="key" value="problem"/>--%>
-<%--    <jsp:param name="methodName" value="getProblems"/>--%>
-<%--    <jsp:param name="wsId" value="${param.wsId}"/>--%>
-<%--    <jsp:param name="page" value="${empty param.page ? 1 : param.page}"/>--%>
-<%--    <jsp:param name="size" value="${empty param.size ? 6 : param.size}"/>--%>
-<%--</jsp:include>--%>
-
 <section class="section problem-list-section">
     <div class="problem-header">
         <h3>문제 리스트</h3>
         <a class="problem-register-btn"
-           href="${pageContext.request.contextPath}/workspace/problem-register.jsp?wsId=${param.wsId}"
+           href="${pageContext.request.contextPath}/workspace/problem-register.jsp?workspaceId=${param.workspaceId}"
            target="mainFrame">문제 등록</a>
     </div>
 
@@ -33,8 +25,8 @@
     <div class="problem-controls">
         <div class="search-sort">
             <form method="get" action="${pageContext.request.contextPath}/workspace/problem.jsp">
-                <input type="hidden" name="wsId" value="${param.wsId}"/>
-                <input type="hidden" name="wsMbId" value="1"/>
+                <input type="hidden" name="workspaceId" value="${param.workspaceId}"/>
+                <input type="hidden" name="workspaceMemberId" value="1"/>
                 <input type="hidden" name="size" value="${empty size ? 6 : size}"/>
                 <input type="text" class="search-input" name="q" placeholder="문제 제목 / 태그 검색(목업)">
                 <button class="sort-btn" type="submit">정렬 ▾</button>
@@ -75,7 +67,7 @@
                             </div>
 
                             <a class="go-btn"
-                               href="${pageContext.request.contextPath}/solution/solution.jsp?id=${p.wsProblemId}&wsId=${param.wsId}"
+                               href="${pageContext.request.contextPath}/solution/solution.jsp?id=${p.wsProblemId}&workspaceId=${param.workspaceId}"
                                target="_top">문제 풀기</a>
                         </div>
                     </div>
@@ -87,7 +79,7 @@
     <c:if test="${totalPages > 1}">
         <div class="pagination">
             <a class="page-btn"
-               href="${pageContext.request.contextPath}/front?key=problem&methodName=getProblems&wsId=${param.wsId}&wsMbId=1&page=1&size=6"
+               href="${pageContext.request.contextPath}/front?key=problem&methodName=getProblems&workspaceId=${param.workspaceId}&workspaceMemberId=1&page=1&size=6"
                aria-label="첫 페이지">&laquo;</a>
 
             <c:forEach var="pnum" begin="${1}" end="${totalPages}">
@@ -97,13 +89,13 @@
                     </c:when>
                     <c:otherwise>
                         <a class="page-btn"
-                           href="${pageContext.request.contextPath}/front?key=problem&methodName=getProblems&wsId=${param.wsId}&wsMbId=1&page=${pnum}&size=6">${pnum}</a>
+                           href="${pageContext.request.contextPath}/front?key=problem&methodName=getProblems&workspaceId=${param.workspaceId}&workspaceMemberId=1&page=${pnum}&size=6">${pnum}</a>
                     </c:otherwise>
                 </c:choose>
             </c:forEach>
 
             <a class="page-btn"
-               href="${pageContext.request.contextPath}/front?key=problem&methodName=getProblems&wsId=${param.wsId}&wsMbId=1&page=${totalPages}&size=6"
+               href="${pageContext.request.contextPath}/front?key=problem&methodName=getProblems&workspaceId=${param.workspaceId}&workspaceMemberId=1&page=${totalPages}&size=6"
                aria-label="마지막">&raquo;</a>
         </div>
     </c:if>

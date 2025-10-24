@@ -9,8 +9,8 @@ public record WorkspaceProblemPageRequest(
 	int size
 ) {
 	public static WorkspaceProblemPageRequest from(HttpServletRequest req) {
-		Long workspaceId = Long.valueOf(req.getParameter("wsId"));
-		Long workspaceMemberId = Long.valueOf(req.getParameter("wsMbId"));
+		Long workspaceId = Long.valueOf(req.getParameter("workspaceId"));
+		Long workspaceMemberId = Long.valueOf(req.getParameter("workspaceMemberId"));
 		int page = Integer.parseInt((req.getParameter("page")));
 		int size = Integer.parseInt((req.getParameter("size")));
 

@@ -51,7 +51,7 @@ public class WorkSpaceProblemController implements Controller {
 				"/workspace/problem-register.jsp");
 		}
 
-		return new ModelAndView("/front?key=problem&methodName=getProblems&wsId=1&wsMbId=1&page=1&size=6", true);
+		return new ModelAndView("/front?key=problem&methodName=getProblems&workspaceId=1&workspaceMemberId=1&page=1&size=6", true);
 	}
 
 	public ModelAndView getProblems(HttpServletRequest request, HttpServletResponse response) {
@@ -63,6 +63,12 @@ public class WorkSpaceProblemController implements Controller {
 			dto.page(),
 			dto.size()
 		);
+
+		if (problems.isEmpty()) {
+			request.setAttribute("page", dto.page());
+			request.setAttribute("totalPages", 0);
+			return new ModelAndView("/workspace/problem.jsp");
+		}
 
 		//TODO: 페이징 dto로 변경
 		request.setAttribute("problems", problems);

@@ -1,9 +1,16 @@
 package org.kostaTeam2.presentation.controller.page;
 
+import java.util.List;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import org.kostaTeam2.application.service.workspace.WorkspaceService;
 import org.kostaTeam2.domain.workspace.Workspace;
 import org.kostaTeam2.dto.request.WorkspaceRequest;
 import org.kostaTeam2.dto.request.WorkspaceUserRequest;
+import org.kostaTeam2.dto.response.SidebarInfoResponse;
 import org.kostaTeam2.global.exception.BadRequestException;
 import org.kostaTeam2.global.exception.common.AppException;
 import org.kostaTeam2.presentation.controller.dto.SessionUser;
@@ -30,6 +37,7 @@ public class WorkspacePageController implements Controller {
             case "updateRole" -> delegateLeader(request, response);
             case "kickUser" -> kickUser(request, response);
             case "exit" -> exitWorkspace(request, response);
+            case "getSidebar" -> getSidebar(request, response);
             default -> throw new BadRequestException("workspace methodName이 올바르지 않습니다.");
         };
     }
@@ -141,5 +149,14 @@ public class WorkspacePageController implements Controller {
 
         request.setAttribute("target", request.getContextPath() + "/workspace");
         return new ModelAndView("common/top-redirect.jsp");
+    }
+
+    private ModelAndView getSidebar(HttpServletRequest request, HttpServletResponse response) {
+        SessionUser sessionUser = (SessionUser) request.getSession().getAttribute("SessionUser");
+
+        List<SidebarInfoResponse> sidebarInfo = workspaceService.getSidebarInfo(sessionUser.memberId());
+
+        request.setAttribute("workspaces", sidebarInfo);
+        return new ModelAndView("none");
     }
 }

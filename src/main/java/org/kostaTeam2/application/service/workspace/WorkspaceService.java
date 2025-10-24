@@ -3,7 +3,9 @@ package org.kostaTeam2.application.service.workspace;
 import org.kostaTeam2.domain.workspace.Workspace;
 import org.kostaTeam2.dto.request.WorkspaceUserRequest;
 import org.kostaTeam2.dto.request.WorkspaceRequest;
+import org.kostaTeam2.dto.response.SidebarInfoResponse;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface WorkspaceService {
@@ -51,4 +53,6 @@ public interface WorkspaceService {
      * 일반 멤버면 바로 나가기 허용
      */
     void exitWorkspace(WorkspaceUserRequest dto);
+
+    List<SidebarInfoResponse> getSidebarInfo(Long memberId);
 }
