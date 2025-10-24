@@ -91,8 +91,8 @@ public class MemberPageController implements Controller {
             memberService.softDelete(user.memberId());
             session.invalidate();
 
-            request.setAttribute("message", "회원 탈퇴가 정상적으로 처리되었습니다. 이용해주셔서 감사합니다.");
-            return new ModelAndView("/auth/login.jsp");
+            request.setAttribute("target", request.getContextPath() + "/auth/login.jsp");
+            return new ModelAndView("common/top-redirect.jsp");
 
         } catch (BadRequestException e) {
             request.setAttribute("error", e.getMessage());
