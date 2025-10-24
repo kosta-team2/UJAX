@@ -5,13 +5,6 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/common/css/darkmode.css"/>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/giftshop.css"/>
 
-<jsp:include page="${pageContext.request.contextPath}/mock">
-    <jsp:param name="key" value="giftshop"/>
-    <jsp:param name="methodName" value="list"/>
-    <jsp:param name="page" value="${empty param.page ? 1 : param.page}"/>
-    <jsp:param name="size" value="${empty param.size ? 6 : param.size}"/>
-</jsp:include>
-
 <main class="giftshop">
     <header class="topbar">
         <h1 class="page-title">기프티콘 샵</h1>
@@ -20,25 +13,24 @@
     <section class="grid" aria-live="polite">
         <c:choose>
             <c:when test="${empty products}">
-                <p class="state">표시할 상품이 없습니다.</p>
+                <p style="color:var(--muted)">표시할 상품이 없습니다.</p>
             </c:when>
             <c:otherwise>
                 <c:forEach items="${products}" var="p">
                     <a class="card"
-                       href="${pageContext.request.contextPath}/workspace/giftshop-detail.jsp?productId=${p.productId}">
+                       href="${pageContext.request.contextPath}/front?key=giftshop&methodName=showGift&productId=${p.productId}">
                         <div class="thumb">
-                            <c:if test="${empty p.img}">
-                                <span class="ph">이미지 1:1 영역</span>
+                            <c:if test="${empty p.productImage}">
+                                <span class="ph">이미지를 불러오지 못 했습니다.</span>
                             </c:if>
-                            <c:if test="${not empty p.img}">
-                                <img src="${p.img}" alt="${p.name}">
+                            <c:if test="${not empty p.productImage}">
+                                <img src="${p.productImage}" alt="${p.productName}">
                             </c:if>
                         </div>
-                        <div class="brand"><c:out value="${p.brand}"/></div>
-                        <h3 class="name"><c:out value="${p.name}"/></h3>
+                        <h3 class="name"><c:out value="${p.productName}"/></h3>
                         <div class="price-row">
                             <div class="price">
-                                <fmt:formatNumber value="${p.price}" type="number" groupingUsed="true"/>원
+                                <fmt:formatNumber value="${p.productPrice}" type="number" groupingUsed="true"/>원
                             </div>
                         </div>
                     </a>
@@ -48,39 +40,62 @@
     </section>
 
     <!-- 페이지네이션 -->
+    <%--    페이지네이션    --%>
     <c:if test="${totalPages > 1}">
-        <nav class="pagination" aria-label="페이지 내비게이션">
-            <!-- 처음/이전 -->
-            <a class="page-btn ${!hasPrev ? 'is-disabled' : ''}"
-               href="${pageContext.request.contextPath}/workspace/giftshop.jsp?page=1&size=${size}"
-               aria-label="첫 페이지">&laquo;</a>
-            <a class="page-btn ${!hasPrev ? 'is-disabled' : ''}"
-               href="${pageContext.request.contextPath}/workspace/giftshop.jsp?page=${hasPrev ? prevPage : page}&size=${size}"
-               aria-label="이전 페이지">&lsaquo;</a>
+        <div class="pagination">
+                <%-- 첫 페이지 --%>
+            <c:url var="firstUrl" value="${pageContext.request.contextPath}/front">
+                <c:param name="key" value="giftshop"/>
+                <c:param name="methodName" value="showGiftPage"/>
+                <c:param name="page" value="1"/>
+                <c:param name="size" value="${size}"/>
+            </c:url>
+            <a class="page-btn ${!hasPrev ? 'disabled' : ''}" href="${firstUrl}" aria-label="첫 페이지">&laquo;</a>
 
-            <ol class="page-list">
-                <c:forEach var="pnum" begin="${startPage}" end="${endPage}">
-                    <li>
-                        <c:choose>
-                            <c:when test="${pnum == page}">
-                                <span class="page is-active">${pnum}</span>
-                            </c:when>
-                            <c:otherwise>
-                                <a class="page"
-                                   href="${pageContext.request.contextPath}/workspace/giftshop.jsp?page=${pnum}&size=${size}">${pnum}</a>
-                            </c:otherwise>
-                        </c:choose>
-                    </li>
-                </c:forEach>
-            </ol>
+                <%-- 이전 --%>
+            <c:url var="prevUrl" value="${pageContext.request.contextPath}/front">
+                <c:param name="key" value="giftshop"/>
+                <c:param name="methodName" value="showGiftPage"/>
+                <c:param name="page" value="${hasPrev ? prevPage : page}"/>
+                <c:param name="size" value="${size}"/>
+            </c:url>
+            <a class="page-btn ${!hasPrev ? 'disabled' : ''}" href="${prevUrl}" aria-label="이전">&lsaquo;</a>
 
-            <!-- 다음/마지막 -->
-            <a class="page-btn ${!hasNext ? 'is-disabled' : ''}"
-               href="${pageContext.request.contextPath}/workspace/giftshop.jsp?page=${hasNext ? nextPage : page}&size=${size}"
-               aria-label="다음 페이지">&rsaquo;</a>
-            <a class="page-btn ${!hasNext ? 'is-disabled' : ''}"
-               href="${pageContext.request.contextPath}/workspace/giftshop.jsp?page=${totalPages}&size=${size}"
-               aria-label="마지막 페이지">&raquo;</a>
-        </nav>
+                <%-- 숫자 버튼 --%>
+            <c:forEach var="pnum" begin="${startPage}" end="${endPage}">
+                <c:choose>
+                    <c:when test="${pnum == page}">
+                        <span class="page-btn current">${pnum}</span>
+                    </c:when>
+                    <c:otherwise>
+                        <c:url var="numUrl" value="${pageContext.request.contextPath}/front">
+                            <c:param name="key" value="giftshop"/>
+                            <c:param name="methodName" value="showGiftPage"/>
+                            <c:param name="page" value="${pnum}"/>
+                            <c:param name="size" value="${size}"/>
+                        </c:url>
+                        <a class="page-btn" href="${numUrl}">${pnum}</a>
+                    </c:otherwise>
+                </c:choose>
+            </c:forEach>
+
+                <%-- 다음 --%>
+            <c:url var="nextUrl" value="${pageContext.request.contextPath}/front">
+                <c:param name="key" value="giftshop"/>
+                <c:param name="methodName" value="showGiftPage"/>
+                <c:param name="page" value="${hasNext ? nextPage : page}"/>
+                <c:param name="size" value="${size}"/>
+            </c:url>
+            <a class="page-btn ${!hasNext ? 'disabled' : ''}" href="${nextUrl}" aria-label="다음">&rsaquo;</a>
+
+                <%-- 마지막 --%>
+            <c:url var="lastUrl" value="${pageContext.request.contextPath}/front">
+                <c:param name="key" value="giftshop"/>
+                <c:param name="methodName" value="showGiftPage"/>
+                <c:param name="page" value="${totalPages}"/>
+                <c:param name="size" value="${size}"/>
+            </c:url>
+            <a class="page-btn ${!hasNext ? 'disabled' : ''}" href="${lastUrl}" aria-label="마지막">&raquo;</a>
+        </div>
     </c:if>
 </main>

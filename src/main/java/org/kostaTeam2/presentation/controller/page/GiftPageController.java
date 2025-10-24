@@ -27,11 +27,10 @@ public class GiftPageController implements Controller {
 	}
 
 	private ModelAndView showGiftItem(HttpServletRequest request, HttpServletResponse response) {
-		Long giftId = Long.valueOf(request.getParameter("giftId"));
+		Long productId = Long.valueOf(request.getParameter("productId"));
 
-		Gift gift = giftService.getGiftItem(giftId);
-
-		request.setAttribute("giftId", giftId);
+		Gift gift = giftService.getGiftInfo(productId);
+		request.setAttribute("productId", productId);
 		request.setAttribute("productName", gift.getProductName());
 		request.setAttribute("productPrice", gift.getProductPrice());
 		request.setAttribute("productImage", gift.getProductImage());
@@ -44,9 +43,9 @@ public class GiftPageController implements Controller {
 		int page = Integer.valueOf(request.getParameter("page"));
 		int size = Integer.valueOf(request.getParameter("size"));
 
-		GiftPage giftPage = giftService.getGiftItemList(page, size);
+		GiftPage giftPage = giftService.getPageGiftInfo(page, size);
 
-		request.setAttribute("gifts", giftPage.getGifts());
+		request.setAttribute("products", giftPage.getGifts());
 		request.setAttribute("page", giftPage.getPage());
 		request.setAttribute("size", giftPage.getSize());
 		request.setAttribute("totalPages", giftPage.getTotalPages());

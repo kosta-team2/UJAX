@@ -41,6 +41,7 @@ public class GiftDao implements GiftRepository {
 	public int countByWorkspace(Connection conn) throws SQLException {
 		String sql = """
 			SELECT count(*)
+			
 			FROM gift;
 			""";
 
@@ -57,7 +58,7 @@ public class GiftDao implements GiftRepository {
 		String sql = """
 				SELECT product_id, product_name, product_price, product_image
 				 FROM gift
-				ORDER BY created_at DESC, n_id DESC
+				ORDER BY created_at DESC, product_id DESC
 			 	LIMIT ? OFFSET ?;
 			""";
 		try (PreparedStatement ps = conn.prepareStatement(sql)) {

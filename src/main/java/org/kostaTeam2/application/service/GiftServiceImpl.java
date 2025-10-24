@@ -10,6 +10,7 @@ import org.kostaTeam2.domain.gift.Gift;
 import org.kostaTeam2.domain.gift.GiftRepository;
 import org.kostaTeam2.dto.response.GiftPage;
 import org.kostaTeam2.global.exception.DBException;
+import org.kostaTeam2.global.exception.NotFoundException;
 
 public class
 GiftServiceImpl implements GiftService {
@@ -22,17 +23,22 @@ GiftServiceImpl implements GiftService {
 	}
 
 	@Override
-	public Gift getGiftItem(Long giftId) {
+	public Gift getGiftInfo(Long giftId) {
 		try (Connection conn = ds.getConnection()) {
 
-			return giftRepository.findById(conn, giftId);
+			Gift gift = giftRepository.findById(conn, giftId);
+			if (gift == null) {
+				throw new NotFoundException("giftId에 해당하는 상품이 없습니다.");
+			}
+
+			return gift;
 		} catch (SQLException e) {
 			throw new DBException("물건 상세 불러오기 DB 에러");
 		}
 	}
 
 	@Override
-	public GiftPage getGiftItemList(int page, int size) {
+	public GiftPage getPageGiftInfo(int page, int size) {
 		try (Connection conn = ds.getConnection()) {
 			int total = giftRepository.countByWorkspace(conn);
 

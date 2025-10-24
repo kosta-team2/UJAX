@@ -8,10 +8,10 @@ public interface GiftService {
 	/**
 	 * 물품 상세 보기
 	 */
-	Gift getGiftItem(Long giftId);
+	Gift getGiftInfo(Long giftId);
 
 	/**
 	 * 물품 리스트 보기
 	 */
-	GiftPage getGiftItemList(int page, int size);
+	GiftPage getPageGiftInfo(int page, int size);
 }
