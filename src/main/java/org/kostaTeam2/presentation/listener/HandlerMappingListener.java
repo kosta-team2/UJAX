@@ -7,6 +7,8 @@ import java.util.ResourceBundle;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 
+import org.kostaTeam2.application.service.GiftService;
+import org.kostaTeam2.application.service.GiftServiceImpl;
 import org.kostaTeam2.application.service.MemberService;
 import org.kostaTeam2.application.service.MemberServiceImpl;
 import org.kostaTeam2.application.service.ProblemService;
@@ -17,12 +19,14 @@ import org.kostaTeam2.application.service.workspace.WorkspaceProblemService;
 import org.kostaTeam2.application.service.workspace.WorkspaceProblemServiceImpl;
 import org.kostaTeam2.application.service.workspace.WorkspaceService;
 import org.kostaTeam2.application.service.workspace.WorkspaceServiceImpl;
+import org.kostaTeam2.domain.gift.GiftRepository;
 import org.kostaTeam2.domain.member.MemberRepository;
 import org.kostaTeam2.domain.problem.ProblemRepository;
 import org.kostaTeam2.domain.workspace.WorkspaceMemberRepository;
 import org.kostaTeam2.domain.workspace.WorkspaceProblemRepository;
 import org.kostaTeam2.domain.workspace.WorkspaceRepository;
 import org.kostaTeam2.domain.workspace.notice.NoticeRepository;
+import org.kostaTeam2.infrastructure.dao.GiftDao;
 import org.kostaTeam2.infrastructure.dao.MemberDao;
 import org.kostaTeam2.infrastructure.dao.NoticeDao;
 import org.kostaTeam2.infrastructure.dao.ProblemDao;
@@ -57,6 +61,7 @@ public class HandlerMappingListener implements ServletContextListener {
 			WorkspaceMemberRepository workspaceMemberRepo = new WorkspaceMemberDao();
 			NoticeRepository noticeRepo = new NoticeDao();
 			WorkspaceProblemRepository workspaceProblemRepo = new WorkspaceProblemDao();
+			GiftRepository giftRepository = new GiftDao();
 
 			MemberService memberSvc = new MemberServiceImpl(ds, memberRepo);
 			ProblemService problemSvc = new ProblemServiceImpl(ds, problemRepo);
@@ -64,6 +69,7 @@ public class HandlerMappingListener implements ServletContextListener {
 			NoticeService noticeSvc = new NoticeServiceImpl(ds, noticeRepo, workspaceMemberRepo);
 			WorkspaceProblemService workspaceProblemSvc = new WorkspaceProblemServiceImpl(ds, workspaceRepo,
 				workspaceProblemRepo, problemRepo);
+			GiftService giftSvc = new GiftServiceImpl(ds, giftRepository);
 
 			// 3) properties 파일 로드
 			ResourceBundle rb1 = ResourceBundle.getBundle(fileName);
@@ -104,6 +110,11 @@ public class HandlerMappingListener implements ServletContextListener {
 					if (pts.length == 1 && pts[0] == NoticeService.class) {
 						ctor.setAccessible(true);
 						controllerInstance = ctor.newInstance(noticeSvc);
+						break;
+					}
+					if (pts.length == 1 && pts[0] == GiftService.class) {
+						ctor.setAccessible(true);
+						controllerInstance = ctor.newInstance(giftSvc);
 						break;
 					}
 				}
