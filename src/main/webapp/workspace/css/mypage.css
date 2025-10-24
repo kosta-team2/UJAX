@@ -34,9 +34,10 @@ a {
 }
 
 .page {
-    max-width: 880px;
-    margin: 40px auto;
-    padding: 0 20px
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 0;
 }
 
 .page-head {
@@ -377,4 +378,36 @@ a {
         opacity: 1;
         transform: translate(-50%, 0)
     }
+}
+
+#mypage-card {
+    width: 100%;
+    margin: 0;
+    border-radius: 18px;
+    padding: 0;
+}
+
+
+#mypage-card > .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 18px 20px;
+    border-bottom: 1px solid var(--border);
+    margin: 0;
+}
+
+#mypage-card > .stack-16 {
+    padding: 20px;
+}
+
+
+.btn-success-outline {
+    border-color: #16a34a;
+}
+.btn-success-outline:hover {
+    background: rgba(22, 163, 74, .15);
+    border-color: #22c55e;
+    box-shadow: 0 0 0 4px rgba(34, 197, 94, .12);
 }

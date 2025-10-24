@@ -127,7 +127,7 @@
                 <div class="block-title-row">
                     <div class="block-title">멤버</div>
                     <div class="member-toolbar">
-                        <input id="ws-memberSearch" class="search" placeholder="이름/이메일 검색"/>
+                        <%--<input id="ws-memberSearch" class="search" placeholder="이름/이메일 검색"/>--%>
                         <c:if test="${isLeader}">
                             <button type="button" class="btn primary" id="ws-openInvite">멤버 추가</button>
                         </c:if>

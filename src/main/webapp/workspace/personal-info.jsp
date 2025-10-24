@@ -1,4 +1,11 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="jakarta.tags.core" prefix="c" %>
+<c:if test="${not empty sessionScope.flashMessageJs}">
+    <script>
+        alert('${sessionScope.flashMessageJs}');
+    </script>
+    <c:remove var="flashMessageJs" scope="session"/>
+</c:if>
 
 <section class="pi-page">
     <div class="pi-top">
@@ -8,7 +15,7 @@
     <h1 class="pi-title">개인정보 변경</h1>
 
     <form id="pi-form" method="POST" action="${pageContext.request.contextPath}/front" class="pi-card">
-        <input type="hidden" name="key" value="user">
+        <input type="hidden" name="key" value="member">
         <input type="hidden" name="methodName" value="updateUser">
 
         <!-- 현재 비밀번호 -->
@@ -43,4 +50,4 @@
 </section>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/personal-info.css">
-<script defer src="${pageContext.request.contextPath}/workspace/js/personal-info.js"></script>
+<script defer src="${pageContext.request.contextPath}/workspace/js/personal-info.js?v=${System.currentTimeMillis()}"></script>

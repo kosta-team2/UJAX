@@ -10,6 +10,7 @@ import org.kostaTeam2.domain.member.Member;
 import org.kostaTeam2.domain.member.MemberRepository;
 import org.kostaTeam2.global.exception.BadRequestException;
 import org.kostaTeam2.global.exception.DBException;
+import org.kostaTeam2.global.exception.common.ValidationException;
 
 public class MemberServiceImpl implements MemberService {
     private final DataSource ds;
@@ -69,11 +70,13 @@ public class MemberServiceImpl implements MemberService {
                                         .orElseThrow(() -> new BadRequestException("회원 정보를 찾을 수 없습니다."));
 
             if (!existing.getPassword().equals(password)) {
-                throw new BadRequestException("현재 비밀번호가 일치하지 않습니다.");
+                throw new ValidationException("비밀번호가 틀려서 변경하지 못했습니다.",
+                        "/workspace/personal-info.jsp");
             }
 
             if (repository.findByNickname(con, newNickname).isPresent()) {
-                throw new BadRequestException("이미 사용 중인 닉네임입니다.");
+                throw new ValidationException("이미 사용 중인 닉네임입니다 다른 닉네임을 골라주세요.",
+                        "/workspace/personal-info.jsp");
             }
 
             Member update = new Member(memberId, newNickname, newPassword);

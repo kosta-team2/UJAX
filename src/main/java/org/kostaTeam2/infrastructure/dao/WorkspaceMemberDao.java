@@ -106,6 +106,7 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
                 """;
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, workspaceId);
+
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     long wsMemberId = rs.getLong("ws_member_id");
@@ -114,7 +115,6 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
                     boolean leader = rs.getBoolean("is_leader");
                     String email = rs.getString("email");
                     String nickname = rs.getString("nickname");
-
                     WorkspaceMember m = new WorkspaceMember(wsId, memberId, leader, nickname, email);
                     m.setWorkspaceMemberId(wsMemberId); //
                     list.add(m);
@@ -262,16 +262,16 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
             ps.setLong(1, memberId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-					list.add(new WorkspaceMember(
-						rs.getLong("ws_member_id"),
-						rs.getBoolean("is_leader"),
-						rs.getLong("ws_id")
-						));
+                    list.add(new WorkspaceMember(
+                            rs.getLong("ws_member_id"),
+                            rs.getBoolean("is_leader"),
+                            rs.getLong("ws_id")
+                    ));
                 }
             }
         } catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		return list;
+            throw new RuntimeException(e);
+        }
+        return list;
     }
 }
