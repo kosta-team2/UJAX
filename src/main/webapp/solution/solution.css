@@ -523,3 +523,20 @@ body.modal-open .splitter {
 body.modal-open .splitter::before {
     opacity: 0.25;
 }
+
+.sample-io {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.sample-io .io {
+    flex: 1;
+    min-width: 0;
+}
+
+.sample-io .code {
+    overflow: auto;
+    max-height: none;
+}
+
