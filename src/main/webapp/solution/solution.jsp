@@ -194,7 +194,7 @@
     </div>
 </div>
 
-<!-- 이 페이지 전용 스크립트 -->
-<%--<script defer src="<%=request.getContextPath()%>/solution/solution.js"></script>--%>
+<script defer src="${pageContext.request.contextPath}/solution/solution.js?ts=<%=System.currentTimeMillis()%>"></script>
+
 </body>
 </html>
