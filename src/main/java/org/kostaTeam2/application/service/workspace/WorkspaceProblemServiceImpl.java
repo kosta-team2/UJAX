@@ -11,12 +11,16 @@ import javax.sql.DataSource;
 import org.kostaTeam2.domain.problem.AlgorithmTag;
 import org.kostaTeam2.domain.problem.Problem;
 import org.kostaTeam2.domain.problem.ProblemRepository;
+import org.kostaTeam2.domain.problem.Sample;
 import org.kostaTeam2.domain.workspace.Workspace;
 import org.kostaTeam2.domain.workspace.WorkspaceProblem;
 import org.kostaTeam2.domain.workspace.WorkspaceProblemRepository;
 import org.kostaTeam2.domain.workspace.WorkspaceRepository;
+import org.kostaTeam2.dto.response.ProblemInfoResponse;
 import org.kostaTeam2.dto.response.WorkspaceProblemPageResponse;
+import org.kostaTeam2.global.exception.BadRequestException;
 import org.kostaTeam2.global.exception.DBException;
+import org.kostaTeam2.global.exception.NotFoundException;
 
 public class WorkspaceProblemServiceImpl implements WorkspaceProblemService {
 	private final DataSource ds;
@@ -74,7 +78,7 @@ public class WorkspaceProblemServiceImpl implements WorkspaceProblemService {
 				List<WorkspaceProblem> list = workspaceProblemRepository.findWorkspaceProblemsByWorkspaceId(
 					con, workspaceId, page, size);
 				int total = workspaceProblemRepository.countByWorkspaceId(con, workspaceId);
-				int totalPages = (int) Math.ceil((double) total / size);
+				int totalPages = (int)Math.ceil((double)total / size);
 
 				Optional<Workspace> workspace = workspaceRepository.findById(con, workspaceId);
 				boolean hintView = workspace.isPresent() && Boolean.TRUE.equals(workspace.get().isHintView());
@@ -131,6 +135,34 @@ public class WorkspaceProblemServiceImpl implements WorkspaceProblemService {
 		} catch (
 			SQLException e) {
 			throw new DBException("워크스페이스 리스트를 불러오는 중 db 오류가 발생하였습니다.", e);
+		}
+	}
+
+	@Override
+	public ProblemInfoResponse getProblemDetail(Long problemId) {
+		try (Connection con = ds.getConnection()) {
+
+			Optional<Problem> problem = problemRepository.findProblemByProblemId(con, problemId);
+			List<Sample> samples = problemRepository.findSamplesByProblemId(con, problemId);
+
+			if (problem.isPresent()) {
+				Problem p = problem.get();
+				return ProblemInfoResponse.of(
+					p.getProblemNum(),
+					p.getTitle(),
+					p.getProblemDesc(),
+					p.getProblemInput(),
+					p.getProblemOutput(),
+					samples,
+					p.getUrl(),
+					p.getTimeLimit(),
+					p.getMemoryLimit()
+				);
+			} else {
+				throw new NotFoundException("해당하는 문제에 대한 정보를 가져오지 못했습니다.");
+			}
+		} catch (SQLException e) {
+			throw new DBException("문제 상세를 불러오는 중 db 오류가 발생하였습니다.", e);
 		}
 	}
 

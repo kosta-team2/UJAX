@@ -66,9 +66,13 @@
                                 <div class="submit-count">제출자 <c:out value="${p.submitCount}"/>명</div>
                             </div>
 
-                            <a class="go-btn"
-                               href="${pageContext.request.contextPath}/solution/solution.jsp?id=${p.wsProblemId}&workspaceId=${param.workspaceId}"
-                               target="_top">문제 풀기</a>
+                            <c:url var="solveUrl" value="/front">
+                                <c:param name="key" value="problem"/>
+                                <c:param name="methodName" value="getProblemDetail"/>
+                                <c:param name="problemId" value="${p.problemId}"/>
+                                <c:param name="isLeader" value="${param.isLeader}"/>
+                            </c:url>
+                            <a class="go-btn" href="${solveUrl}" target="_top">문제 풀기</a>
                         </div>
                     </div>
                 </c:forEach>

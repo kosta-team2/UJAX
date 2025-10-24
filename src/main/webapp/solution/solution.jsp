@@ -1,60 +1,115 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
+
 <!DOCTYPE html>
 <html lang="ko" data-theme="dark">
 <head>
     <meta charset="UTF-8"/>
     <meta name="viewport" content="width=device-width,initial-scale=1"/>
     <title>상세 보기 · 문제 풀이 페이지</title>
+
     <link rel="stylesheet" href="<%=request.getContextPath()%>/common/css/darkmode.css">
-    <!-- 이 페이지 전용 스타일 -->
     <link rel="stylesheet" href="<%=request.getContextPath()%>/solution/solution.css">
+
 </head>
 <body class="page-solution">
 <div class="wrap">
     <div class="container">
         <div class="page">
-            <!-- 로컬 툴바 -->
+
             <div class="localbar">
-                <button class="btn" id="backBtn">← 돌아가기</button>
-                <div class="title">상세 보기 · <span id="pageProblemTitle">로딩 중…</span></div>
+                <button class="btn" id="backBtn" onclick="history.back()">← 돌아가기</button>
+                <div class="title">상세 보기 · <span id="pageProblemTitle"><c:out value="${detail.title}"/></span></div>
             </div>
 
             <div id="split" class="grid-2 split">
                 <section class="card pane" id="problemPanel">
                     <header class="panel-head">
-                        <div><h2 id="problemTitle">문제 제목</h2></div>
-                        <div id="leaderActions" class="menu-wrap">
-                            <button class="btn" id="leaderMenuBtn" title="관리">⋯</button>
-                            <div class="menu-panel" id="leaderMenu">
-                                <button class="menu-item" id="problemDeleteBtn">🗑 문제 삭제…</button>
+                        <div>
+                            <h2 id="problemTitle">
+                                <c:out value="${detail.title}"/>
+                            </h2></div>
+
+                        <c:if test="${isLeader}">
+                            <div id="leaderActions" class="menu-wrap">
+                                <button class="btn" id="leaderMenuBtn" title="관리">⋯</button>
+                                <div class="menu-panel" id="leaderMenu">
+                                    <button class="menu-item" id="problemDeleteBtn">🗑 문제 삭제…</button>
+                                </div>
                             </div>
-                        </div>
+                        </c:if>
                     </header>
+
                     <div class="divider"></div>
-                    <div class="meta" id="metaChips"></div>
+
+                    <div class="meta" id="metaChips">
+                        <div class="chip">
+                            <span class="muted">시간 제한</span>
+                            <span style="font-weight:700"><c:out value="${detail.timeLimit}"/></span>
+                        </div>
+                        <div class="chip">
+                            <span class="muted">메모리 제한</span>
+                            <span style="font-weight:700"><c:out value="${detail.memoryLimit}"/></span>
+                        </div>
+                    </div>
 
                     <section class="block">
                         <div class="block-title">문제</div>
                         <div class="divider"></div>
-                        <p class="muted" id="problemDesc"></p>
+                        <p class="muted" id="problemDesc">
+                            <c:out value="${detail.description}" escapeXml="false"/>
+                        </p>
                     </section>
 
                     <section class="block">
                         <div class="block-title">입력</div>
                         <div class="divider"></div>
-                        <p class="muted" id="inputDesc"></p>
+                        <p class="muted" id="inputDesc">
+                            <c:out value="${detail.input}" escapeXml="false"/>
+                        </p>
                     </section>
 
                     <section class="block">
                         <div class="block-title">출력</div>
                         <div class="divider"></div>
-                        <p class="muted" id="outputDesc"></p>
+                        <p class="muted" id="outputDesc">
+                            <c:out value="${detail.output}" escapeXml="false"/>
+                        </p>
                     </section>
 
-                    <section id="samples"></section>
 
-                    <!-- Bookmark for Baekjoon -->
-                    <a class="bookmark" id="bojLink" href="#" target="_blank" rel="noopener noreferrer">
+                    <section id="samples">
+                        <c:forEach items="${detail.samples}" var="s" varStatus="st">
+                            <section class="block sample">
+                                <div class="block-title">
+                                    예제
+                                    <c:out value="${st.index + 1}"/>
+                                </div>
+                                <div class="divider"></div>
+
+                                <div class="sample-io">
+                                    <div class="io">
+                                        <div class="small muted">입력</div>
+                                        <pre class="code"><c:out value="${s.input}"/></pre>
+                                    </div>
+                                    <div class="io">
+                                        <div class="small muted">출력</div>
+                                        <pre class="code"><c:out value="${s.output}"/></pre>
+                                    </div>
+                                </div>
+                            </section>
+                        </c:forEach>
+                    </section>
+
+                    <c:set var="bojHref" value="#"/>
+                    <c:if test="${not empty detail.url}">
+                        <c:set var="bojHref" value="${detail.url}"/>
+                    </c:if>
+                    <c:if test="${empty detail.url and not empty detail.problemNum}">
+                        <c:set var="bojHref" value="https://www.acmicpc.net/problem/${detail.problemNum}"/>
+                    </c:if>
+
+                    <a class="bookmark" id="bojLink" href="${bojHref}" target="_blank" rel="noopener noreferrer">
                         <img alt="Baekjoon"
                              src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Crect width='28' height='28' rx='6' ry='6' fill='%231e293b'/%3E%3Ccircle cx='8' cy='14' r='4' fill='%235b86e5'/%3E%3Ccircle cx='20' cy='14' r='4' fill='%2339d98a'/%3E%3C/svg%3E"/>
                         <div>
@@ -140,6 +195,6 @@
 </div>
 
 <!-- 이 페이지 전용 스크립트 -->
-<script defer src="<%=request.getContextPath()%>/solution/solution.js"></script>
+<%--<script defer src="<%=request.getContextPath()%>/solution/solution.js"></script>--%>
 </body>
 </html>
