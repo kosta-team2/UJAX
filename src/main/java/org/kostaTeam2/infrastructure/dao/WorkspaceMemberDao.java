@@ -106,6 +106,7 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
                 """;
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setLong(1, workspaceId);
+
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
                     long wsMemberId = rs.getLong("ws_member_id");
@@ -113,8 +114,7 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
                     long memberId = rs.getLong("member_id");
                     boolean leader = rs.getBoolean("is_leader");
                     String email = rs.getString("email");
-                    String nickname = rs.getString("nickname");
-
+                    String nickname = getUserNickname(conn, memberId);
                     WorkspaceMember m = new WorkspaceMember(wsId, memberId, leader, nickname, email);
                     m.setWorkspaceMemberId(wsMemberId); //
                     list.add(m);
@@ -249,6 +249,24 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
         return infoMap;
     }
 
+    private String getUserNickname(Connection conn, long memberId) throws SQLException {
+        String sql = """
+                SELECT nickname FROM member
+                WHERE member_id = ?;
+                """;
+        String nickname = null;
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setLong(1, memberId);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    nickname = rs.getString(1);
+                }
+            }
+        }
+        return nickname;
+    }
+
     @Override
     public List<WorkspaceMember> findByMemberId(Connection conn, Long memberId) {
         List<WorkspaceMember> list = new ArrayList<>();
@@ -262,16 +280,16 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
             ps.setLong(1, memberId);
             try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-					list.add(new WorkspaceMember(
-						rs.getLong("ws_member_id"),
-						rs.getBoolean("is_leader"),
-						rs.getLong("ws_id")
-						));
+                    list.add(new WorkspaceMember(
+                            rs.getLong("ws_member_id"),
+                            rs.getBoolean("is_leader"),
+                            rs.getLong("ws_id")
+                    ));
                 }
             }
         } catch (SQLException e) {
-			throw new RuntimeException(e);
-		}
-		return list;
+            throw new RuntimeException(e);
+        }
+        return list;
     }
 }
