@@ -1,3 +1,4 @@
+/*
 document.addEventListener('DOMContentLoaded', () => {
     const profileBox = document.getElementById('profileBox');
     const main = document.getElementById('mainContent');
@@ -26,4 +27,6 @@ document.addEventListener('DOMContentLoaded', () => {
             main.innerHTML = '<p style="color:red;">❌ 마이페이지를 불러올 수 없습니다.</p>';
         }
     });
-});
+});*/
+
+// 필요없어져서 주석처리함

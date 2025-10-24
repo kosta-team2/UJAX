@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<link rel="stylesheet" href="css/mypage.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/mypage.css">
 
 <div class="page" id="mypage-root">
     <div class="page-head">
@@ -29,17 +29,17 @@
 
             <div class="kv">
                 <div class="k">닉네임</div>
-                <div id="nickname"><strong><c:out value="${userInfo.nickname}" default="지눅왕" /></strong></div>
+                <div id="nickname"><strong><c:out value="${userInfo.nickname}"/></strong></div>
 
                 <div class="k">이메일</div>
-                <div id="email"><c:out value="${userInfo.email}" default="example.com" /></div>
+                <div id="email"><c:out value="${userInfo.email}"/></div>
 
                 <div class="k">리워드</div>
-                <div><strong id="reward"><c:out value="${userInfo.reward}" default="1000" />원</strong></div>
+                <div><strong id="reward"><c:out value="${userInfo.reward}"/>원</strong></div>
 
                 <div class="k">경험치</div>
                 <div>
-                    <span id="exp"><c:out value="${userInfo.xp}" default="0" />xp</span>
+                    <span id="exp"><c:out value="${userInfo.xp}"/>xp</span>
                 </div>
             </div>
         </section>
@@ -58,4 +58,4 @@
     </div>
 </div>
 
-<script defer src="${pageContext.request.contextPath}/workspace/js/mypage.js"></script>
+<script defer src="${pageContext.request.contextPath}/workspace/js/mypage.js?v=${System.currentTimeMillis()}"></script>

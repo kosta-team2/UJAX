@@ -14,7 +14,7 @@
 
 <aside class="right-sidebar">
     <div class="profile-box" id="profileBox" page="mypage">
-        <a href="${pageContext.request.contextPath}/workspace/mypage.jsp" target="mainFrame">
+        <a href="${pageContext.request.contextPath}/front?key=member&methodName=getInfo" target="mainFrame">
             <div class="profile-header">
                 <div class="nickname">현재 로그인 계정 : <c:out value="${userInfo.nickname}"/></div>
             </div>
