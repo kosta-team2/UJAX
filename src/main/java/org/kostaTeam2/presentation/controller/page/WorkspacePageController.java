@@ -1,7 +1,5 @@
 package org.kostaTeam2.presentation.controller.page;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import org.kostaTeam2.application.service.workspace.WorkspaceService;
 import org.kostaTeam2.domain.workspace.Workspace;
 import org.kostaTeam2.dto.request.WorkspaceRequest;
@@ -11,12 +9,15 @@ import org.kostaTeam2.global.exception.common.AppException;
 import org.kostaTeam2.presentation.controller.dto.SessionUser;
 import org.kostaTeam2.presentation.view.ModelAndView;
 
-public class WorkspacePageController implements Controller {
-    private final WorkspaceService workspaceService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-    public WorkspacePageController(WorkspaceService workspaceService) {
-        this.workspaceService = workspaceService;
-    }
+public class WorkspacePageController implements Controller {
+	private final WorkspaceService workspaceService;
+
+	public WorkspacePageController(WorkspaceService workspaceService) {
+		this.workspaceService = workspaceService;
+	}
 
     @Override
     public ModelAndView handle(String methodName, HttpServletRequest request, HttpServletResponse response) throws
@@ -33,9 +34,9 @@ public class WorkspacePageController implements Controller {
         };
     }
 
-    private ModelAndView createWorkspace(HttpServletRequest request, HttpServletResponse response) {
-        SessionUser sessionUser = (SessionUser) request.getSession().getAttribute("SessionUser");
-        var dto = WorkspaceRequest.createDto(request, sessionUser);
+	private ModelAndView createWorkspace(HttpServletRequest request, HttpServletResponse response) {
+		SessionUser sessionUser = (SessionUser)request.getSession().getAttribute("SessionUser");
+		var dto = WorkspaceRequest.createDto(request, sessionUser);
 
         Workspace workspace = workspaceService.createWorkspace(dto)
                                               .orElseThrow(() -> new AppException(500, "워크스페이스 생성에 실패 했습니다. 다시 시도해 주십시오."));
@@ -47,15 +48,21 @@ public class WorkspacePageController implements Controller {
         return new ModelAndView(target, true);
     }
 
-    private ModelAndView showWorkspace(HttpServletRequest request, HttpServletResponse response) {
-        SessionUser sessionUser = (SessionUser) request.getSession().getAttribute("SessionUser");
-        var dto = WorkspaceRequest.showDto(request, sessionUser);
+		// todo 새로 생성한 워크스페이스 홈으로 이동시켜주기?
+		String target = request.getContextPath() + "/workspace/create.jsp";
+		return new ModelAndView(target);
+	}
 
+	private ModelAndView showWorkspace(HttpServletRequest request, HttpServletResponse response) {
+		SessionUser sessionUser = (SessionUser)request.getSession().getAttribute("SessionUser");
+		var dto = WorkspaceRequest.showDto(request, sessionUser);
         Workspace workspace = workspaceService.getWorkspaceInfo(dto)
                                               .orElseThrow(() -> new AppException(500, "워크스페이스 조회에 실패 했습니다. 다시 시도해 주십시오."));
 
-        request.setAttribute("workspace", workspace);
+		Workspace workspace = workspaceService.getWorkspaceInfo(dto)
+			.orElseThrow(() -> new AppException(500, "워크스페이스 조회에 실패 했습니다. 다시 시도해 주십시오."));
 
+		request.setAttribute("workspace", workspace);
 
         // session 유효성 검증은 filter로...
         request.setAttribute("currentUserId", sessionUser.memberId());      // long
@@ -74,23 +81,30 @@ public class WorkspacePageController implements Controller {
         return new ModelAndView(target);
     }
 
-    private ModelAndView updateWorkspace(HttpServletRequest request, HttpServletResponse response) {
-        SessionUser sessionUser = (SessionUser) request.getSession().getAttribute("SessionUser");
-        var dto = WorkspaceRequest.updateDto(request, sessionUser);
+		String target = request.getContextPath() + "/workspace";
+		return new ModelAndView(target);
+	}
 
-        Workspace workspace = workspaceService.updateWorkspace(dto)
-                                              .orElseThrow(() -> new AppException(500, "워크스페이스 수정에 실패 했습니다. 다시 시도해 주십시오."));
+	private ModelAndView updateWorkspace(HttpServletRequest request, HttpServletResponse response) {
+		SessionUser sessionUser = (SessionUser)request.getSession().getAttribute("SessionUser");
+		var dto = WorkspaceRequest.updateDto(request, sessionUser);
+
+		Workspace workspace = workspaceService.updateWorkspace(dto)
+			.orElseThrow(() -> new AppException(500, "워크스페이스 수정에 실패 했습니다. 다시 시도해 주십시오."));
 
         String target = request.getContextPath()
                 + "/front?key=workspace&methodName=show&workspaceId=" + workspace.getWorkspaceId();
         return new ModelAndView(target, true);
     }
 
-    private ModelAndView deleteWorkspace(HttpServletRequest request, HttpServletResponse response) {
-        SessionUser sessionUser = (SessionUser) request.getSession().getAttribute("SessionUser");
-        var dto = WorkspaceRequest.deleteDto(request, sessionUser);
+		request.setAttribute("workspace", workspace);
+		String target = request.getContextPath() + "/workspace/info.jsp";
+		return new ModelAndView(target);
+	}
 
-        workspaceService.deleteWorkspace(dto);
+	private ModelAndView deleteWorkspace(HttpServletRequest request, HttpServletResponse response) {
+		SessionUser sessionUser = (SessionUser)request.getSession().getAttribute("SessionUser");
+		var dto = WorkspaceRequest.deleteDto(request, sessionUser);
 
         request.setAttribute("target", request.getContextPath() + "/workspace");
         return new ModelAndView("common/top-redirect.jsp");
