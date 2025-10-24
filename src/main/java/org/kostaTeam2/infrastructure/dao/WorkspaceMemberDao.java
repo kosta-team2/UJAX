@@ -114,7 +114,7 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
                     long memberId = rs.getLong("member_id");
                     boolean leader = rs.getBoolean("is_leader");
                     String email = rs.getString("email");
-                    String nickname = getUserNickname(conn, memberId);
+                    String nickname = rs.getString("nickname");
                     WorkspaceMember m = new WorkspaceMember(wsId, memberId, leader, nickname, email);
                     m.setWorkspaceMemberId(wsMemberId); //
                     list.add(m);
@@ -247,24 +247,6 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
             }
         }
         return infoMap;
-    }
-
-    private String getUserNickname(Connection conn, long memberId) throws SQLException {
-        String sql = """
-                SELECT nickname FROM member
-                WHERE member_id = ?;
-                """;
-        String nickname = null;
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setLong(1, memberId);
-
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    nickname = rs.getString(1);
-                }
-            }
-        }
-        return nickname;
     }
 
     @Override
