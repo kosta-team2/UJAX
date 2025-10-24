@@ -32,6 +32,7 @@ public class MemberPageController implements Controller {
             case "delete" -> delete(request, response);
             case "getInfo" -> getInfo(request, response);
             case "updateUser" -> updateUser(request, response);
+            case "getSidebar" -> getSidebar(request, response);
             default -> throw new BadRequestException("methodName이 올바르지 않습니다.");
         };
     }
@@ -138,5 +139,14 @@ public class MemberPageController implements Controller {
             request.setAttribute("error", e.getMessage());
             return new ModelAndView("/workspace.jsp");
         }
+    }
+
+    private ModelAndView getSidebar(HttpServletRequest request, HttpServletResponse response) {
+        SessionUser user = (SessionUser) request.getSession().getAttribute("SessionUser");
+
+        Member userInfo = memberService.getInfo(user.memberId()).orElse(null);
+
+        request.setAttribute("userInfo", userInfo);
+        return new ModelAndView("none");
     }
 }
