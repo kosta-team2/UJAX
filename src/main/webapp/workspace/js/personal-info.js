@@ -12,11 +12,17 @@ document.addEventListener('DOMContentLoaded', () => {
             confirmPw.focus();
             return;
         }
+        if (newPw.value.length < 8){
+            e.preventDefault();
+            alert("비밀번호는 8자리 이상으로만 설정 가능합니다.");
+            newPw.focus();
+            return;
+        }
         // 검증 통과 시 동기 전송
-        // TODO : 백에서 비밀번호 검증 로직 만들고 연결해야함.
     });
 
     backBtn.addEventListener('click', () => {
-        location.href = '/workspace/mypage.jsp';
+        // history.back();
+        location.href = '/front?key=member&methodName=getInfo';
     });
 });
