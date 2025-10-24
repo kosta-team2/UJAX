@@ -302,16 +302,3 @@
 .radio-item .dot, .radio-item .txt {
     pointer-events: none;
 }
-
-/* 폰트 기본 (이미 있으나 확인 차) */
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-}
-
-/* 폼 요소도 body 폰트 상속 */
-input, select, button, textarea {
-    font: inherit; /* 또는 font-family: inherit; */
-}
