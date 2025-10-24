@@ -48,7 +48,7 @@ public class WorkspacePageController implements Controller {
 		request.setAttribute("workspace", workspace);
 
 		String target = request.getContextPath()
-			+ "/front?key=workspace&methodName=show&workspaceId=" + workspace.getWorkspaceId();
+			+ "/workspace";
 		return new ModelAndView(target, true);
 	}
 
