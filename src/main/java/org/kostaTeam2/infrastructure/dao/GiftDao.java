@@ -38,10 +38,9 @@ public class GiftDao implements GiftRepository {
 	}
 
 	@Override
-	public int countByWorkspace(Connection conn) throws SQLException {
+	public int countProducts(Connection conn) throws SQLException {
 		String sql = """
 			SELECT count(*)
-			
 			FROM gift;
 			""";
 
@@ -53,14 +52,15 @@ public class GiftDao implements GiftRepository {
 	}
 
 	@Override
-	public List<Gift> findPages(Connection conn, int offset, int size) throws SQLException {
+	public List<Gift> paginationGift(Connection conn, int offset, int size) throws SQLException {
 		// todo 바코드가 하나라도 있는 기프티콘만 보여준다.
 		String sql = """
-				SELECT product_id, product_name, product_price, product_image
-				 FROM gift
-				ORDER BY created_at DESC, product_id DESC
-			 	LIMIT ? OFFSET ?;
+			SELECT product_id, product_name, product_price, product_image
+			FROM gift
+			ORDER BY created_at DESC, product_id DESC
+			LIMIT ? OFFSET ?;
 			""";
+
 		try (PreparedStatement ps = conn.prepareStatement(sql)) {
 			ps.setInt(1, size);
 			ps.setInt(2, offset);

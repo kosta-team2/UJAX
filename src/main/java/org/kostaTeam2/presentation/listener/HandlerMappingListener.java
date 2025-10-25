@@ -69,7 +69,7 @@ public class HandlerMappingListener implements ServletContextListener {
 			NoticeService noticeSvc = new NoticeServiceImpl(ds, noticeRepo, workspaceMemberRepo);
 			WorkspaceProblemService workspaceProblemSvc = new WorkspaceProblemServiceImpl(ds, workspaceRepo,
 				workspaceProblemRepo, problemRepo);
-			GiftService giftSvc = new GiftServiceImpl(ds, giftRepository);
+			GiftService giftSvc = new GiftServiceImpl(ds, giftRepository, memberRepo);
 
 			// 3) properties 파일 로드
 			ResourceBundle rb1 = ResourceBundle.getBundle(fileName);

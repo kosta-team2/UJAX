@@ -7,8 +7,8 @@ import java.util.List;
 public interface GiftRepository {
 	Gift findById(Connection conn, Long giftId) throws SQLException;
 
-	int countByWorkspace(Connection conn) throws SQLException;
+	int countProducts(Connection conn) throws SQLException;
 
-	List<Gift> findPages(Connection conn, int offset, int limit) throws SQLException;
+	List<Gift> paginationGift(Connection conn, int offset, int limit) throws SQLException;
 
 }

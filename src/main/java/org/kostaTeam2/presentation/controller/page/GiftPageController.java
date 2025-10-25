@@ -4,6 +4,7 @@ import org.kostaTeam2.application.service.GiftService;
 import org.kostaTeam2.domain.gift.Gift;
 import org.kostaTeam2.dto.response.GiftPage;
 import org.kostaTeam2.global.exception.BadRequestException;
+import org.kostaTeam2.presentation.controller.dto.SessionUser;
 import org.kostaTeam2.presentation.view.ModelAndView;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,12 +23,19 @@ public class GiftPageController implements Controller {
 		return switch (methodName) {
 			case "showGift" -> showGiftItem(request, response);
 			case "showGiftPage" -> showGiftPage(request, response);
+			case "checkMemberReward" -> getMemberReward(request, response);
+			case "giftPayment" -> confirmPayment(request, response);
 			default -> throw new BadRequestException("workspace methodName이 올바르지 않습니다.");
 		};
 	}
 
 	private ModelAndView showGiftItem(HttpServletRequest request, HttpServletResponse response) {
-		Long productId = Long.valueOf(request.getParameter("productId"));
+		Long productId;
+		try {
+			productId = Long.parseLong(request.getParameter("productId"));
+		} catch (NumberFormatException e) {
+			throw new BadRequestException("잘못된 productId 값을 요청 하셨습니다.");
+		}
 
 		Gift gift = giftService.getGiftInfo(productId);
 		request.setAttribute("productId", productId);
@@ -40,8 +48,13 @@ public class GiftPageController implements Controller {
 	}
 
 	private ModelAndView showGiftPage(HttpServletRequest request, HttpServletResponse response) {
-		int page = Integer.valueOf(request.getParameter("page"));
-		int size = Integer.valueOf(request.getParameter("size"));
+		int page, size;
+		try {
+			page = Integer.valueOf(request.getParameter("page"));
+			size = Integer.valueOf(request.getParameter("size"));
+		} catch (NumberFormatException e) {
+			throw new BadRequestException("잘못된 page, size 값을 요청 하셨습니다.");
+		}
 
 		GiftPage giftPage = giftService.getPageGiftInfo(page, size);
 
@@ -60,4 +73,31 @@ public class GiftPageController implements Controller {
 		return new ModelAndView(target);
 	}
 
+	private ModelAndView getMemberReward(HttpServletRequest request, HttpServletResponse response) {
+		SessionUser sessionUser = (SessionUser)request.getSession().getAttribute("SessionUser");
+		Long userId = sessionUser.memberId();
+
+		Long reward = giftService.getMemberReward(userId);
+		request.setAttribute("userReward", reward);
+
+		String target = request.getContextPath() + "/workspace/giftshop.jsp";
+		return new ModelAndView(target);
+	}
+
+	private ModelAndView confirmPayment(HttpServletRequest request, HttpServletResponse response) {
+		SessionUser sessionUser = (SessionUser)request.getSession().getAttribute("SessionUser");
+		Long userId = sessionUser.memberId();
+
+		Long productId;
+		try {
+			productId = Long.parseLong(request.getParameter("productId"));
+		} catch (NumberFormatException e) {
+			throw new BadRequestException("잘못된 productId 값을 요청 하셨습니다.");
+		}
+
+		giftService.confirmPayment(userId, productId);
+
+		String target = request.getContextPath() + "/workspace/giftshop.jsp";
+		return new ModelAndView(target);
+	}
 }
