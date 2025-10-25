@@ -3,7 +3,7 @@
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/common/css/darkmode.css"/>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/giftshop.css"/>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/giftshop/css/giftshop.css"/>
 
 <main class="giftshop">
     <header class="topbar">
