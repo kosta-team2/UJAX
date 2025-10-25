@@ -102,7 +102,8 @@ public class HandlerMappingListener implements ServletContextListener {
 						ctor.setAccessible(true);
 						controllerInstance = ctor.newInstance(workspaceSvc);
 						break;
-					} else if (pts.length == 1 && pts[0] == WorkspaceProblemService.class) {
+					}
+					if (pts.length == 1 && pts[0] == WorkspaceProblemService.class) {
 						ctor.setAccessible(true);
 						controllerInstance = ctor.newInstance(workspaceProblemSvc);
 						break;
@@ -135,29 +136,10 @@ public class HandlerMappingListener implements ServletContextListener {
 
 				for (var ctor : clazz.getDeclaredConstructors()) {
 					var pts = ctor.getParameterTypes();
-
-					if (pts.length == 1 && pts[0] == MemberService.class) {
-						ctor.setAccessible(true);
-						controllerInstance = ctor.newInstance(memberSvc);
-						break;
-					}
-					if (pts.length == 1 && pts[0] == ProblemService.class) {
-						ctor.setAccessible(true);
-						controllerInstance = ctor.newInstance(problemSvc);
-						break;
-					}
-					if (pts.length == 1 && pts[0] == WorkspaceService.class) {
-						ctor.setAccessible(true);
-						controllerInstance = ctor.newInstance(workspaceSvc);
-						break;
-					} else if (pts.length == 1 && pts[0] == WorkspaceProblemService.class) {
+					
+					if (pts.length == 1 && pts[0] == WorkspaceProblemService.class) {
 						ctor.setAccessible(true);
 						controllerInstance = ctor.newInstance(workspaceProblemSvc);
-						break;
-					}
-					if (pts.length == 1 && pts[0] == NoticeService.class) {
-						ctor.setAccessible(true);
-						controllerInstance = ctor.newInstance(noticeSvc);
 						break;
 					}
 				}
@@ -177,7 +159,7 @@ public class HandlerMappingListener implements ServletContextListener {
 			application.setAttribute("problemService", problemSvc);
 			application.setAttribute("workspaceService", workspaceSvc);
 			application.setAttribute("noticeService", noticeSvc);
-
+			application.setAttribute("giftService", giftSvc);
 		} catch (Exception e) {
 			throw new RuntimeException("HandlerMapping 초기화 실패", e);
 		}

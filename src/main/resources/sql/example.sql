@@ -1,5 +1,5 @@
-CREATE DATABASE ujax;
-USE ujax;
+# CREATE DATABASE ujax;
+# USE ujax;
 
 CREATE TABLE workspace_member
 (
@@ -238,7 +238,7 @@ ALTER TABLE algorithm
 
 
 INSERT INTO member (email, password, nickname, reward, xp)
-VALUES ('test@example.com', '123123123', 'test', 9999999, 999999),
+VALUES ('test@test.com', '123123123', 'test', 9999999, 999999),
        ('alice@example.com', 'pass1234', 'alice', 0, 120),
        ('bob@example.com', 'pass1234', 'bob', 5, 80),
        ('carol@example.com', 'pass1234', 'carol', 10, 200),
@@ -249,3 +249,32 @@ VALUES ('test@example.com', '123123123', 'test', 9999999, 999999),
        ('heidi@example.com', 'pass1234', 'heidi', 0, 95),
        ('ivan@example.com', 'pass1234', 'ivan', 12, 220),
        ('judy@example.com', 'pass1234', 'judy', 0, 10);
+
+INSERT INTO workspace (ws_name, ws_lang, is_hint_view)
+VALUES ('WS01', 'JAVA11', 1),
+       ('WS02', 'JAVA11', 0),
+       ('WS03', 'JAVA11', 0),
+       ('WS04', 'JAVA11', 1),
+       ('WS05', 'JAVA11', 0);
+
+INSERT INTO workspace_member (ws_id, member_id, is_leader, email, nickname)
+values (1, 1, 1, 'test@test.com', 'test'),
+       (2, 1, 1, 'test@test.com', 'test'),
+       (3, 1, 1, 'test@test.com', 'test'),
+       (4, 1, 0, 'test@test.com', 'test'),
+       (5, 1, 0, 'test@test.com', 'test');
+
+insert into notice (ws_id, n_title, n_content)
+values (1, '공지입니다1', '공지 내용은 없습니다.'),
+       (1, '공지입니다2', '공지 내용은 없습니다.'),
+       (1, '공지입니다3', '공지 내용은 없습니다.'),
+       (1, '공지입니다4', '공지 내용은 없습니다.'),
+       (1, '공지입니다5', '공지 내용은 없습니다.'),
+       (1, '공지입니다6', '공지 내용은 없습니다.'),
+       (1, '공지입니다7', '공지 내용은 없습니다.'),
+       (1, '공지입니다8', '공지 내용은 없습니다.'),
+       (1, '공지입니다9', '공지 내용은 없습니다.'),
+       (1, '공지입니다0', '공지 내용은 없습니다.');
+
+insert into gift(product_name, product_price, product_image)
+values ('스타벅스 아이스아메리카노', 4500, 'https://drive.google.com/thumbnail?id=1qSG5K6_N-cIGU01FDguzh6aWEa-SND_e&sz=w1000');
