@@ -38,13 +38,15 @@ public record WorkspaceRequest(
 		Long workspaceId = Long.valueOf(req.getParameter("workspaceId"));
 		String workspaceName = req.getParameter("workspaceName");
 		String languageStr = req.getParameter("workspaceLanguage");
-		boolean isHintView = (req.getParameter("isHintView") != null);
+        boolean hintView = Boolean.parseBoolean(req.getParameter("isHintView"));
+// 또는 Optional.ofNullable(...).map(Boolean::parseBoolean).orElse(false)
 
-		WorkspaceLanguage language = languageStr != null
+
+        WorkspaceLanguage language = languageStr != null
 			? WorkspaceLanguage.valueOf(languageStr.toUpperCase())
 			: null;
 
-		return new WorkspaceRequest(userId, workspaceId, workspaceName, language, isHintView);
+		return new WorkspaceRequest(userId, workspaceId, workspaceName, language, hintView);
 	}
 
 	public static WorkspaceRequest deleteDto(HttpServletRequest req, SessionUser user) {
