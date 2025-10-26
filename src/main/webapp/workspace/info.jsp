@@ -107,12 +107,8 @@
             </section>
         </form>
 
-        <!-- ✅ 아래 두 섹션을 동일 패딩/규격으로 보이도록 stack로 감쌈 -->
         <div class="stack">
 
-            <!-- =========================
-                 2) 위험 구역 배너
-               ========================= -->
             <c:if test="${isLeader}">
                 <section class="danger-banner" id="ws-dangerBanner">
                     <div class="danger-title">위험 구역</div>
@@ -120,9 +116,6 @@
                 </section>
             </c:if>
 
-            <!-- =========================
-                 3) 멤버 관리
-               ========================= -->
             <section class="block">
                 <div class="block-title-row">
                     <div class="block-title">멤버</div>
@@ -232,20 +225,31 @@
         </div>
     </section>
 
-    <!-- 모달 -->
     <div class="modal" id="ws-inviteModal" hidden>
         <div class="modal-card">
             <div class="modal-title">멤버 추가하기</div>
-            <div class="field">
-                <label for="ws-inviteEmail">이메일</label>
-                <input id="ws-inviteEmail" type="email" placeholder="example@domain.com"/>
-            </div>
-            <div class="modal-actions">
-                <button class="btn" id="ws-inviteCancel" type="button">취소</button>
-                <button class="btn primary" id="ws-inviteOk" type="button" disabled>초대</button>
-            </div>
+
+            <form id="ws-inviteForm">
+                <div class="field">
+                    <label for="ws-inviteEmail">이메일</label>
+                    <input id="ws-inviteEmail"
+                           name="email"
+                           type="email"
+                           placeholder="example@domain.com"
+                           required
+                           pattern="^[^\s@]+@[^\s@]+\.[^\s@]{2,}$"
+                           autocomplete="email"
+                           inputmode="email"/>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="btn" id="ws-inviteCancel" type="button">취소</button>
+                    <button class="btn primary" id="ws-inviteOk" type="submit">초대</button>
+                </div>
+            </form>
         </div>
     </div>
+
 
     <div class="modal" id="ws-confirmModal" hidden>
         <div class="modal-card">

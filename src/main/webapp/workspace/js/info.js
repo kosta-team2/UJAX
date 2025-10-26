@@ -1,26 +1,30 @@
 // ---------- helpers ----------
-const $  = (sel, root = document) => root.querySelector(sel);
+const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
-const show = (el) => { if (el) el.hidden = false; };
-const hide = (el) => { if (el) el.hidden = true; };
+const show = (el) => {
+    if (el) el.hidden = false;
+};
+const hide = (el) => {
+    if (el) el.hidden = true;
+};
 
 function getContextPath() {
     const f = $('#ws-settingsForm');
     if (!f) return '';
     try {
         const u = new URL(f.action, window.location.href);
-        return u.pathname.replace(/\/front.*$/, '');
+        return u.pathname.replace(/\/front.*$/, ''); // "/ctx" or ""
     } catch {
         return '';
     }
 }
 
-// ---------- confirm modal (promise 기반) ----------
+// ---------- confirm modal ----------
 function openConfirm(message) {
-    const modal   = $('#ws-confirmModal');
-    const msgEl   = $('#ws-confirmMessage');
-    const yesBtn  = $('#ws-confirmYes');
-    const noBtn   = $('#ws-confirmNo');
+    const modal = $('#ws-confirmModal');
+    const msgEl = $('#ws-confirmMessage');
+    const yesBtn = $('#ws-confirmYes');
+    const noBtn = $('#ws-confirmNo');
 
     if (!modal || !msgEl || !yesBtn || !noBtn) {
         return Promise.resolve(window.confirm(message));
@@ -31,8 +35,10 @@ function openConfirm(message) {
 
     return new Promise((resolve) => {
         const onYes = () => cleanup(true);
-        const onNo  = () => cleanup(false);
-        const onKey = (e) => { if (e.key === 'Escape') cleanup(false); };
+        const onNo = () => cleanup(false);
+        const onKey = (e) => {
+            if (e.key === 'Escape') cleanup(false);
+        };
 
         function cleanup(result) {
             hide(modal);
@@ -48,54 +54,38 @@ function openConfirm(message) {
     });
 }
 
-// ---------- 멤버 초대 모달 ----------
 (function initInviteModal() {
-    const openBtn   = $('#ws-openInvite');
-    const modal     = $('#ws-inviteModal');
-    const cancelBtn = $('#ws-inviteCancel');
-    const okBtn     = $('#ws-inviteOk');
-    const emailInp  = $('#ws-inviteEmail');
-    const rootEl    = $('#ws-settings-root');
-    const wsId      = rootEl?.dataset.wsId;
-    const ctx       = getContextPath(); // ex) "" 또는 "/server-1.0-SNAPSHOT" 같은 값
+    const openBtn   = document.querySelector('#ws-openInvite');
+    const modal     = document.querySelector('#ws-inviteModal');
+    const form      = document.querySelector('#ws-inviteForm');
+    const cancelBtn = document.querySelector('#ws-inviteCancel');
+    const emailInp  = document.querySelector('#ws-inviteEmail');
 
-    if (!openBtn || !modal) return;
+    const rootEl = document.querySelector('#ws-settings-root');
+    const wsId   = rootEl?.dataset.wsId || '';
+    const ctx    = getContextPath();
 
-    // 열기
+    if (!openBtn || !modal || !form || !emailInp) return;
+
     openBtn.addEventListener('click', () => {
+        form.reset();
         show(modal);
-        if (emailInp) emailInp.focus();
-        if (okBtn && emailInp) okBtn.disabled = !emailInp.checkValidity();
+        emailInp.focus();
     });
 
-    // 닫기
-    cancelBtn?.addEventListener('click', () => hide(modal));
+    cancelBtn.addEventListener('click', () => hide(modal));
+    modal.addEventListener('click', (e) => { if (e.target === modal) hide(modal); });
 
-    // 바깥 클릭 시 닫기
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) hide(modal);
-    });
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();                 // 네이티브 제출만 막고 fetch 사용
+        if (!wsId) { alert('워크스페이스 ID를 찾을 수 없어요.'); return; }
 
-    // 이메일 유효성 따라 OK 상태
-    emailInp?.addEventListener('input', () => {
-        if (okBtn) okBtn.disabled = !emailInp.checkValidity();
-    });
-
-    // OK → 초대 API 호출
-    okBtn?.addEventListener('click', async () => {
-        if (okBtn.disabled) return;
-        if (!wsId) {
-            alert('워크스페이스 ID를 찾을 수 없어요.');
-            return;
-        }
-        const email = emailInp.value.trim();
         const params = new URLSearchParams();
         params.set('workspaceId', wsId);
-        params.set('email', email);
+        params.set('email', emailInp.value.trim());
 
         try {
-            const url = `${ctx}/ajax?key=workspace&methodName=invite`;
-            const res = await fetch(url, {
+            const res = await fetch(`${ctx}/ajax?key=workspace&methodName=invite`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
                 body: params.toString()
@@ -103,20 +93,15 @@ function openConfirm(message) {
 
             const text = await res.text();
             let data;
-            try {
-                data = JSON.parse(text);
-            } catch (e) {
-                console.error('Non-JSON response', res.status, text);
-                alert('서버 응답이 올바르지 않습니다.');
-                return;
-            }
+            try { data = JSON.parse(text); }
+            catch { console.error('Non-JSON response', res.status, text); alert('서버 응답이 올바르지 않습니다.'); return; }
 
             if (data.errorMessage) {
                 alert(data.errorMessage);
             } else {
                 alert(data.data || '초대 메일을 보냈습니다.');
+                form.reset();
                 hide(modal);
-                if (emailInp) emailInp.value = '';
             }
         } catch (err) {
             console.error(err);
@@ -128,9 +113,8 @@ function openConfirm(message) {
 // ---------- 폼/버튼 confirm 처리 ----------
 document.addEventListener('DOMContentLoaded', () => {
     const settingsForm = $('#ws-settingsForm');
-    const applyBtn     = $('#ws-applyBtn');
+    const applyBtn = $('#ws-applyBtn');
 
-    // 1) 기본 정보 변경
     if (applyBtn && settingsForm) {
         applyBtn.addEventListener('click', async (e) => {
             e.preventDefault();
@@ -139,7 +123,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 2) 리더 위임
     $$('form[action*="methodName=updateRole"]').forEach((f) => {
         f.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -148,7 +131,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 3) 추방
     $$('form[action*="methodName=kickUser"]').forEach((f) => {
         f.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -157,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 4) 워크스페이스 나가기
     $$('form[action*="methodName=exit"]').forEach((f) => {
         const btn = $('#ws-leaveWorkspaceBtn', f) || $('button[type="submit"]', f);
         if (!btn) return;
@@ -168,7 +149,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 5) 워크스페이스 삭제
     $$('form[action*="methodName=delete"]').forEach((f) => {
         const btn = $('#ws-deleteWorkspaceBtn', f) || $('button[type="submit"]', f);
         if (!btn) return;
