@@ -28,22 +28,42 @@ public class BarcodeDao implements BarcodeRepository {
 
 	@Override
 	public String consumeAvailableBarcodeAndGetImage(Connection con, Long productId) throws SQLException {
-		String sql = """
+		String updateSql = """
 			UPDATE barcode
-			SET status = 1, updated_at = NOW()
-			WHERE product_id = ? AND status = 0
-			ORDER BY barcode_id
-			LIMIT 1
-			RETURNING barcode_image;
+			       	SET status = 1, updated_at = NOW(), barcode_id = LAST_INSERT_ID(barcode_id)
+			        	WHERE product_id = ? AND status = 0
+			        	ORDER BY barcode_id
+			       	LIMIT 1
 			""";
 
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
+		try (PreparedStatement ps = con.prepareStatement(updateSql)) {
 			ps.setLong(1, productId);
-			try (ResultSet rs = ps.executeQuery()) {
-				if (rs.next()) {
-					return rs.getString("barcode_image");
+
+			if (ps.execute()) {
+				try (ResultSet rs = ps.getResultSet()) {
+					if (!rs.next()) {
+						if (ps.getUpdateCount() == 0) {
+							return null;
+						}
+					}
 				}
-				return null;
+			}
+		}
+
+		long barcodeId;
+		try (PreparedStatement ps = con.prepareStatement("SELECT LAST_INSERT_ID()")) {
+			try (ResultSet rs = ps.executeQuery()) {
+				if (!rs.next()) {
+					return null;
+				}
+				barcodeId = rs.getLong(1);
+			}
+		}
+
+		try (PreparedStatement ps = con.prepareStatement("SELECT barcode_image FROM barcode WHERE barcode_id = ?")) {
+			ps.setLong(1, barcodeId);
+			try (ResultSet rs = ps.executeQuery()) {
+				return rs.next() ? rs.getString("barcode_image") : null;
 			}
 		}
 	}
