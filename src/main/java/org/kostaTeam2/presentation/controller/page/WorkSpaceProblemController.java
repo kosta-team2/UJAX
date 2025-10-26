@@ -7,6 +7,7 @@ import org.kostaTeam2.application.service.workspace.WorkspaceProblemService;
 import org.kostaTeam2.domain.workspace.WorkspaceProblem;
 import org.kostaTeam2.dto.request.WorkspaceProblemPageRequest;
 import org.kostaTeam2.dto.request.WorkspaceProblemRequest;
+import org.kostaTeam2.dto.response.ProblemInfoResponse;
 import org.kostaTeam2.dto.response.WorkspaceProblemPageResponse;
 import org.kostaTeam2.global.exception.BadRequestException;
 import org.kostaTeam2.global.exception.common.ValidationException;
@@ -28,6 +29,7 @@ public class WorkSpaceProblemController implements Controller {
 		return switch (methodName) {
 			case "create" -> create(request, response);
 			case "getProblems" -> getProblems(request, response);
+			case "getProblemDetail" -> getDetail(request, response);
 			default -> throw new BadRequestException("methodName이 올바르지 않습니다.");
 		};
 	}
@@ -51,7 +53,8 @@ public class WorkSpaceProblemController implements Controller {
 				"/workspace/problem-register.jsp");
 		}
 
-		return new ModelAndView("/front?key=problem&methodName=getProblems&workspaceId=1&workspaceMemberId=1&page=1&size=6", true);
+		return new ModelAndView(
+			"/front?key=problem&methodName=getProblems&workspaceId=1&workspaceMemberId=1&page=1&size=6", true);
 	}
 
 	public ModelAndView getProblems(HttpServletRequest request, HttpServletResponse response) {
@@ -77,4 +80,16 @@ public class WorkSpaceProblemController implements Controller {
 
 		return new ModelAndView("/workspace/problem.jsp");
 	}
+
+	public ModelAndView getDetail(HttpServletRequest request, HttpServletResponse response) {
+		Long problemId = Long.valueOf(request.getParameter("problemId"));
+		String leader = request.getParameter("isLeader");
+		boolean isLeader = "true".equalsIgnoreCase(leader);
+		request.setAttribute("isLeader", isLeader);
+
+		ProblemInfoResponse detail = service.getProblemDetail(problemId);
+		request.setAttribute("detail", detail);
+		return new ModelAndView("/solution/solution.jsp");
+	}
+
 }

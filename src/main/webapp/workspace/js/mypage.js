@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const keyInput = document.createElement('input');
         keyInput.type = 'hidden';
         keyInput.name = 'key';
-        keyInput.value = 'user';
+        keyInput.value = 'member';
 
         const methodInput = document.createElement('input');
         methodInput.type = 'hidden';

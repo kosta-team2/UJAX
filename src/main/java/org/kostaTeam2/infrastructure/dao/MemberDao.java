@@ -82,20 +82,34 @@ public class MemberDao implements MemberRepository {
 		}
 	}
 
-	@Override
-	public void updateMember(Connection con, Member member) throws SQLException {
-		String sql = """
-			UPDATE member
-			SET nickname = ?, password = ?
-			WHERE member_id = ? AND is_deleted = 0
-			""";
-		try (PreparedStatement ps = con.prepareStatement(sql)) {
-			ps.setString(1, member.getNickname());
-			ps.setString(2, member.getPassword());
-			ps.setLong(3, member.getMemberId());
-			ps.executeUpdate();
-		}
-	}
+    @Override
+    public void updateMember(Connection con, Member member) throws SQLException {
+        String sql = """
+                UPDATE member
+                SET nickname = ?, password = ?
+                WHERE member_id = ? AND is_deleted = 0
+                """;
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, member.getNickname());
+            ps.setString(2, member.getPassword());
+            ps.setLong(3, member.getMemberId());
+            updateNickname(con, member.getNickname(), member.getMemberId());
+            ps.executeUpdate();
+        }
+    }
+
+    private void updateNickname(Connection con, String nickname, long memberId) throws SQLException {
+        String sql = """
+                UPDATE workspace_member
+                SET nickname = ?
+                WHERE member_id = ? AND is_deleted = 0
+                """;
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, nickname);
+            ps.setLong(2, memberId);
+            ps.executeUpdate();
+        }
+    }
 
 	@Override
 	public int debitRewardIfEnough(Connection con, Long memberId, Long amount) throws SQLException {

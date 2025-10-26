@@ -32,6 +32,7 @@ public class MemberPageController implements Controller {
             case "delete" -> delete(request, response);
             case "getInfo" -> getInfo(request, response);
             case "updateUser" -> updateUser(request, response);
+            case "getSidebar" -> getSidebar(request, response);
             default -> throw new BadRequestException("methodName이 올바르지 않습니다.");
         };
     }
@@ -90,8 +91,8 @@ public class MemberPageController implements Controller {
             memberService.softDelete(user.memberId());
             session.invalidate();
 
-            request.setAttribute("message", "회원 탈퇴가 정상적으로 처리되었습니다. 이용해주셔서 감사합니다.");
-            return new ModelAndView("/auth/login.jsp");
+            request.setAttribute("target", request.getContextPath() + "/auth/login.jsp");
+            return new ModelAndView("common/top-redirect.jsp");
 
         } catch (BadRequestException e) {
             request.setAttribute("error", e.getMessage());
@@ -120,23 +121,30 @@ public class MemberPageController implements Controller {
     }
 
     private ModelAndView updateUser(HttpServletRequest request, HttpServletResponse response) {
-        //HttpSession session = request.getSession(false);
-
-        // login session 남아있는지부터 체크
-        // TODO : filter 로 처리할거임
-//        if (session == null || session.getAttribute("SessionUser") == null) {
-//            request.setAttribute("error", "로그인 세션이 만료되었습니다. 다시 로그인해주세요.");
-//            return new ModelAndView("/auth/login.jsp", true);
-//        }
-        // memberId, newNickname, newPassword 검증 dto
+        HttpSession session = request.getSession(false);
         var dto = UpdateUserRequest.from(request);
+
         try {
             memberService.updateMember(dto.memberId(), dto.password(), dto.newNickname(), dto.newPassword());
-            request.setAttribute("message", "회원 정보가 정상적으로 수정되었습니다.");
-            return new ModelAndView(request.getContextPath() + "/workspace/mypage.jsp", true);
+
+            // update 성공했으면 기존 session user의 nickname, password도 변경 적용
+            SessionUser user = (SessionUser) session.getAttribute("SessionUser");
+            session.setAttribute("SessionUser", new SessionUser(user.memberId(), user.email(), user.nickname()));
+
+            String target = request.getContextPath() + "/front?key=member&methodName=getInfo";
+            return new ModelAndView(target, true);
         } catch (BadRequestException e) {
             request.setAttribute("error", e.getMessage());
             return new ModelAndView("/workspace.jsp");
         }
+    }
+
+    private ModelAndView getSidebar(HttpServletRequest request, HttpServletResponse response) {
+        SessionUser user = (SessionUser) request.getSession().getAttribute("SessionUser");
+
+        Member userInfo = memberService.getInfo(user.memberId()).orElse(null);
+
+        request.setAttribute("userInfo", userInfo);
+        return new ModelAndView("none");
     }
 }
