@@ -3,6 +3,7 @@ package org.kostaTeam2.presentation.controller.page;
 import org.kostaTeam2.application.service.GiftService;
 import org.kostaTeam2.domain.gift.Gift;
 import org.kostaTeam2.dto.response.GiftPage;
+import org.kostaTeam2.dto.response.PurchaseReceipt;
 import org.kostaTeam2.global.exception.BadRequestException;
 import org.kostaTeam2.presentation.controller.dto.SessionUser;
 import org.kostaTeam2.presentation.view.ModelAndView;
@@ -104,6 +105,8 @@ public class GiftPageController implements Controller {
 	private ModelAndView confirmPayment(HttpServletRequest request, HttpServletResponse response) {
 		SessionUser sessionUser = (SessionUser)request.getSession().getAttribute("SessionUser");
 		Long userId = sessionUser.memberId();
+		String userEmail = sessionUser.email();
+		String userNickname = sessionUser.nickname();
 
 		Long productId;
 		try {
@@ -128,7 +131,11 @@ public class GiftPageController implements Controller {
 
 		request.setAttribute("productPrice", productPrice);
 		request.setAttribute("remain", remain);
-		giftService.confirmPayment(userId, productId);
+
+		PurchaseReceipt receipt = giftService.confirmPayment(userId, productId);
+
+		// todo SMTP 바코드 이미지 이메일로 전송
+		// smtpSvc(userEmail, receipt.barcodeImage());
 
 		String target = request.getContextPath() + "/giftshop/order.jsp";
 		return new ModelAndView(target);

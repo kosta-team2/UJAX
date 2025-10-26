@@ -7,25 +7,32 @@ import java.util.Optional;
 
 import javax.sql.DataSource;
 
+import org.kostaTeam2.domain.gift.BarcodeRepository;
 import org.kostaTeam2.domain.gift.Gift;
 import org.kostaTeam2.domain.gift.GiftRepository;
 import org.kostaTeam2.domain.member.Member;
 import org.kostaTeam2.domain.member.MemberRepository;
 import org.kostaTeam2.dto.response.GiftPage;
+import org.kostaTeam2.dto.response.PurchaseReceipt;
 import org.kostaTeam2.global.exception.DBException;
 import org.kostaTeam2.global.exception.InsufficientBalanceException;
 import org.kostaTeam2.global.exception.NotFoundException;
+import org.kostaTeam2.global.exception.SoldOutException;
+import org.kostaTeam2.global.exception.common.AppException;
 
 public class
 GiftServiceImpl implements GiftService {
 	private final DataSource ds;
 	private final GiftRepository giftRepository;
 	private final MemberRepository memberRepository;
+	private final BarcodeRepository barcodeRepository;
 
-	public GiftServiceImpl(DataSource ds, GiftRepository giftRepository, MemberRepository memberRepository) {
+	public GiftServiceImpl(DataSource ds, GiftRepository giftRepository, MemberRepository memberRepository,
+		BarcodeRepository barcodeRepository) {
 		this.ds = ds;
 		this.giftRepository = giftRepository;
 		this.memberRepository = memberRepository;
+		this.barcodeRepository = barcodeRepository;
 	}
 
 	@Override
@@ -92,29 +99,41 @@ GiftServiceImpl implements GiftService {
 	}
 
 	@Override
-	public void confirmPayment(Long userId, Long productId) {
+	public PurchaseReceipt confirmPayment(Long userId, Long productId) {
 		try (Connection conn = ds.getConnection()) {
-			// 물건 가격 조회
-			Gift gift = giftRepository.findById(conn, productId);
-			if (gift == null) {
-				throw new NotFoundException("상품이 존재하지 않습니다.");
-			}
+			conn.setAutoCommit(false);
 
-			Long price = gift.getProductPrice();
-			if (price == null || price <= 0) {
-				throw new IllegalArgumentException("상품 가격에 문제가 있어 구매 불가 합니다.");
-			}
+			try {
+				// 물건 가격 조회
+				Gift gift = giftRepository.findById(conn, productId);
+				if (gift == null) {
+					throw new NotFoundException("상품이 존재하지 않습니다.");
+				}
 
-			// 결제 프로세스
-			int result = memberRepository.debitRewardIfEnough(conn, userId, price);
-			if (result != 1) {
-				throw new InsufficientBalanceException("잔액이 부족합니다.");
-			}
+				Long price = gift.getProductPrice();
+				if (price == null || price <= 0) {
+					throw new IllegalArgumentException("상품 가격에 문제가 있어 구매 불가 합니다.");
+				}
 
-		} catch (InsufficientBalanceException | NotFoundException e) {
-			throw e;
+				// 결제 프로세스
+				int result = memberRepository.debitRewardIfEnough(conn, userId, price);
+				if (result != 1) {
+					throw new InsufficientBalanceException("잔액이 부족합니다.");
+				}
+
+				String barcodeImage = barcodeRepository.consumeAvailableBarcodeAndGetImage(conn, productId);
+				if (barcodeImage == null) {
+					throw new SoldOutException("품절되었습니다.");
+				}
+
+				conn.commit();
+				return PurchaseReceipt.completeGiftPurchase(userId, productId, price, barcodeImage);
+			} catch (AppException | SQLException | IllegalArgumentException e) {
+				conn.rollback();
+				throw e;
+			}
 		} catch (SQLException e) {
-			throw new DBException("기프티콘 결제 중 DB 에러가 발생했습니다.");
+			throw new DBException("기프티콘 결제 중 DB 에러가 발생했습니다.", e);
 		}
 	}
 

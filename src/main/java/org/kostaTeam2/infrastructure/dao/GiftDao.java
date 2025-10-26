@@ -16,9 +16,15 @@ public class GiftDao implements GiftRepository {
 	@Override
 	public Gift findById(Connection conn, Long giftId) throws SQLException {
 		String sql = """
-			SELECT product_name, product_price, product_image
-			FROM gift
-			WHERE product_id = ?;
+			SELECT g.product_name, g.product_price, g.product_image
+			FROM gift g
+			WHERE g.product_id = ?
+			AND EXISTS (
+			    SELECT 1
+			    FROM barcode b
+			    WHERE b.product_id = g.product_id
+			    AND b.status = 0
+			);
 			""";
 
 		try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -53,11 +59,16 @@ public class GiftDao implements GiftRepository {
 
 	@Override
 	public List<Gift> paginationGift(Connection conn, int offset, int size) throws SQLException {
-		// todo 바코드가 하나라도 있는 기프티콘만 보여준다.
 		String sql = """
-			SELECT product_id, product_name, product_price, product_image
-			FROM gift
-			ORDER BY created_at DESC, product_id DESC
+			SELECT g.product_id, g.product_name, g.product_price, g.product_image
+			FROM gift g
+			WHERE EXISTS (
+			    SELECT 1
+			    FROM  barcode b
+			    WHERE b.product_id = g.product_id
+			    AND b.status = 0
+			)
+			ORDER BY g.product_price
 			LIMIT ? OFFSET ?;
 			""";
 

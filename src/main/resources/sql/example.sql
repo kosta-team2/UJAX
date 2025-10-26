@@ -115,7 +115,8 @@ CREATE TABLE barcode
     product_id    BIGINT       NOT NULL,
     barcode_image VARCHAR(512) NOT NULL,
     status        TINYINT      NOT NULL DEFAULT 0,
-    created_at    DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
+    created_at    DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    updated_at    DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
 );
 
 CREATE TABLE algorithm

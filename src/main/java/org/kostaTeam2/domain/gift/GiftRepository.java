@@ -9,6 +9,9 @@ public interface GiftRepository {
 
 	int countProducts(Connection conn) throws SQLException;
 
+	/**
+	 * 가격 낮은 순 정렬 페이지네션
+	 */
 	List<Gift> paginationGift(Connection conn, int offset, int limit) throws SQLException;
 
 }

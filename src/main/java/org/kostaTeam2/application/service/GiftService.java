@@ -2,6 +2,7 @@ package org.kostaTeam2.application.service;
 
 import org.kostaTeam2.domain.gift.Gift;
 import org.kostaTeam2.dto.response.GiftPage;
+import org.kostaTeam2.dto.response.PurchaseReceipt;
 
 public interface GiftService {
 
@@ -22,7 +23,9 @@ public interface GiftService {
 
 	/**
 	 * 기프티콘 결제
+	 *
+	 * @return
 	 */
-	void confirmPayment(Long userId, Long productId);
+	PurchaseReceipt confirmPayment(Long userId, Long productId);
 
 }
