@@ -50,6 +50,7 @@ public class NoticePageController implements Controller {
 	}
 
 	private ModelAndView getList(HttpServletRequest request, HttpServletResponse response) {
+		String isLeader = request.getParameter("isLeader");
 		Long workspaceId = Long.valueOf(request.getParameter("wsId"));
 		String sort = request.getParameter("sort");
 		Integer page = Integer.valueOf(request.getParameter("page"));
@@ -62,6 +63,8 @@ public class NoticePageController implements Controller {
 				page,
 				limit
 			));
+
+		request.setAttribute("isLeader", isLeader);
 		request.setAttribute("wsId", workspaceId);
 		request.setAttribute("notices", noticePage.getNotices());
 		request.setAttribute("page", noticePage.getPage());

@@ -244,3 +244,5 @@ VALUES ('alice@example.com', 'pass1234', 'alice', 0.00, 120),
        ('heidi@example.com', 'pass1234', 'heidi', 0.00, 95),
        ('ivan@example.com', 'pass1234', 'ivan', 12.00, 220),
        ('judy@example.com', 'pass1234', 'judy', 0.00, 10);
+INSERT INTO workspace_member (ws_id, member_id, is_leader, email, nickname)
+VALUES (1, 2, 0, 'alice@example.com', 'alice');

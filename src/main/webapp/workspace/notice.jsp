@@ -1,6 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<%@ taglib prefix="fn" uri="jakarta.tags.functions" %>
 <!DOCTYPE html>
 <html lang="ko" data-theme="dark">
 <head>
@@ -18,8 +17,9 @@
 
         <div class="notice-header">
             <h1>공지 사항</h1>
-            <%--            todo 사이드바의 isleader를 통해 공지 등록 보이고숨기기--%>
-            <button class="register-btn" type="button" id="openEditorBtn">공지 등록</button>
+            <c:if test="${param.isLeader == 'true' or param.isLeader == '1'}">
+                <button class="register-btn" type="button" id="openEditorBtn">공지 등록</button>
+            </c:if>
         </div>
 
         <hr class="section-divider"/>
@@ -42,6 +42,7 @@
                     <c:forEach items="${notices}" var="n">
                         <a href="#"
                            class="notice-card"
+                           data-isLeader="${param.isLeader}}"
                            data-notice-id="${n.noticeId}"
                            data-title="<c:out value='${not empty n.title ? n.title.value : ""}'/>"
                            data-content="<c:out value='${not empty n.content ? n.content.value : ""}'/>">
