@@ -4,6 +4,17 @@ const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
 const show = (el) => { if (el) el.hidden = false; };
 const hide = (el) => { if (el) el.hidden = true; };
 
+function getContextPath() {
+    const f = $('#ws-settingsForm');
+    if (!f) return '';
+    try {
+        const u = new URL(f.action, window.location.href);
+        return u.pathname.replace(/\/front.*$/, '');
+    } catch {
+        return '';
+    }
+}
+
 // ---------- confirm modal (promise 기반) ----------
 function openConfirm(message) {
     const modal   = $('#ws-confirmModal');
@@ -11,7 +22,6 @@ function openConfirm(message) {
     const yesBtn  = $('#ws-confirmYes');
     const noBtn   = $('#ws-confirmNo');
 
-    // 모달이 없으면 브라우저 confirm fallback
     if (!modal || !msgEl || !yesBtn || !noBtn) {
         return Promise.resolve(window.confirm(message));
     }
@@ -45,6 +55,9 @@ function openConfirm(message) {
     const cancelBtn = $('#ws-inviteCancel');
     const okBtn     = $('#ws-inviteOk');
     const emailInp  = $('#ws-inviteEmail');
+    const rootEl    = $('#ws-settings-root');
+    const wsId      = rootEl?.dataset.wsId;
+    const ctx       = getContextPath(); // ex) "" 또는 "/server-1.0-SNAPSHOT" 같은 값
 
     if (!openBtn || !modal) return;
 
@@ -52,30 +65,63 @@ function openConfirm(message) {
     openBtn.addEventListener('click', () => {
         show(modal);
         if (emailInp) emailInp.focus();
-        // 최초엔 OK 버튼 상태를 입력값 기준으로 갱신
         if (okBtn && emailInp) okBtn.disabled = !emailInp.checkValidity();
     });
 
     // 닫기
     cancelBtn?.addEventListener('click', () => hide(modal));
 
-    // 바깥 클릭 시 닫기 (오버레이 클릭)
+    // 바깥 클릭 시 닫기
     modal.addEventListener('click', (e) => {
         if (e.target === modal) hide(modal);
     });
 
-    // 이메일 유효성에 따라 OK 버튼 enable/disable
+    // 이메일 유효성 따라 OK 상태
     emailInp?.addEventListener('input', () => {
         if (okBtn) okBtn.disabled = !emailInp.checkValidity();
     });
 
-    // OK 클릭 (실제 초대 API/submit은 추후 구현)
-    okBtn?.addEventListener('click', () => {
+    // OK → 초대 API 호출
+    okBtn?.addEventListener('click', async () => {
         if (okBtn.disabled) return;
-        // TODO: 초대 로직 붙이기 (폼 submit 또는 fetch)
-        // 현재는 모달만 닫고 안내
-        alert('초대 기능은 준비중입니다.');
-        hide(modal);
+        if (!wsId) {
+            alert('워크스페이스 ID를 찾을 수 없어요.');
+            return;
+        }
+        const email = emailInp.value.trim();
+        const params = new URLSearchParams();
+        params.set('workspaceId', wsId);
+        params.set('email', email);
+
+        try {
+            const url = `${ctx}/ajax?key=workspace&methodName=invite`;
+            const res = await fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+                body: params.toString()
+            });
+
+            const text = await res.text();
+            let data;
+            try {
+                data = JSON.parse(text);
+            } catch (e) {
+                console.error('Non-JSON response', res.status, text);
+                alert('서버 응답이 올바르지 않습니다.');
+                return;
+            }
+
+            if (data.errorMessage) {
+                alert(data.errorMessage);
+            } else {
+                alert(data.data || '초대 메일을 보냈습니다.');
+                hide(modal);
+                if (emailInp) emailInp.value = '';
+            }
+        } catch (err) {
+            console.error(err);
+            alert('네트워크 오류가 발생했습니다.');
+        }
     });
 })();
 
@@ -113,7 +159,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 4) 워크스페이스 나가기
     $$('form[action*="methodName=exit"]').forEach((f) => {
-        // 해당 폼에는 #ws-leaveWorkspaceBtn 버튼이 있음
         const btn = $('#ws-leaveWorkspaceBtn', f) || $('button[type="submit"]', f);
         if (!btn) return;
         btn.addEventListener('click', async (e) => {

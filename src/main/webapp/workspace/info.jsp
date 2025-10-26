@@ -259,4 +259,4 @@
     </div>
 </section>
 
-<script src="<c:url value='/workspace/js/info.js'/>?" defer></script>
+<script src="<c:url value='/workspace/js/info.js'/>?v=${System.currentTimeMillis()}" defer></script>
