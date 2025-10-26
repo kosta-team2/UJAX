@@ -77,6 +77,8 @@ public class MailService {
             String encSubject = MimeUtility.encodeText(subject, StandardCharsets.UTF_8.name(), "B");
             message.setSubject(encSubject);
 
+            message.setFrom(new InternetAddress(from, "ujax", "UTF-8"));
+
             // 본문 인코딩
             message.setContent(body, "text/plain; charset=UTF-8");
 
