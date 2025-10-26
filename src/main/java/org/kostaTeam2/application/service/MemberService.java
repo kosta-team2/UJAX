@@ -16,4 +16,9 @@ public interface MemberService {
 
     void updateMember(long memberId, String password, String newNickname, String newPassword);
 
+    Optional<Member> findByEmail(String email);
+
+    default boolean existsByEmail(String email) {
+        return findByEmail(email).isPresent();
+    }
 }

@@ -77,12 +77,10 @@ function openConfirm(message) {
     modal.addEventListener('click', (e) => { if (e.target === modal) hide(modal); });
 
     form.addEventListener('submit', async (e) => {
-        e.preventDefault();                 // 네이티브 제출만 막고 fetch 사용
+        e.preventDefault();
         if (!wsId) { alert('워크스페이스 ID를 찾을 수 없어요.'); return; }
 
-        const params = new URLSearchParams();
-        params.set('workspaceId', wsId);
-        params.set('email', emailInp.value.trim());
+        const params = new URLSearchParams({ workspaceId: wsId, email: emailInp.value.trim() });
 
         try {
             const res = await fetch(`${ctx}/ajax?key=workspace&methodName=invite`, {
@@ -91,18 +89,24 @@ function openConfirm(message) {
                 body: params.toString()
             });
 
-            const text = await res.text();
-            let data;
-            try { data = JSON.parse(text); }
-            catch { console.error('Non-JSON response', res.status, text); alert('서버 응답이 올바르지 않습니다.'); return; }
+            // 본문은 한 번만 읽는다
+            const raw = await res.text();
+            let obj; try { obj = JSON.parse(raw); } catch {}
 
-            if (data.errorMessage) {
-                alert(data.errorMessage);
-            } else {
-                alert(data.data || '초대 메일을 보냈습니다.');
-                form.reset();
-                hide(modal);
+            if (!res.ok) {
+                const msg =
+                    (obj && (obj.errorMessage || obj.error || obj.message || obj.data)) ||
+                    raw.trim() ||
+                    `요청 실패 (${res.status})`;
+                alert(msg);
+                return;
             }
+
+            const okMsg = (obj && (obj.data || obj.message)) || '초대 메일을 보냈습니다.';
+            alert(okMsg);
+            form.reset();
+            hide(modal);
+
         } catch (err) {
             console.error(err);
             alert('네트워크 오류가 발생했습니다.');
