@@ -25,6 +25,9 @@
                   method="post"
                   autocomplete="on">
 
+                <c:if test="${not empty param.redirect}">
+                    <input type="hidden" name="redirect" value="${fn:escapeXml(param.redirect)}"/>
+                </c:if>
                 <input type="hidden" name="key" value="member"/>
                 <input type="hidden" name="methodName" value="login"/>
 

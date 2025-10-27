@@ -1,6 +1,5 @@
 package org.kostaTeam2.presentation.controller.page;
 
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import org.kostaTeam2.application.service.workspace.WorkspaceService;
@@ -145,13 +144,19 @@ public class WorkspacePageController implements Controller {
 
     private ModelAndView acceptInvite(HttpServletRequest request, HttpServletResponse response) {
         final String ctx = request.getContextPath();
-        // session 체크(로그인 안 했으면 로그인 페이지로 이동 후 가입 url 탈 수 있도록
+
+        String emailParam = request.getParameter("email");
+        String wsIdParam  = request.getParameter("workspaceId");
+
         SessionUser sessionUser = (SessionUser) request.getSession().getAttribute("SessionUser");
         if(sessionUser == null) {
-            String redirect = request.getRequestURI()
-                    + "?key=workspace&methodName=acceptInvite"
-                    + "&" + request.getQueryString();
-            return new ModelAndView(ctx + "/auth/login.jsp?redirect=" + urlEncode(redirect), true);
+            String acceptUrl = ctx
+                    + "/front?key=workspace&methodName=acceptInvite"
+                    + "&workspaceId=" + urlEncode(wsIdParam)
+                    + "&email=" + urlEncode(emailParam);
+
+            String loginWithRedirect = ctx + "/auth/login.jsp?redirect=" + urlEncode(acceptUrl);
+            return new ModelAndView(loginWithRedirect, true);
         }
 
         AcceptInviteRequest dto = AcceptInviteRequest.from(request);
@@ -163,13 +168,12 @@ public class WorkspacePageController implements Controller {
         }
 
         workspaceService.acceptInvite(dto);
-
         request.getSession().setAttribute("flashMessageJs", "워크스페이스에 합류했습니다!");
         return new ModelAndView(ctx + "/workspace", true);
     }
 
     private static String urlEncode(String s) {
-        try { return java.net.URLEncoder.encode(s, StandardCharsets.UTF_8); }
+        try { return java.net.URLEncoder.encode(s == null ? "" : s, java.nio.charset.StandardCharsets.UTF_8); }
         catch (Exception e) { return s; }
     }
 }

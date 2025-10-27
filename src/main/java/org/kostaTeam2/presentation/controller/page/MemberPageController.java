@@ -3,6 +3,7 @@ package org.kostaTeam2.presentation.controller.page;
 import java.util.Optional;
 
 import org.kostaTeam2.application.service.MemberService;
+import org.kostaTeam2.application.service.workspace.WorkspaceService;
 import org.kostaTeam2.domain.member.Member;
 import org.kostaTeam2.dto.request.LoginUserRequest;
 import org.kostaTeam2.dto.request.SignupUserRequest;
@@ -18,7 +19,7 @@ import jakarta.servlet.http.HttpSession;
 public class MemberPageController implements Controller {
     private final MemberService memberService;
 
-    public MemberPageController(MemberService memberService) {
+    public MemberPageController(MemberService memberService, WorkspaceService workspaceService) {
         this.memberService = memberService;
     }
 
@@ -57,6 +58,17 @@ public class MemberPageController implements Controller {
                 m.getEmail(),
                 m.getNickname()
         ));
+
+        String ctx = request.getContextPath();
+        String redirect = request.getParameter("redirect");
+        if (redirect != null && !redirect.isBlank()) {
+            if (redirect.startsWith(ctx + "/")) {
+                return new ModelAndView(redirect, true);
+            }
+            if (redirect.startsWith("/")) {
+                return new ModelAndView(ctx + redirect, true);
+            }
+        }
 
         String target = request.getContextPath() + "/workspace";
         return new ModelAndView(target, true);
