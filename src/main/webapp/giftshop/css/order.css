@@ -1,0 +1,108 @@
+.order-complete,
+.container {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 40px 20px 72px;
+    color: var(--text);
+    text-align: center;
+}
+
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, .35);
+    padding: 28px 22px;
+}
+
+.card.success {
+    border-color: rgba(57, 217, 138, .35);
+    box-shadow: 0 12px 34px rgba(57, 217, 138, .18);
+}
+
+.card h1 {
+    margin: 0 0 10px;
+    font-size: 26px;
+    font-weight: 900;
+    letter-spacing: -.3px;
+}
+
+.card p {
+    margin: 6px 0;
+    color: rgba(231, 234, 243, .82);
+    line-height: 1.7;
+}
+
+.card p strong {
+    color: var(--text);
+}
+
+/* Divider */
+.divider {
+    height: 1px;
+    background: var(--border);
+    margin: 16px 0 12px;
+}
+
+/* 액션 버튼 */
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.btn, .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 18px;
+    border-radius: 12px;
+    font-weight: 900;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.btn {
+    border: 1px solid var(--border);
+    background: var(--surface-sub);
+    color: var(--text);
+}
+
+.btn-primary {
+    border: 1px solid transparent;
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(91, 134, 229, .28);
+}
+
+.btn:hover, .btn-primary:hover {
+    transform: translateY(-1px);
+    transition: transform .1s ease;
+}
+
+/* 작은 정보 텍스트 */
+.meta {
+    margin-top: 12px;
+    font-size: 12px;
+    color: rgba(231, 234, 243, .58);
+}
+
+/* 반응형 */
+@media (max-width: 560px) {
+    .order-complete, .container {
+        padding: 24px 16px 56px;
+    }
+
+    .card {
+        padding: 22px 16px;
+    }
+
+    .actions {
+        flex-direction: column;
+    }
+
+    .actions .btn, .actions .btn-primary {
+        width: 100%;
+    }
+}

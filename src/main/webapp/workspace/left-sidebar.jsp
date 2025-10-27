@@ -47,7 +47,7 @@
 
         <div class="workspace-toggle">
             <a class="workspace-name" target="mainFrame"
-               href="${pageContext.request.contextPath}/workspace/giftshop.jsp">
+               href="${pageContext.request.contextPath}/front?key=giftshop&methodName=showGiftPage&size=8&page=1">
                 기프티콘 샵
             </a>
         </div>

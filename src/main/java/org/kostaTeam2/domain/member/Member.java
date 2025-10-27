@@ -2,16 +2,18 @@ package org.kostaTeam2.domain.member;
 
 /**
  * TODO: password hash
- * */
+ *
+ */
 public class Member {
 	private Long memberId;
 	private String email;
 	private String password;
 	private String nickname;
-	private int reward;
+	private Long reward;
 	private int xp;
 
-	public Member(Long memberId, String email, String password, String nickname, int reward, int xp) {
+	// dto
+	public Member(Long memberId, String email, String password, String nickname, Long reward, int xp) {
 		this.memberId = memberId;
 		this.email = email;
 		this.password = password;
@@ -20,17 +22,25 @@ public class Member {
 		this.xp = xp;
 	}
 
+	// 로그인
 	public Member(String email, String password, String nickname) {
 		this.memberId = memberId;
 		this.email = email;
 		this.nickname = nickname;
 	}
 
-    public Member(Long memberId, String nickname, String password) {
-        this.memberId = memberId;
-        this.nickname = nickname;
-        this.password = password;
-    }
+	// 회원 정보 수정
+	public Member(Long memberId, String nickname, String password) {
+		this.memberId = memberId;
+		this.nickname = nickname;
+		this.password = password;
+	}
+
+	// 결제
+	public Member(Long memberId, Long reward) {
+		this.memberId = memberId;
+		this.reward = reward;
+	}
 
 	public Long getMemberId() {
 		return memberId;
@@ -48,7 +58,7 @@ public class Member {
 		return nickname;
 	}
 
-	public int getReward() {
+	public Long getReward() {
 		return reward;
 	}
 

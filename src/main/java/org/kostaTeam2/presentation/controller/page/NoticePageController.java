@@ -24,7 +24,7 @@ public class NoticePageController implements Controller {
 			case "createNotice" -> create(request, response);
 			case "getNotices" -> getList(request, response);
 			case "deleteNotice" -> delete(request, response);
-			default -> throw new BadRequestException("workspace methodName이 올바르지 않습니다.");
+			default -> throw new BadRequestException("methodName이 올바르지 않습니다.");
 		};
 	}
 
