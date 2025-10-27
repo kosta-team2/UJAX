@@ -36,7 +36,7 @@ public class WorkspaceDao implements WorkspaceRepository {
     public Optional<Workspace> findById(Connection conn, Long workspaceId) throws SQLException {
         String sql = "SELECT * " +
                 "FROM workspace " +
-                "WHERE ws_id = ?";
+                "WHERE ws_id = ? AND IS_DELETED = 0";
 
         try (PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setLong(1, workspaceId);
