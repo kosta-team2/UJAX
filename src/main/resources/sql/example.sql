@@ -289,8 +289,8 @@ VALUES ('맘스터치 싸이버거', 7500,
         'https://lh3.googleusercontent.com/rd-d/ALs6j_Hn40s9QGJ2mqPJBb2ZyTOwdutrQi3oSAUQdUMS_IGGmFrFPRQStP4wi5h8oIpuRivW-ZIMWIUGaxLwd0mVW3GPKr5fBYCOKref7kfuNDuAGttD-YngV3izIDoem3YaHSNE-SuM20zzh-72q7rEr5q6rjucpWb4_aRNZY4MMPV8SU1YljgkX2Q-F692acO4C_lSrYHtalcJxqWfECvSgMFkOrt4jL38OzNFcTMUNz5MHsV7HOT0NyxRv18D-D0cet6b98gllP3WB9OQDb9xiwyYCI7sjSkmGLZDFafjH5UsL_4opGo7Xt4NcC-ACPSwlGnj9cJD_bu92AKMGuU_QweC7czq6dK0Yfyaov5OdiPj8UQqnQ7ymxcrkcwpVRarHIYczQzet1-hJTcnG9ruNRI3q8jSwW6VqQaZiRNKHK8VRk0AvIWgFWqLYAH_rNjoy67vH1LFI1g37zGZ3qgsRkaT4Z_qREqnCVHu3CVmjGWarFgO3A7CWp5x0IhJl2wzIXV_u8kwvsCefaxhvb_nJVBUoea8lesv8-oROsfU-pncmQh7BNak9S6les0tjXQWIwqa_GtKlphJgjUct2C9Cu7_azwenltNDbpFu1Sml9DL0pr5g5s7Ebwz_hfC_qpiDjSMDJpDXP5savwm6ickIO1pVdiKrA1_XClH3w_o73S-htEQ3m5jXfVTHdgIiRxIb0XeysXXd4Lfq5Xx-_2c4SNYWVJxVE58PzyQhWizJ2WvHIhSf34d4nWBCIqSoaBQRFu2DpQ3CdNGdkTUrDZ3K7qcV9mQWd9UxTdbnDyseMt0WAV21-T7gg1g3AEzRFePNE7gpHlsX41OFErS0xMnRAlCHss7cx66m8O82JQXTWbIcN4G_L2-TKdpwOdnBBOL7xlmS2CNaiAGZ1cCYrHOuAn6FBgBP1h4NFnLbQbyf8e3ABhV1K8-gvDjfEz6qQvX1Ud0wSulGdBYYNlHrBTngKsJzmtlx3pwgQCXHNBvUpkrfp1swWW6AGAYcDLGbAqszg_DWTLZ1iUXs6wGKYTvMxnfMqw9VQW-7VIdznkouF1W7iZZhIzurBjAa-QqxObTKJ3X8glDVVRCt9Pvdg=w2560-h1317?auditContext=prefetch');
 
 insert into barcode(barcode_image, product_id)
-values ('https://drive.google.com/thumbnail?id=1qSG5K6_N-cIGU01FDguzh6aWEa-SND_e&sz=w1000', 1);
+values ('https://lh3.googleusercontent.com/d/1qSG5K6_N-cIGU01FDguzh6aWEa-SND_e=w1000', 1);
 insert into barcode(barcode_image, product_id)
-values ('https://drive.google.com/thumbnail?id=1qSG5K6_N-cIGU01FDguzh6aWEa-SND_e&sz=w1000', 2);
+values ('https://lh3.googleusercontent.com/d/1qSG5K6_N-cIGU01FDguzh6aWEa-SND_e=w1000', 2);
 insert into barcode(barcode_image, product_id)
-values ('https://drive.google.com/thumbnail?id=1qSG5K6_N-cIGU01FDguzh6aWEa-SND_e&sz=w1000', 3);
+values ('https://lh3.googleusercontent.com/d/1qSG5K6_N-cIGU01FDguzh6aWEa-SND_e=w1000', 3);
