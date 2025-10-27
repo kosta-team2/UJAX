@@ -1,0 +1,128 @@
+.check-order,
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 28px 20px 56px;
+    color: var(--text);
+}
+
+/* 제목/섹션 카드 */
+.card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    box-shadow: 0 8px 28px rgba(0, 0, 0, .35);
+    padding: 20px;
+}
+
+.card + .card {
+    margin-top: 16px;
+}
+
+.card h1,
+.card h2 {
+    margin: 0 0 12px;
+    font-weight: 800;
+    font-size: 22px;
+}
+
+.card p {
+    margin: 8px 0;
+    line-height: 1.6;
+    color: rgba(231, 234, 243, .82);
+}
+
+.card strong {
+    color: var(--text);
+}
+
+/* 상태 톤 */
+.warn {
+    color: #F3B856;
+}
+
+.notice {
+    display: inline-block;
+    margin: 8px 0 0;
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-weight: 800;
+    font-size: 12px;
+    border: 1px solid rgba(91, 134, 229, .28);
+    background: rgba(91, 134, 229, .14);
+    color: #cfe0ff;
+}
+
+/* 액션 영역 공통 (giftshop-detail과 동일 톤) */
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 18px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 16px;
+    border-radius: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    user-select: none;
+    text-decoration: none;
+    border: 1px solid var(--border);
+    background: var(--surface-sub);
+    color: var(--text);
+    transition: transform .1s ease, background .15s ease, border-color .15s ease;
+}
+
+.btn:hover {
+    transform: translateY(-1px);
+    background: var(--surface);
+}
+
+.btn-primary {
+    border: 1px solid transparent;
+    background: var(--accent);
+    color: #fff;
+    box-shadow: 0 8px 20px rgba(91, 134, 229, .28);
+}
+
+.btn-primary:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+}
+
+/* 금액 요약 행 */
+.summary {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 8px 14px;
+    align-items: center;
+    margin: 6px 0 2px;
+}
+
+.summary .label {
+    color: rgba(231, 234, 243, .68);
+}
+
+.summary .value {
+    font-weight: 900;
+    letter-spacing: -.2px;
+}
+
+/* 반응형 */
+@media (max-width: 680px) {
+    .check-order, .container {
+        padding: 20px 16px 48px;
+    }
+
+    .actions {
+        flex-direction: column-reverse;
+    }
+
+    .actions .btn, .actions .btn-primary {
+        width: 100%;
+    }
+}

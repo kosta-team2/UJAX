@@ -25,7 +25,7 @@
                                     워크스페이스 홈
                                 </a>
                                 <a class="nav-btn" target="mainFrame"
-                                   href="${pageContext.request.contextPath}/front?key=notice&methodName=getNotices&wsId=${ws.workspaceId}&size=6&page=1">
+                                   href="${pageContext.request.contextPath}/front?key=notice&methodName=getNotices&wsId=${ws.workspaceId}&size=6&page=1&isLeader=${ws.leader}">
                                     공지 전체 보기
                                 </a>
                                 <a class="nav-btn" target="mainFrame"
@@ -47,7 +47,7 @@
 
         <div class="workspace-toggle">
             <a class="workspace-name" target="mainFrame"
-               href="${pageContext.request.contextPath}/workspace/giftshop.jsp">
+               href="${pageContext.request.contextPath}/front?key=giftshop&methodName=showGiftPage&size=8&page=1">
                 기프티콘 샵
             </a>
         </div>

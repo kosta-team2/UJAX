@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 
 <div id="noticeModal" class="notice-modal" style="display:none;">
     <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
@@ -8,7 +9,9 @@
             <h3 id="modalTitle" class="m-title"></h3>
             <div id="modalContent" class="m-body"></div>
             <div class="modal-actions">
-                <button type="button" class="notice-delete-btn" id="deleteNoticeBtn">삭제</button>
+                <c:if test="${param.isLeader == 'true' or param.isLeader == '1'}">
+                    <button type="button" class="notice-delete-btn" id="deleteNoticeBtn">삭제</button>
+                </c:if>
             </div>
         </div>
 

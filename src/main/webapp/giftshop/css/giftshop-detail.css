@@ -1,4 +1,6 @@
-/* 상세 페이지 전용 */
+/* ========== Giftshop Detail (clean) ========== */
+
+/* 레이아웃 기본 */
 .order-detail {
     max-width: 1100px;
     margin: 0 auto;
@@ -6,18 +8,19 @@
     color: var(--text);
 }
 
+/* 상단 바 */
 .order-detail .topbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: 12px;
-    margin-bottom: 18px
+    margin-bottom: 18px;
 }
 
 .order-detail .title {
     margin: 0;
     font-size: 26px;
-    font-weight: 800
+    font-weight: 800;
 }
 
 .order-detail .btn-list {
@@ -46,7 +49,7 @@
     background: var(--surface-sub)
 }
 
-/* 카드 레이아웃 */
+/* 카드 */
 .order-detail .card {
     display: flex;
     align-items: stretch;
@@ -58,39 +61,54 @@
     padding: 18px;
 }
 
+/* 썸네일 영역 */
 .order-detail .thumb {
     flex: 1 1 50%;
     min-width: 340px;
     display: flex;
     align-items: center;
     justify-content: center;
+    /* 필요하면 배경/테두리만 여기 */
+    background: var(--surface-sub);
+    border: 1px solid var(--border);
+    border-radius: 16px;
 }
 
-.order-detail .thumb .ph,
-.order-detail .thumb img {
+/* placeholder 스타일 */
+.order-detail .thumb .ph {
     width: 100%;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 1/1;
     border-radius: 16px;
-    border: 1px solid var(--border);
     background: var(--surface-sub);
     color: rgba(231, 234, 243, .72);
     font-weight: 700;
     font-size: 18px;
-    display: flex;
+    display: flex; /* ph는 flex로 가운데 정렬 */
     align-items: center;
     justify-content: center;
 }
 
+/* ★ 이미지: 절대 숨기지 않음 + 콘텐츠 크기에 맞춰 보이기 */
 .order-detail .thumb img {
-    object-fit: cover;
-    display: none
+    display: block !important; /* auto-none 방지 */
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: cover; /* 또는 contain */
+    border-radius: 16px;
+}
+
+/* 이미지가 있다면 placeholder 숨김 (선택) */
+.order-detail .thumb.has-img .ph {
+    display: none !important;
 }
 
 /* 우측 정보 */
 .order-detail .info {
     flex: 1 1 50%;
     position: relative;
-    padding: 12px 4px 96px 4px;
+    padding: 12px 4px 96px;
     display: flex;
     flex-direction: column;
 }
@@ -134,10 +152,10 @@
     padding: 6px 10px;
     border-radius: 999px;
     font-weight: 800;
-    font-size: 12px
+    font-size: 12px;
 }
 
-/* CTA */
+/* CTA 버튼 */
 .order-detail .btn-pay {
     position: absolute;
     right: 0;
@@ -161,10 +179,10 @@
 }
 
 .order-detail .btn-pay:active {
-    transform: translateY(1px);
+    transform: translateY(1px)
 }
 
-/* 모달 */
+/* (선택) 모달 스타일이 필요하면 아래 유지 */
 .order-detail .modal {
     position: fixed;
     inset: 0;
@@ -256,7 +274,8 @@
     }
 
     .order-detail .thumb {
-        min-width: 0
+        min-width: 0;
+        width: 100%
     }
 
     .order-detail .info {

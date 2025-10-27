@@ -24,7 +24,7 @@ public class NoticePageController implements Controller {
 			case "createNotice" -> create(request, response);
 			case "getNotices" -> getList(request, response);
 			case "deleteNotice" -> delete(request, response);
-			default -> throw new BadRequestException("workspace methodName이 올바르지 않습니다.");
+			default -> throw new BadRequestException("methodName이 올바르지 않습니다.");
 		};
 	}
 
@@ -50,6 +50,7 @@ public class NoticePageController implements Controller {
 	}
 
 	private ModelAndView getList(HttpServletRequest request, HttpServletResponse response) {
+		String isLeader = request.getParameter("isLeader");
 		Long workspaceId = Long.valueOf(request.getParameter("wsId"));
 		String sort = request.getParameter("sort");
 		Integer page = Integer.valueOf(request.getParameter("page"));
@@ -62,6 +63,8 @@ public class NoticePageController implements Controller {
 				page,
 				limit
 			));
+
+		request.setAttribute("isLeader", isLeader);
 		request.setAttribute("wsId", workspaceId);
 		request.setAttribute("notices", noticePage.getNotices());
 		request.setAttribute("page", noticePage.getPage());
