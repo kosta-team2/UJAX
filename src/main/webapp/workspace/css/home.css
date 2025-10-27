@@ -1,3 +1,9 @@
+/* =========================================================
+   home.css  —  팀 차트 페이지 레이아웃(행), 미니 통계 박스 스타일
+   - 1행: teamchar (내부 3열: 랭킹 | 풀이 수 | 평균 정답률)
+   - 2행: notice-section
+   - 3행: problem-section
+   ========================================================= */
 body {
     margin: 0;
     font-family: 'Segoe UI', sans-serif;
@@ -6,4 +12,96 @@ body {
     display: flex;
     flex-direction: column;
     height: 100vh;
+}
+
+/* 부모 그리드: 페이지 3행 구성 */
+.chart-grid.chart-grid-3 {
+    display: grid;
+    gap: 16px;
+    grid-template-columns: 1fr; /* 행만 관리 */
+    grid-template-areas:
+    "row1"                                    /* 1행: teamchar */
+    "notice"                                  /* 2행: 공지 */
+    "problem"; /* 3행: 문제 */
+    align-items: start;
+}
+
+/* 1행 컨테이너: teamchar 내부에서 3열 배치 */
+.teamchar {
+    grid-area: row1;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr; /* 왼쪽 넓게 */
+    grid-template-areas: "rank solved accuracy";
+    gap: 16px;
+    align-items: start;
+}
+
+/* teamchar 내부 영역 매핑 */
+.teamchar > .ranking-card,
+.teamchar > .rank-col { /* 혹시 래퍼 썼을 때도 대응 */
+    grid-area: rank;
+}
+
+.mini-stat--solved {
+    grid-area: solved;
+}
+
+.mini-stat--accuracy {
+    grid-area: accuracy;
+}
+
+/* 2·3행 영역 매핑 (부모 그리드의 직계 자식이어야 함) */
+.notice-section {
+    grid-area: notice;
+}
+
+.problem-section {
+    grid-area: problem;
+}
+
+/* ----- 공통 UI 조정 ----- */
+.section > h2,
+.section > .section-header > h3 {
+    margin: 0 0 12px 0;
+    font-weight: 800;
+}
+
+/* 미니 통계 카드 */
+.mini-stat {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    background: var(--surface);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .25);
+}
+
+.mini-stat span {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.mini-stat strong {
+    display: block;
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+/* 반응형: 모바일에서 세로 스택 */
+@media (max-width: 900px) {
+    .chart-grid.chart-grid-3 {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+      "row1"
+      "notice"
+      "problem";
+    }
+
+    .teamchar {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+      "rank"
+      "solved"
+      "accuracy";
+    }
 }

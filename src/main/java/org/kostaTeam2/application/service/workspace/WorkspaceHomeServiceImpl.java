@@ -8,6 +8,7 @@ import java.util.Optional;
 
 import javax.sql.DataSource;
 
+import org.kostaTeam2.domain.member.Member;
 import org.kostaTeam2.domain.problem.AlgorithmTag;
 import org.kostaTeam2.domain.problem.Problem;
 import org.kostaTeam2.domain.problem.ProblemRepository;
@@ -127,6 +128,15 @@ public class WorkspaceHomeServiceImpl implements WorkspaceHomeService {
 		} catch (
 			SQLException e) {
 			throw new DBException("워크스페이스 리스트를 불러오는 중 db 오류가 발생하였습니다.", e);
+		}
+	}
+
+	@Override
+	public List<Member> getWorkspaceMemberRanking(Long workspaceId, int limit) {
+		try (Connection conn = ds.getConnection()) {
+			return workspaceMemberRepo.findTopNByLevel(conn, workspaceId, limit);
+		} catch (SQLException e) {
+			throw new DBException("멤버 순위를 불러오는 중 db 오류 발생", e);
 		}
 	}
 }

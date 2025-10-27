@@ -42,6 +42,13 @@ public class Member {
 		this.reward = reward;
 	}
 
+	// xp 랭킹
+
+	public Member(String nickname, int xp) {
+		this.nickname = nickname;
+		this.xp = xp;
+	}
+
 	public Long getMemberId() {
 		return memberId;
 	}

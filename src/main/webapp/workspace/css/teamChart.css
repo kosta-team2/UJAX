@@ -1,130 +1,188 @@
+/* =========================================================
+   teamChart.css — Ranking Card (final, compact)
+   - Left card fixed width
+   - XP right-aligned
+   - Compact paddings & tighter spacing
+   ========================================================= */
 
-.chart-grid.chart-grid-3 {
-    display: grid;
-    grid-template-columns: 2fr 1fr 1fr;
-    gap: 1rem;
-    align-items: stretch;
+/* 좌측 랭킹 카드 폭 (원하면 값만 바꿔) */
+:root {
+    --rank-card-w: 460px;
 }
 
-/* todo 잔디 ui 변경예정*/
-.grass-wrapper {
-    background: var(--surface);
+/* ex) 420~520px 추천 */
+
+/* teamchar(1행 컨테이너) 내부 3열: [랭킹 | 풀이수 | 정답률] */
+.teamchar {
+    grid-template-columns: var(--rank-card-w) 1fr 1fr !important;
+    gap: 16px;
+    align-items: start;
+}
+
+/* 실제 카드 폭 제한 */
+.teamchar > .ranking-card {
+    width: var(--rank-card-w);
+    max-width: 100%;
+}
+
+/* ---------- 카드 베이스 ---------- */
+.ranking-card {
     border: 1px solid var(--border);
-    border-radius: 1rem;
-    padding: 1rem;
+    border-radius: 16px;
+    background: radial-gradient(1200px 200px at 0% -20%, rgba(255, 255, 255, .05), transparent 60%),
+    var(--surface);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
+    overflow: hidden;
+}
+
+.ranking-card__head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 10px 12px; /* compact */
+    background: linear-gradient(180deg, rgba(255, 255, 255, .05), transparent);
+    border-bottom: 1px solid var(--border);
+}
+
+.ranking-card__title {
+    font-weight: 800;
+    font-size: 16px;
+}
+
+.ranking-card__sub {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.ranking-card__body {
     display: flex;
     flex-direction: column;
-    align-items: center;
 }
 
-.grass-header {
+/* ---------- 랭킹 행 ---------- */
+.rank-row {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    justify-content: flex-start; /* 왼쪽 정렬 시작 */
+    gap: 10px; /* 좌그룹-우그룹 간격 */
+    padding: 8px 12px; /* compact */
+    min-height: 44px; /* compact */
 }
 
-#monthTitle {
-    font-weight: bold;
-    font-size: 1.1rem;
-    color: var(--text);
+.rank-row + .rank-row {
+    border-top: 1px dashed var(--border);
 }
 
-.month-btn {
-    background: var(--surface-sub);
-    border: 1px solid var(--border);
-    border-radius: 0.5rem;
-    padding: 0.25rem 0.75rem;
-    cursor: pointer;
-    font-size: 1rem;
-    color: var(--text);
+/* 왼쪽 그룹: 배지 + 이름 */
+.rank-row__left {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
 }
 
-.month-btn:hover {
-    background: var(--accent2);
-    color: white;
-}
-
-.grass-grid {
+.rank-badge {
+    width: 26px;
+    height: 26px;
+    flex: 0 0 26px; /* compact */
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-    justify-items: center;
-}
-
-.grass-day {
-    width: 16px;
-    height: 16px;
-    border-radius: 3px;
-    background-color: #2C3145;
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.05) inset;
-    position: relative;
-    transition: all 0.2s ease;
-}
-
-.grass-day[data-level="1"] {
-    background-color: #1E5631;
-}
-
-.grass-day[data-level="2"] {
-    background-color: #238636;
-}
-
-.grass-day[data-level="3"] {
-    background-color: #2ea043;
-}
-
-.grass-day[data-level="4"] {
-    background-color: #3fb950;
-}
-
-.grass-day:hover {
-    transform: scale(1.4);
-    z-index: 3;
-    box-shadow: 0 0 6px rgba(63, 185, 80, 0.6);
-}
-
-.grass-day::after {
-    content: attr(data-date);
-    position: absolute;
-    bottom: 130%;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(0, 0, 0, 0.8);
-    color: white;
-    font-size: 0.7rem;
-    padding: 2px 6px;
-    border-radius: 4px;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.2s;
-    white-space: nowrap;
-}
-
-.grass-day:hover::after {
-    opacity: 1;
-}
-
-/*잔디 이외 스탯창*/
-.mini-stat {
-    background: var(--surface-sub);
+    place-items: center;
+    border-radius: 8px;
+    font-weight: 800;
+    font-size: 14px;
+    line-height: 1;
     border: 1px solid var(--border);
-    border-radius: 1rem;
-    padding: 1rem;
+    background: linear-gradient(180deg, rgba(255, 255, 255, .06), transparent);
+    color: rgba(255, 255, 255, .92);
+    text-shadow: 0 1px 0 rgba(0, 0, 0, .25);
 }
 
-.mini-stat span {
-    color: var(--muted);
-    font-size: 0.85rem;
+/* 이름 */
+.rank-name {
+    font-weight: 800;
+    font-size: 15px;
+    color: rgba(255, 255, 255, .94);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: clamp(120px, 28vw, 260px);
+    margin-right: 4px;
 }
 
-.mini-stat strong {
-    font-size: 1.5rem;
-    font-weight: bold;
+/* 1~3위 배지 채움(금/은/동) — compact 사이즈에 맞춤 */
+.rank-row:nth-child(1) .rank-badge {
+    color: #fff7c0;
+    background: radial-gradient(32px 18px at 30% 25%, rgba(255, 236, 160, .48), rgba(255, 215, 0, .08) 70%),
+    linear-gradient(180deg, rgba(255, 255, 255, .12), transparent);
+    border-color: rgba(255, 215, 0, .55);
+    box-shadow: 0 0 0 2px rgba(255, 215, 0, .32) inset, 0 1px 6px rgba(255, 215, 0, .12);
 }
 
-.mini-stat small {
-    font-size: 0.75rem;
-    color: var(--muted);
+.rank-row:nth-child(2) .rank-badge {
+    color: #f2f6ff;
+    background: radial-gradient(32px 18px at 30% 25%, rgba(210, 220, 235, .5), rgba(192, 192, 192, .08) 70%),
+    linear-gradient(180deg, rgba(255, 255, 255, .10), transparent);
+    border-color: rgba(192, 192, 192, .55);
+    box-shadow: 0 0 0 2px rgba(192, 192, 192, .3) inset, 0 1px 6px rgba(192, 192, 192, .1);
+}
+
+.rank-row:nth-child(3) .rank-badge {
+    color: #ffe9cf;
+    background: radial-gradient(32px 18px at 30% 25%, rgba(255, 205, 160, .5), rgba(205, 127, 50, .09) 70%),
+    linear-gradient(180deg, rgba(255, 255, 255, .10), transparent);
+    border-color: rgba(205, 127, 50, .55);
+    box-shadow: 0 0 0 2px rgba(205, 127, 50, .3) inset, 0 1px 6px rgba(205, 127, 50, .1);
+}
+
+/* 오른쪽 그룹: XP + 바 (오른쪽 끝 정렬) */
+.rank-row__right {
+    margin-left: auto; /* → 카드 오른쪽 끝 */
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    text-align: right;
+    min-width: 0;
+}
+
+.rank-xp {
+    font-size: 16px;
+    font-weight: 800;
+    color: rgba(224, 232, 255, .98);
+    letter-spacing: .1px;
+    min-width: 90px; /* 숫자 폭 흔들림 방지 */
+}
+
+.xpbar {
+    width: 80px;
+    height: 6px; /* compact */
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .06);
+    border: 1px solid var(--border);
+    overflow: hidden;
+}
+
+.xpbar__fill {
+    height: 100%;
+    border-radius: 999px;
+    background: linear-gradient(90deg, rgba(255, 255, 255, .35), rgba(255, 255, 255, .1));
+    transform: translateZ(0);
+    transition: width .4s ease;
+}
+
+/* ---------- 모바일 ---------- */
+@media (max-width: 520px) {
+    .rank-row {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .rank-row__right {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .xpbar {
+        width: 100%;
+        max-width: none;
+    }
 }

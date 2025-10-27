@@ -3,6 +3,7 @@ package org.kostaTeam2.presentation.controller.page;
 import java.util.List;
 
 import org.kostaTeam2.application.service.workspace.WorkspaceHomeService;
+import org.kostaTeam2.domain.member.Member;
 import org.kostaTeam2.domain.workspace.notice.Notice;
 import org.kostaTeam2.dto.response.WorkspaceProblemPageResponse;
 import org.kostaTeam2.global.exception.BadRequestException;
@@ -38,10 +39,14 @@ public class WorkspaceHomePageController implements Controller {
 		List<Notice> notices = workspaceHomeService.getNoticeList(userId, workspaceId, page, size);
 		List<WorkspaceProblemPageResponse> problems = workspaceHomeService.getWorkspaceProblemList(workspaceId, userId,
 			page, size);
-		// todo 팀 차트 서비스
+		// 팀 차트 서비스
+		List<Member> members = workspaceHomeService.getWorkspaceMemberRanking(workspaceId, 5);
+		int topXp = members.isEmpty() ? 0 : members.get(0).getXp();
 
 		request.setAttribute("notices", notices);
 		request.setAttribute("problems", problems);
+		request.setAttribute("members", members);
+		request.setAttribute("topXp", topXp);
 		// todo 팀차트 어트리뷰트
 
 		String target = request.getContextPath() + "/workspace/home.jsp";
