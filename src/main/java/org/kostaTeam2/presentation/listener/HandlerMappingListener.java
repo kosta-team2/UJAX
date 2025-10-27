@@ -140,11 +140,26 @@ public class HandlerMappingListener implements ServletContextListener {
 				for (var ctor : clazz.getDeclaredConstructors()) {
 					var pts = ctor.getParameterTypes();
 
+                    if (pts.length == 1 && pts[0] == MemberService.class) {
+                        ctor.setAccessible(true);
+                        controllerInstance = ctor.newInstance(memberSvc);
+                        break;
+                    }
+                    if (pts.length == 1 && pts[0] == ProblemService.class) {
+                        ctor.setAccessible(true);
+                        controllerInstance = ctor.newInstance(problemSvc);
+                        break;
+                    }
 					if (pts.length == 1 && pts[0] == WorkspaceProblemService.class) {
 						ctor.setAccessible(true);
 						controllerInstance = ctor.newInstance(workspaceProblemSvc);
 						break;
 					}
+                    if (pts.length == 1 && pts[0] == WorkspaceService.class) {
+                        ctor.setAccessible(true);
+                        controllerInstance = ctor.newInstance(workspaceSvc);
+                        break;
+                    }
 				}
 
 				if (controllerInstance == null) {
