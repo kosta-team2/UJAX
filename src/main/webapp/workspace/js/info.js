@@ -1,17 +1,31 @@
 // ---------- helpers ----------
-const $  = (sel, root = document) => root.querySelector(sel);
+const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => Array.from(root.querySelectorAll(sel));
-const show = (el) => { if (el) el.hidden = false; };
-const hide = (el) => { if (el) el.hidden = true; };
+const show = (el) => {
+    if (el) el.hidden = false;
+};
+const hide = (el) => {
+    if (el) el.hidden = true;
+};
 
-// ---------- confirm modal (promise 기반) ----------
+function getContextPath() {
+    const f = $('#ws-settingsForm');
+    if (!f) return '';
+    try {
+        const u = new URL(f.action, window.location.href);
+        return u.pathname.replace(/\/front.*$/, ''); // "/ctx" or ""
+    } catch {
+        return '';
+    }
+}
+
+// ---------- confirm modal ----------
 function openConfirm(message) {
-    const modal   = $('#ws-confirmModal');
-    const msgEl   = $('#ws-confirmMessage');
-    const yesBtn  = $('#ws-confirmYes');
-    const noBtn   = $('#ws-confirmNo');
+    const modal = $('#ws-confirmModal');
+    const msgEl = $('#ws-confirmMessage');
+    const yesBtn = $('#ws-confirmYes');
+    const noBtn = $('#ws-confirmNo');
 
-    // 모달이 없으면 브라우저 confirm fallback
     if (!modal || !msgEl || !yesBtn || !noBtn) {
         return Promise.resolve(window.confirm(message));
     }
@@ -21,8 +35,10 @@ function openConfirm(message) {
 
     return new Promise((resolve) => {
         const onYes = () => cleanup(true);
-        const onNo  = () => cleanup(false);
-        const onKey = (e) => { if (e.key === 'Escape') cleanup(false); };
+        const onNo = () => cleanup(false);
+        const onKey = (e) => {
+            if (e.key === 'Escape') cleanup(false);
+        };
 
         function cleanup(result) {
             hide(modal);
@@ -38,53 +54,71 @@ function openConfirm(message) {
     });
 }
 
-// ---------- 멤버 초대 모달 ----------
 (function initInviteModal() {
-    const openBtn   = $('#ws-openInvite');
-    const modal     = $('#ws-inviteModal');
-    const cancelBtn = $('#ws-inviteCancel');
-    const okBtn     = $('#ws-inviteOk');
-    const emailInp  = $('#ws-inviteEmail');
+    const openBtn   = document.querySelector('#ws-openInvite');
+    const modal     = document.querySelector('#ws-inviteModal');
+    const form      = document.querySelector('#ws-inviteForm');
+    const cancelBtn = document.querySelector('#ws-inviteCancel');
+    const emailInp  = document.querySelector('#ws-inviteEmail');
 
-    if (!openBtn || !modal) return;
+    const rootEl = document.querySelector('#ws-settings-root');
+    const wsId   = rootEl?.dataset.wsId || '';
+    const ctx    = getContextPath();
 
-    // 열기
+    if (!openBtn || !modal || !form || !emailInp) return;
+
     openBtn.addEventListener('click', () => {
+        form.reset();
         show(modal);
-        if (emailInp) emailInp.focus();
-        // 최초엔 OK 버튼 상태를 입력값 기준으로 갱신
-        if (okBtn && emailInp) okBtn.disabled = !emailInp.checkValidity();
+        emailInp.focus();
     });
 
-    // 닫기
-    cancelBtn?.addEventListener('click', () => hide(modal));
+    cancelBtn.addEventListener('click', () => hide(modal));
+    modal.addEventListener('click', (e) => { if (e.target === modal) hide(modal); });
 
-    // 바깥 클릭 시 닫기 (오버레이 클릭)
-    modal.addEventListener('click', (e) => {
-        if (e.target === modal) hide(modal);
-    });
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        if (!wsId) { alert('워크스페이스 ID를 찾을 수 없어요.'); return; }
 
-    // 이메일 유효성에 따라 OK 버튼 enable/disable
-    emailInp?.addEventListener('input', () => {
-        if (okBtn) okBtn.disabled = !emailInp.checkValidity();
-    });
+        const params = new URLSearchParams({ workspaceId: wsId, email: emailInp.value.trim() });
 
-    // OK 클릭 (실제 초대 API/submit은 추후 구현)
-    okBtn?.addEventListener('click', () => {
-        if (okBtn.disabled) return;
-        // TODO: 초대 로직 붙이기 (폼 submit 또는 fetch)
-        // 현재는 모달만 닫고 안내
-        alert('초대 기능은 준비중입니다.');
-        hide(modal);
+        try {
+            const res = await fetch(`${ctx}/ajax?key=workspace&methodName=invite`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded;charset=UTF-8' },
+                body: params.toString()
+            });
+
+            // 본문은 한 번만 읽는다
+            const raw = await res.text();
+            let obj; try { obj = JSON.parse(raw); } catch {}
+
+            if (!res.ok) {
+                const msg =
+                    (obj && (obj.errorMessage || obj.error || obj.message || obj.data)) ||
+                    raw.trim() ||
+                    `요청 실패 (${res.status})`;
+                alert(msg);
+                return;
+            }
+
+            const okMsg = (obj && (obj.data || obj.message)) || '초대 메일을 보냈습니다.';
+            alert(okMsg);
+            form.reset();
+            hide(modal);
+
+        } catch (err) {
+            console.error(err);
+            alert('네트워크 오류가 발생했습니다.');
+        }
     });
 })();
 
 // ---------- 폼/버튼 confirm 처리 ----------
 document.addEventListener('DOMContentLoaded', () => {
     const settingsForm = $('#ws-settingsForm');
-    const applyBtn     = $('#ws-applyBtn');
+    const applyBtn = $('#ws-applyBtn');
 
-    // 1) 기본 정보 변경
     if (applyBtn && settingsForm) {
         applyBtn.addEventListener('click', async (e) => {
             e.preventDefault();
@@ -93,7 +127,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // 2) 리더 위임
     $$('form[action*="methodName=updateRole"]').forEach((f) => {
         f.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -102,7 +135,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 3) 추방
     $$('form[action*="methodName=kickUser"]').forEach((f) => {
         f.addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -111,9 +143,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 4) 워크스페이스 나가기
     $$('form[action*="methodName=exit"]').forEach((f) => {
-        // 해당 폼에는 #ws-leaveWorkspaceBtn 버튼이 있음
         const btn = $('#ws-leaveWorkspaceBtn', f) || $('button[type="submit"]', f);
         if (!btn) return;
         btn.addEventListener('click', async (e) => {
@@ -123,7 +153,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 
-    // 5) 워크스페이스 삭제
     $$('form[action*="methodName=delete"]').forEach((f) => {
         const btn = $('#ws-deleteWorkspaceBtn', f) || $('button[type="submit"]', f);
         if (!btn) return;
