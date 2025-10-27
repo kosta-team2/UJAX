@@ -1,51 +1,20 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-    <meta charset="UTF-8"/>
-    <title>워크스페이스 홈</title>
 
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/common/css/darkmode.css"/>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/common/css/darkmode.css"/>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/home.css"/>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/notice.css"/>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/noticeModal.css"/>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/problem.css"/>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/teamChart.css"/>
 
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/notice.css"/>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/teamChart.css"/>
-    <link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/problem.css"/>
-</head>
 <body>
-
-<jsp:include page="${pageContext.request.contextPath}/mock">
-    <jsp:param name="key" value="workspaceHome"/>
-    <jsp:param name="methodName" value="view"/>
-    <jsp:param name="wsId" value="${param.wsId}"/>
-</jsp:include>
-
 <main class="main-content">
-    <section class="section notice-section">
-        <h2>📢 팀 공지</h2>
-
-        <c:choose>
-            <c:when test="${empty notices}">
-                <p style="color:var(--muted)">등록된 공지가 없습니다.</p>
-            </c:when>
-            <c:otherwise>
-                <div class="notice-grid" id="noticeGrid">
-                    <c:forEach items="${notices}" var="n" varStatus="st" begin="0" end="2">
-                        <a class="notice-card"
-                           href="#"
-                           data-title="${n.title}"
-                           data-content="${n.content}">
-                            <strong><c:out value="${n.title}"/></strong>
-                            <p><c:out value="${n.content}"/></p>
-                        </a>
-                    </c:forEach>
-                </div>
-            </c:otherwise>
-        </c:choose>
-    </section>
 
     <section class="section">
+        <%--        todo --%>
         <h2>팀 차트</h2>
+
         <div class="chart-grid chart-grid-3">
             <div class="grass-wrapper">
 
@@ -63,6 +32,30 @@
         </div>
     </section>
 
+    <section class="section notice-section">
+        <h2>📢 팀 공지</h2>
+        <c:choose>
+            <c:when test="${empty notices}">
+                <p style="color:var(--muted)">표시할 공지가 없습니다.</p>
+            </c:when>
+            <c:otherwise>
+                <div class="notice-grid" id="noticeGrid">
+                    <c:forEach items="${notices}" var="n">
+                        <a href="#"
+                           class="notice-card"
+                           data-isLeader="${param.isLeader}}"
+                           data-notice-id="${n.noticeId}"
+                           data-title="<c:out value='${not empty n.title ? n.title.value : ""}'/>"
+                           data-content="<c:out value='${not empty n.content ? n.content.value : ""}'/>">
+                            <strong><c:out value='${not empty n.title ? n.title.value : ""}'/></strong>
+                            <p class="preview"><c:out value='${not empty n.content ? n.content.value : ""}'/></p>
+                        </a>
+                    </c:forEach>
+                </div>
+            </c:otherwise>
+        </c:choose>
+    </section>
+
     <section class="section">
         <div class="section-header">
             <h3>알고리즘 문제</h3>
@@ -73,7 +66,7 @@
             </c:when>
             <c:otherwise>
                 <div class="problem-grid">
-                    <c:forEach items="${problems}" var="p" varStatus="st" begin="0" end="5">
+                    <c:forEach items="${problems}" var="p">
                         <div class="problem-card">
                             <div class="card-top">
                                 <strong class="problem-title"><c:out value="${p.title}"/></strong>
@@ -81,15 +74,15 @@
                                     <div class="status-badge ${p.submitted ? 'submitted' : 'not-submitted'}">
                                         <c:out value="${p.submitted ? '제출완료' : '미제출'}"/>
                                     </div>
-                                    <span class="difficulty-level ${p.difficultyClass}">
-                                        <c:out value="${p.difficulty}"/>
-                                    </span>
+                                    <span class="difficulty-level ${p.diffClass}">
+                                    <c:out value="${p.diff}"/>
+                                </span>
                                 </div>
                             </div>
 
                             <div class="tags">
                                 <c:forEach items="${p.tags}" var="tg">
-                                    <span><c:out value="${tg}"/></span>
+                                    <span><c:out value="${tg.name}"/></span>
                                 </c:forEach>
                             </div>
 
@@ -99,11 +92,13 @@
                                     <div class="submit-count">제출자 <c:out value="${p.submitCount}"/>명</div>
                                 </div>
 
-                                <a class="go-btn"
-                                   href="${pageContext.request.contextPath}/solution/solution.jsp?id=${p.id}&wsId=${param.wsId}"
-                                   target="_top">
-                                    문제 풀기
-                                </a>
+                                <c:url var="solveUrl" value="/front">
+                                    <c:param name="key" value="problem"/>
+                                    <c:param name="methodName" value="getProblemDetail"/>
+                                    <c:param name="problemId" value="${p.problemId}"/>
+                                    <c:param name="isLeader" value="${param.isLeader}"/>
+                                </c:url>
+                                <a class="go-btn" href="${solveUrl}" target="_top">문제 풀기</a>
                             </div>
                         </div>
                     </c:forEach>
@@ -111,6 +106,7 @@
             </c:otherwise>
         </c:choose>
     </section>
+
 </main>
 
 <div id="noticeModal" class="ws-modal" aria-hidden="true">
@@ -124,7 +120,10 @@
     </div>
 </div>
 
-<script defer src="js/notice.js"></script>
+<jsp:include page="/workspace/notice-modal.jsp"/>
+<script defer src="${pageContext.request.contextPath}/workspace/js/noticeModal.js"></script>
+<script defer src="${pageContext.request.contextPath}/workspace/js/notice.js"></script>
+<script defer src="${pageContext.request.contextPath}/workspace/js/teamChart.js"></script>
 
 </body>
 </html>

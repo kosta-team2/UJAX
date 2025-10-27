@@ -15,6 +15,8 @@ import org.kostaTeam2.application.service.ProblemService;
 import org.kostaTeam2.application.service.ProblemServiceImpl;
 import org.kostaTeam2.application.service.workspace.NoticeService;
 import org.kostaTeam2.application.service.workspace.NoticeServiceImpl;
+import org.kostaTeam2.application.service.workspace.WorkspaceHomeService;
+import org.kostaTeam2.application.service.workspace.WorkspaceHomeServiceImpl;
 import org.kostaTeam2.application.service.workspace.WorkspaceProblemService;
 import org.kostaTeam2.application.service.workspace.WorkspaceProblemServiceImpl;
 import org.kostaTeam2.application.service.workspace.WorkspaceService;
@@ -73,6 +75,8 @@ public class HandlerMappingListener implements ServletContextListener {
 			WorkspaceProblemService workspaceProblemSvc = new WorkspaceProblemServiceImpl(ds, workspaceRepo,
 				workspaceProblemRepo, problemRepo);
 			GiftService giftSvc = new GiftServiceImpl(ds, giftRepository, memberRepo, barcodeRepo);
+			WorkspaceHomeService workspaceHomeSvc = new WorkspaceHomeServiceImpl(ds, noticeRepo, workspaceRepo,
+				workspaceProblemRepo, problemRepo, workspaceMemberRepo);
 
 			// 3) properties 파일 로드
 			ResourceBundle rb1 = ResourceBundle.getBundle(fileName);
@@ -121,6 +125,11 @@ public class HandlerMappingListener implements ServletContextListener {
 						controllerInstance = ctor.newInstance(giftSvc);
 						break;
 					}
+					if (pts.length == 1 && pts[0] == WorkspaceHomeService.class) {
+						ctor.setAccessible(true);
+						controllerInstance = ctor.newInstance(workspaceHomeSvc);
+						break;
+					}
 				}
 
 				if (controllerInstance == null) {
@@ -140,26 +149,26 @@ public class HandlerMappingListener implements ServletContextListener {
 				for (var ctor : clazz.getDeclaredConstructors()) {
 					var pts = ctor.getParameterTypes();
 
-                    if (pts.length == 1 && pts[0] == MemberService.class) {
-                        ctor.setAccessible(true);
-                        controllerInstance = ctor.newInstance(memberSvc);
-                        break;
-                    }
-                    if (pts.length == 1 && pts[0] == ProblemService.class) {
-                        ctor.setAccessible(true);
-                        controllerInstance = ctor.newInstance(problemSvc);
-                        break;
-                    }
+					if (pts.length == 1 && pts[0] == MemberService.class) {
+						ctor.setAccessible(true);
+						controllerInstance = ctor.newInstance(memberSvc);
+						break;
+					}
+					if (pts.length == 1 && pts[0] == ProblemService.class) {
+						ctor.setAccessible(true);
+						controllerInstance = ctor.newInstance(problemSvc);
+						break;
+					}
 					if (pts.length == 1 && pts[0] == WorkspaceProblemService.class) {
 						ctor.setAccessible(true);
 						controllerInstance = ctor.newInstance(workspaceProblemSvc);
 						break;
 					}
-                    if (pts.length == 1 && pts[0] == WorkspaceService.class) {
-                        ctor.setAccessible(true);
-                        controllerInstance = ctor.newInstance(workspaceSvc);
-                        break;
-                    }
+					if (pts.length == 1 && pts[0] == WorkspaceService.class) {
+						ctor.setAccessible(true);
+						controllerInstance = ctor.newInstance(workspaceSvc);
+						break;
+					}
 				}
 
 				if (controllerInstance == null) {
@@ -178,6 +187,7 @@ public class HandlerMappingListener implements ServletContextListener {
 			application.setAttribute("workspaceService", workspaceSvc);
 			application.setAttribute("noticeService", noticeSvc);
 			application.setAttribute("giftService", giftSvc);
+			application.setAttribute("workspaceHomeService", workspaceHomeSvc);
 		} catch (Exception e) {
 			throw new RuntimeException("HandlerMapping 초기화 실패", e);
 		}
