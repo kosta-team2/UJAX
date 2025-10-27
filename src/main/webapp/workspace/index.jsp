@@ -1,4 +1,5 @@
 <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -11,6 +12,12 @@
 </head>
 
 <body>
+<c:if test="${not empty sessionScope.flashMessageJs}">
+    <script>
+        alert('${sessionScope.flashMessageJs}');
+    </script>
+    <c:remove var="flashMessageJs" scope="session"/>
+</c:if>
 <jsp:include page="header.jsp"/>
 
 <div class="main-container">

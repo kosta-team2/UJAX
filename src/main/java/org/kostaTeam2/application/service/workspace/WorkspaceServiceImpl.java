@@ -4,6 +4,7 @@ import org.kostaTeam2.domain.workspace.Workspace;
 import org.kostaTeam2.domain.workspace.WorkspaceMember;
 import org.kostaTeam2.domain.workspace.WorkspaceMemberRepository;
 import org.kostaTeam2.domain.workspace.WorkspaceRepository;
+import org.kostaTeam2.dto.request.AcceptInviteRequest;
 import org.kostaTeam2.dto.request.WorkspaceUserRequest;
 import org.kostaTeam2.dto.request.WorkspaceRequest;
 import org.kostaTeam2.dto.response.SidebarInfoResponse;
@@ -251,5 +252,14 @@ public class WorkspaceServiceImpl implements WorkspaceService {
         return list;
     }
 
-
+    @Override
+    public void acceptInvite(AcceptInviteRequest dto) {
+        try (Connection con = ds.getConnection()) {
+            if (workspaceMemberRepository.isMember(con, new WorkspaceMember(dto.workspaceId(), dto.memberId()))) return; // 이미 해당 워크스페이스 멤버면 무시
+            WorkspaceMember member = new WorkspaceMember(dto.workspaceId(), dto.memberId(), false);
+            workspaceMemberRepository.save(con, member);
+        } catch (SQLException e) {
+            throw new DBException("워크스페이스 초대 수락에 실패했습니다.", e);
+        }
+    }
 }
