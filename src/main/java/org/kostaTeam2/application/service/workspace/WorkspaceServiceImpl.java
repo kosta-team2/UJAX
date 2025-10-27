@@ -247,7 +247,7 @@ public class WorkspaceServiceImpl implements WorkspaceService {
 					)));
             }
         } catch (SQLException e) {
-            throw new DBException("워크스페이스 삭제 실패했습니다.", e);
+            throw new DBException("워크스페이스 목록 조회에 실패했습니다.", e);
         }
         return list;
     }
