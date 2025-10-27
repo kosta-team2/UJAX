@@ -85,8 +85,22 @@ public class MemberPageController implements Controller {
 
     private ModelAndView signup(HttpServletRequest request, HttpServletResponse response) {
         var dto = SignupUserRequest.from(request);
+
+        var session = request.getSession(false);
+
+        if (session == null
+                || session.getAttribute("SIGNUP_EMAIL_VERIFIED") != Boolean.TRUE
+                || !dto.email().equals(session.getAttribute("SIGNUP_EMAIL"))) {
+            request.setAttribute("error", "이메일 인증이 필요합니다. 인증 후 다시 시도해 주세요.");
+            return new ModelAndView("/auth/signup.jsp");
+        }
+
         try {
             memberService.signup(dto.email(), dto.password(), dto.nickname());
+            session.removeAttribute("SIGNUP_EMAIL_VERIFIED");
+            session.removeAttribute("SIGNUP_EMAIL");
+
+            request.getSession().setAttribute("flashMessageJs", "회원가입 되었습니다. 로그인하고 서비스를 이용해주세요!");
             return new ModelAndView(request.getContextPath() + "/auth/login.jsp", true);
         } catch (BadRequestException e) {
             request.setAttribute("error", e.getMessage());

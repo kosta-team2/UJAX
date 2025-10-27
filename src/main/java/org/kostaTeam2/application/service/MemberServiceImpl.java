@@ -43,9 +43,11 @@ public class MemberServiceImpl implements MemberService {
     public void signup(String email, String password, String nickname) {
         try (Connection con = ds.getConnection()) {
             if (repository.findByEmail(con, email).isPresent())
-                throw new BadRequestException("이미 사용 중인 이메일입니다.");
+                throw new ValidationException("이미 가입된 이메일입니다. 로그인을 해주세요.",
+                        "/auth/login.jsp");
             if (repository.findByNickname(con, nickname).isPresent())
-                throw new BadRequestException("이미 사용 중인 닉네임입니다.");
+                throw new ValidationException("이미 사용 중인 닉네임입니다. 다른 닉네임을 골라주세요.",
+                        "/auth/register.jsp");
 
             Member member = new Member(email, password, nickname);
             repository.saveMember(con, member);
