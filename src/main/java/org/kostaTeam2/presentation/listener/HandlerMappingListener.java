@@ -13,6 +13,10 @@ import org.kostaTeam2.application.service.MemberService;
 import org.kostaTeam2.application.service.MemberServiceImpl;
 import org.kostaTeam2.application.service.ProblemService;
 import org.kostaTeam2.application.service.ProblemServiceImpl;
+import org.kostaTeam2.application.service.SubmissionService;
+import org.kostaTeam2.application.service.SubmissionServiceImpl;
+import org.kostaTeam2.application.service.jwt.TokenService;
+import org.kostaTeam2.application.service.jwt.TokenServiceImpl;
 import org.kostaTeam2.application.service.workspace.NoticeService;
 import org.kostaTeam2.application.service.workspace.NoticeServiceImpl;
 import org.kostaTeam2.application.service.workspace.WorkspaceProblemService;
@@ -21,8 +25,10 @@ import org.kostaTeam2.application.service.workspace.WorkspaceService;
 import org.kostaTeam2.application.service.workspace.WorkspaceServiceImpl;
 import org.kostaTeam2.domain.gift.BarcodeRepository;
 import org.kostaTeam2.domain.gift.GiftRepository;
+import org.kostaTeam2.domain.jwt.TokenRepository;
 import org.kostaTeam2.domain.member.MemberRepository;
 import org.kostaTeam2.domain.problem.ProblemRepository;
+import org.kostaTeam2.domain.solution.SolutionRepository;
 import org.kostaTeam2.domain.workspace.WorkspaceMemberRepository;
 import org.kostaTeam2.domain.workspace.WorkspaceProblemRepository;
 import org.kostaTeam2.domain.workspace.WorkspaceRepository;
@@ -32,9 +38,11 @@ import org.kostaTeam2.infrastructure.dao.GiftDao;
 import org.kostaTeam2.infrastructure.dao.MemberDao;
 import org.kostaTeam2.infrastructure.dao.NoticeDao;
 import org.kostaTeam2.infrastructure.dao.ProblemDao;
+import org.kostaTeam2.infrastructure.dao.SolutionDao;
 import org.kostaTeam2.infrastructure.dao.WorkspaceDao;
 import org.kostaTeam2.infrastructure.dao.WorkspaceMemberDao;
 import org.kostaTeam2.infrastructure.dao.WorkspaceProblemDao;
+import org.kostaTeam2.infrastructure.jwt.TokenDao;
 import org.kostaTeam2.presentation.controller.api.RestController;
 import org.kostaTeam2.presentation.controller.page.Controller;
 
@@ -65,14 +73,18 @@ public class HandlerMappingListener implements ServletContextListener {
 			WorkspaceProblemRepository workspaceProblemRepo = new WorkspaceProblemDao();
 			GiftRepository giftRepository = new GiftDao();
 			BarcodeRepository barcodeRepo = new BarcodeDao();
+			TokenRepository tokenRepo = new TokenDao();
+			SolutionRepository solRepo = new SolutionDao();
 
-			MemberService memberSvc = new MemberServiceImpl(ds, memberRepo);
+			MemberService memberSvc = new MemberServiceImpl(ds, memberRepo, tokenRepo);
 			ProblemService problemSvc = new ProblemServiceImpl(ds, problemRepo);
 			WorkspaceService workspaceSvc = new WorkspaceServiceImpl(ds, workspaceRepo, workspaceMemberRepo);
 			NoticeService noticeSvc = new NoticeServiceImpl(ds, noticeRepo, workspaceMemberRepo);
 			WorkspaceProblemService workspaceProblemSvc = new WorkspaceProblemServiceImpl(ds, workspaceRepo,
 				workspaceProblemRepo, problemRepo);
 			GiftService giftSvc = new GiftServiceImpl(ds, giftRepository, memberRepo, barcodeRepo);
+			TokenService tokenSvc = new TokenServiceImpl(ds, tokenRepo);
+			SubmissionService subSvc = new SubmissionServiceImpl(ds, workspaceMemberRepo ,problemRepo, workspaceProblemRepo, solRepo);
 
 			// 3) properties 파일 로드
 			ResourceBundle rb1 = ResourceBundle.getBundle(fileName);
@@ -160,6 +172,18 @@ public class HandlerMappingListener implements ServletContextListener {
                         controllerInstance = ctor.newInstance(workspaceSvc);
                         break;
                     }
+
+					if (pts.length == 1 && pts[0] == TokenService.class) {
+						ctor.setAccessible(true);
+						controllerInstance = ctor.newInstance(tokenSvc);
+						break;
+					}
+
+					if (pts.length == 1 && pts[0] == SubmissionService.class) {
+						ctor.setAccessible(true);
+						controllerInstance = ctor.newInstance(subSvc);
+						break;
+					}
 				}
 
 				if (controllerInstance == null) {
@@ -178,6 +202,8 @@ public class HandlerMappingListener implements ServletContextListener {
 			application.setAttribute("workspaceService", workspaceSvc);
 			application.setAttribute("noticeService", noticeSvc);
 			application.setAttribute("giftService", giftSvc);
+			application.setAttribute("tokenService", tokenSvc);
+			application.setAttribute("submissionService", subSvc);
 		} catch (Exception e) {
 			throw new RuntimeException("HandlerMapping 초기화 실패", e);
 		}

@@ -1,12 +1,13 @@
 package org.kostaTeam2.application.service;
 
 import java.sql.SQLException;
+import java.time.Instant;
 import java.util.Optional;
 
 import org.kostaTeam2.domain.member.Member;
 
 public interface MemberService {
-    Optional<Member> login(String email, String password);
+    Optional<Member> login(String email, String password, String raw, Instant exp);
 
     Optional<Member> getInfo(long id);
 
