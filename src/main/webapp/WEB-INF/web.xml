@@ -27,12 +27,12 @@
 
     <context-param>
         <param-name>smtp.username</param-name>
-        <param-value>ysball0608@naver.com</param-value>
+        <param-value>SMTP 등록계정@naver.com</param-value>
     </context-param>
 
     <context-param>
         <param-name>smtp.password</param-name>
-        <param-value>FQXC318K7JDQ</param-value>
+        <param-value>앱 비밀번호</param-value>
     </context-param>
 
 
