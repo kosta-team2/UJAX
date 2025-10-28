@@ -23,15 +23,10 @@
 <div class="main-container">
     <jsp:include page="left-sidebar.jsp"/>
 
-    <jsp:include page="/mock">
-        <jsp:param name="key" value="workspace" />
-        <jsp:param name="methodName" value="getList" />
-    </jsp:include>
-
     <main class="main-content">
         <iframe id="mainFrame"
                 name="mainFrame"
-                src="${pageContext.request.contextPath}/workspace/create.jsp"
+                src="${pageContext.request.contextPath}/front?key=member&methodName=getInfo"
                 style="width:100%; height:100%; border:none;"
         ></iframe>
     </main>
