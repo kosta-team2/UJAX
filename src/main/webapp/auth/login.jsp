@@ -21,7 +21,7 @@
     <section class="stack" aria-label="로그인">
         <div class="img-slot-spacer" aria-hidden="true"><br><br><br></div>
         <p class="eyebrow">Welcome To <span class="brand">Ujax.</span></p>
-        <h1 class="headline measure">문제부터 리뷰까지 한 곳에서.</h1>
+        <h1 class="headline measure">문제 풀이와 리뷰를 한 곳에서!</h1>
 
         <div class="card measure--narrow" role="region" aria-labelledby="signinTitle">
             <h2 id="signinTitle" class="sr-only">로그인 폼</h2>
