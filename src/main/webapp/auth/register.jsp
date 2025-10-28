@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -8,6 +9,12 @@
   <link rel="stylesheet" href="css/register.css">
 </head>
 <body>
+<c:if test="${not empty sessionScope.flashMessageJs}">
+    <script>
+        alert('${sessionScope.flashMessageJs}');
+    </script>
+    <c:remove var="flashMessageJs" scope="session"/>
+</c:if>
   <div class="page">
     <div class="top">
       <a class="back" href="login.jsp" aria-label="뒤로 가기">
@@ -68,26 +75,6 @@
           <input id="nickname" class="input" name="nickname" type="text" placeholder="예: 코딩너구리" minlength="2" maxlength="20" required />
         </div>
 
-        <!-- 힌트보기 설정 -->
-        <div class="field">
-          <label id="hint-setting-label">힌트보기 설정</label>
-          <div class="setting-card" role="group" aria-labelledby="hint-setting-label">
-            <div class="radio-row">
-              <label class="radio" for="hint-on">
-                <input type="radio" name="hintToggle" id="hint-on" value="on" checked>
-                <span class="dot" aria-hidden="true"></span>
-                <span>On</span>
-              </label>
-              <label class="radio" for="hint-off">
-                <input type="radio" name="hintToggle" id="hint-off" value="off">
-                <span class="dot" aria-hidden="true"></span>
-                <span>Off</span>
-              </label>
-            </div>
-            <p class="setting-help">풀이 중 힌트를 보여줄지 설정합니다.</p>
-          </div>
-        </div>
-
         <div class="actions">
           <button class="btn" type="submit">가입하기</button>
         </div>
@@ -95,6 +82,6 @@
       </form>
     </div>
   </div>
-  <script defer src="js/register.js"></script>
+  <script defer src="js/register.js?v=${System.currentTimeMillis()}"></script>
 </body>
 </html>

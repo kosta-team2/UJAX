@@ -1,6 +1,7 @@
 package org.kostaTeam2.application.service.workspace;
 
 import org.kostaTeam2.domain.workspace.Workspace;
+import org.kostaTeam2.dto.request.AcceptInviteRequest;
 import org.kostaTeam2.dto.request.WorkspaceUserRequest;
 import org.kostaTeam2.dto.request.WorkspaceRequest;
 import org.kostaTeam2.dto.response.SidebarInfoResponse;
@@ -55,4 +56,9 @@ public interface WorkspaceService {
     void exitWorkspace(WorkspaceUserRequest dto);
 
     List<SidebarInfoResponse> getSidebarInfo(Long memberId);
+
+    /**
+     * 워크스페이스 초대 수락 메서드
+     */
+    void acceptInvite(AcceptInviteRequest dto);
 }
