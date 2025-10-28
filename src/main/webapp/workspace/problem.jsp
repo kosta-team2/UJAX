@@ -28,7 +28,6 @@
                 <input type="hidden" name="workspaceId" value="${param.workspaceId}"/>
                 <input type="hidden" name="workspaceMemberId" value="1"/>
                 <input type="hidden" name="size" value="${empty size ? 6 : size}"/>
-                <input type="text" class="search-input" name="q" placeholder="문제 제목 / 태그 검색(목업)">
                 <button class="sort-btn" type="submit">정렬 ▾</button>
             </form>
         </div>
@@ -70,6 +69,8 @@
                                 <c:param name="key" value="problem"/>
                                 <c:param name="methodName" value="getProblemDetail"/>
                                 <c:param name="problemId" value="${p.problemId}"/>
+                                <c:param name="wsProblemId" value="${p.wsProblemId}"/>
+                                <c:param name="workspaceMemberId" value="${param.workspaceMemberId}"/>
                                 <c:param name="isLeader" value="${param.isLeader}"/>
                             </c:url>
                             <a class="go-btn" href="${solveUrl}" target="_top">문제 풀기</a>

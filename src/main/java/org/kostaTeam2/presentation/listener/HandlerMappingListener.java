@@ -13,6 +13,8 @@ import org.kostaTeam2.application.service.MemberService;
 import org.kostaTeam2.application.service.MemberServiceImpl;
 import org.kostaTeam2.application.service.ProblemService;
 import org.kostaTeam2.application.service.ProblemServiceImpl;
+import org.kostaTeam2.application.service.SolutionService;
+import org.kostaTeam2.application.service.SolutionServiceImpl;
 import org.kostaTeam2.application.service.SubmissionService;
 import org.kostaTeam2.application.service.SubmissionServiceImpl;
 import org.kostaTeam2.application.service.jwt.TokenService;
@@ -85,6 +87,7 @@ public class HandlerMappingListener implements ServletContextListener {
 			GiftService giftSvc = new GiftServiceImpl(ds, giftRepository, memberRepo, barcodeRepo);
 			TokenService tokenSvc = new TokenServiceImpl(ds, tokenRepo);
 			SubmissionService subSvc = new SubmissionServiceImpl(ds, workspaceMemberRepo ,problemRepo, workspaceProblemRepo, solRepo);
+			SolutionService solSvc = new SolutionServiceImpl(ds, solRepo);
 
 			// 3) properties 파일 로드
 			ResourceBundle rb1 = ResourceBundle.getBundle(fileName);
@@ -190,6 +193,12 @@ public class HandlerMappingListener implements ServletContextListener {
 						controllerInstance = ctor.newInstance(subSvc);
 						break;
 					}
+
+					if (pts.length == 1 && pts[0] == SolutionService.class) {
+						ctor.setAccessible(true);
+						controllerInstance = ctor.newInstance(solSvc);
+						break;
+					}
 				}
 
 				if (controllerInstance == null) {
@@ -210,6 +219,7 @@ public class HandlerMappingListener implements ServletContextListener {
 			application.setAttribute("giftService", giftSvc);
 			application.setAttribute("tokenService", tokenSvc);
 			application.setAttribute("submissionService", subSvc);
+			application.setAttribute("solutionService", solSvc);
 		} catch (Exception e) {
 			throw new RuntimeException("HandlerMapping 초기화 실패", e);
 		}

@@ -126,6 +126,12 @@
 
                 <!-- Right: 팀 탭 + 코드 + 댓글 -->
                 <section class="card pane" id="rightPanel" style="position:relative">
+
+                    <div id="jsConfig"
+                         data-ws-problem-id="${wsProblemId}"
+                         data-workspace-member-id="${workspaceMemberId}"
+                         data-is-leader="${isLeader}"></div>
+
                     <div class="tab-nav">
                         <button class="btn" id="namePrev">◀</button>
                         <div class="tabs" id="nameTabs"></div>
