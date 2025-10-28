@@ -411,3 +411,11 @@ a {
     border-color: #22c55e;
     box-shadow: 0 0 0 4px rgba(34, 197, 94, .12);
 }
+
+.card.progress .card-title {
+    margin-bottom: 12px;
+}
+
+.card.progress .bar {
+    margin-bottom: 12px;
+}

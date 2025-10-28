@@ -7,7 +7,7 @@
         <span class="subtitle">Workspace</span>
     </div>
     <div class="action-section">
-        <button id="modeToggle">☀️ Light</button>
+<%--        <button id="modeToggle">☀️ Light</button>--%>
         <button class="logout-btn">로그아웃</button>
     </div>
 </header>

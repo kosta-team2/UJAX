@@ -7,7 +7,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>CodeHub | 로그인</title>
+    <title>Ujax | 로그인</title>
     <link rel="stylesheet" href="<c:url value='/auth/css/login.css'/>">
 </head>
 <body>
@@ -20,7 +20,7 @@
 <main class="page" role="main">
     <section class="stack" aria-label="로그인">
         <div class="img-slot-spacer" aria-hidden="true"><br><br><br></div>
-        <p class="eyebrow">Welcome To <span class="brand">CodeHub.</span></p>
+        <p class="eyebrow">Welcome To <span class="brand">Ujax.</span></p>
         <h1 class="headline measure">문제부터 리뷰까지 한 곳에서.</h1>
 
         <div class="card measure--narrow" role="region" aria-labelledby="signinTitle">
