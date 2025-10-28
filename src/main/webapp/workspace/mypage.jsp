@@ -2,7 +2,7 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 
-<link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/mypage.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/mypage.css?v=${System.currentTimeMillis()}">
 
 <c:set var="xp" value="${empty userInfo.xp ? 0 : userInfo.xp}"/>
 <c:set var="level" value="${xp / 100}"/>
@@ -45,7 +45,7 @@
             </section>
 
             <section class="card progress" aria-labelledby="xpTitle">
-                <div class="card-title" id="xpTitle">경험치 진행률</div>
+                <div class="card-title" id="xpTitle">내 경험치 현황</div>
                 <div class="bar"><span style="width:${percent}%"></span></div>
                 <div class="legend">
                     <span><c:out value="${progress}"/> / <c:out value="${cap}"/></span>
