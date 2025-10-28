@@ -7,7 +7,7 @@
 
 /* 섹션 패딩: main-content의 패딩과 균형 (1.25rem=20px) - WS와 자연스럽게 맞춤 */
 #register-problem-fragment {
-    padding: 20px;
+    padding: 8px;
 }
 
 /* 카드: WS .card와 동일 톤/사이즈 */
@@ -301,4 +301,15 @@
 
 .radio-item .dot, .radio-item .txt {
     pointer-events: none;
+}
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+input, select, button, textarea {
+    font: inherit;
 }
