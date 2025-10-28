@@ -5,7 +5,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KOSTA - Workspace</title>
+    <title>Ujax</title>
 
     <link rel="stylesheet" id="theme-style" href="../common/css/darkmode.css">
     <link rel="stylesheet" href="css/index.css">
