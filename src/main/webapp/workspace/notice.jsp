@@ -65,6 +65,7 @@
                     <c:param name="page" value="1"/>
                     <c:param name="size" value="${size}"/>
                     <c:param name="sort" value="${sort}"/>
+                    <c:param name="isLeader" value="${param.isLeader}"/>
                 </c:url>
                 <a class="page-btn ${!hasPrev ? 'disabled' : ''}" href="${firstUrl}" aria-label="첫 페이지">&laquo;</a>
 
@@ -76,6 +77,7 @@
                     <c:param name="page" value="${hasPrev ? prevPage : page}"/>
                     <c:param name="size" value="${size}"/>
                     <c:param name="sort" value="${sort}"/>
+                    <c:param name="isLeader" value="${param.isLeader}"/>
                 </c:url>
                 <a class="page-btn ${!hasPrev ? 'disabled' : ''}" href="${prevUrl}" aria-label="이전">&lsaquo;</a>
 
@@ -93,6 +95,7 @@
                                 <c:param name="page" value="${pnum}"/>
                                 <c:param name="size" value="${size}"/>
                                 <c:param name="sort" value="${sort}"/>
+                                <c:param name="isLeader" value="${param.isLeader}"/>
                             </c:url>
                             <a class="page-btn" href="${numUrl}">${pnum}</a>
                         </c:otherwise>
@@ -107,6 +110,7 @@
                     <c:param name="page" value="${hasNext ? nextPage : page}"/>
                     <c:param name="size" value="${size}"/>
                     <c:param name="sort" value="${sort}"/>
+                    <c:param name="isLeader" value="${param.isLeader}"/>
                 </c:url>
                 <a class="page-btn ${!hasNext ? 'disabled' : ''}" href="${nextUrl}" aria-label="다음">&rsaquo;</a>
 
@@ -118,6 +122,7 @@
                     <c:param name="page" value="${totalPages}"/>
                     <c:param name="size" value="${size}"/>
                     <c:param name="sort" value="${sort}"/>
+                    <c:param name="isLeader" value="${param.isLeader}"/>
                 </c:url>
                 <a class="page-btn ${!hasNext ? 'disabled' : ''}" href="${lastUrl}" aria-label="마지막">&raquo;</a>
             </div>
@@ -133,6 +138,7 @@
         <input type="hidden" id="noticeWorkspaceIdHidden" name="wsId"/>
         <input type="hidden" id="noticeTitleHidden" name="title"/>
         <input type="hidden" id="noticeContentHidden" name="content"/>
+        <input type="hidden" name="isLeader" value="${param.isLeader}">
     </form>
     </div>
 
