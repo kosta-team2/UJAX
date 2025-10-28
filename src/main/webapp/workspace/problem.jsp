@@ -76,7 +76,7 @@
     <c:if test="${totalPages > 1}">
         <div class="pagination">
             <a class="page-btn"
-               href="${pageContext.request.contextPath}/front?key=problem&methodName=getProblems&workspaceId=${param.workspaceId}&workspaceMemberId=${param.workspaceMemberId}&page=1&size=6">
+               href="${pageContext.request.contextPath}/front?key=problem&methodName=getProblems&workspaceId=${param.workspaceId}&workspaceMemberId=${param.workspaceMemberId}&page=1&size=6"
                 aria-label="첫 페이지">&laquo;</a>
 
             <c:forEach var="pnum" begin="${1}" end="${totalPages}">

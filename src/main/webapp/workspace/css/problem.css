@@ -119,11 +119,13 @@
 
 .card-top {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    justify-content: space-between;
 }
 
 .problem-title {
+    flex: 1 1 auto;
+    min-width: 0;
     font-size: 1.2rem;
     font-weight: 700;
     color: var(--text);
@@ -131,6 +133,7 @@
 
 .card-meta {
     display: flex;
+    flex: 0 0 auto;
     align-items: center;
     gap: 0.5rem;
 }
@@ -219,10 +222,11 @@
 
 .tags span {
     background: var(--surface);
-    border: 1px solid var(--border);
     font-size: 0.85rem;
     border-radius: 9999px;
     padding: 0.35rem 0.75rem;
+    color: rgba(230, 220, 220, 0.92);
+    border: 1px solid rgba(255,255,255,.16);
 }
 
 .card-bottom {
