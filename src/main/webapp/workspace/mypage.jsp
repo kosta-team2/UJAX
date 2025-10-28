@@ -16,8 +16,7 @@
         <div class="card-header">
             <h1 class="title">내 프로필 (My Page)</h1>
             <div class="actions">
-                <a class="btn btn-success-outline"
-                   href="${pageContext.request.contextPath}/workspace/create.jsp">워크스페이스 생성</a>
+                <button class="btn btn-success-outline" id="createBtn">워크스페이스 생성</button>
                 <button class="btn btn-ghost" id="editBtn">개인정보 변경</button>
                 <button class="btn btn-danger-outline" id="deleteBtn">회원 탈퇴</button>
             </div>

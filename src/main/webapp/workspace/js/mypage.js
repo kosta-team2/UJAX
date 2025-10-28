@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    const createBtn = document.getElementById('createBtn');
     const editBtn = document.getElementById('editBtn');
     const deleteBtn = document.getElementById('deleteBtn');
     const confirmModal = document.getElementById('confirmModal');
@@ -16,6 +17,10 @@ document.addEventListener('DOMContentLoaded', () => {
         modal.setAttribute('aria-hidden', 'true');
         document.body.style.overflow = '';
     };
+
+    createBtn?.addEventListener('click', () => {
+        location.href = '/workspace/create.jsp';
+    });
 
     // 개인정보 변경 페이지로 이동
     editBtn?.addEventListener('click', () => {
