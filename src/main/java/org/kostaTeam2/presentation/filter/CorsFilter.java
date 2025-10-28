@@ -17,7 +17,8 @@ public class CorsFilter implements Filter {
 	private static final Set<String> ALLOWED_ORIGINS = Set.of(
 		"chrome-extension://",
 		"http://localhost:8080",
-		"https://localhost:8443"
+		"https://localhost:8443",
+		"https://ujax.shop"
 	);
 
 	@Override
