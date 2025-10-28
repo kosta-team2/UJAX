@@ -27,7 +27,7 @@
             </div>
 
             <div class="level">
-                LV.<fmt:formatNumber value="${level}" maxFractionDigits="0"/> · 총 EXP <c:out value="${xp}"/>
+                LV.<fmt:formatNumber value="${level}" maxFractionDigits="0"/>
             </div>
 
             <div class="progress">
@@ -36,7 +36,7 @@
 
             <div class="stats">
                 <span><c:out value="${progress}"/> / <c:out value="${cap}"/></span>
-                <span><c:out value="${percent}"/>%</span>
+                <span> (<c:out value="${percent}"/>%) </span>
             </div>
 
             <div class="stats">
