@@ -1,6 +1,15 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
+
 <link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/mypage.css">
+
+<c:set var="xp" value="${empty userInfo.xp ? 0 : userInfo.xp}"/>
+<c:set var="level" value="${xp / 100}"/>
+<c:set var="cap" value="${100}"/>
+<c:set var="progress" value="${xp % 100}"/>
+<c:set var="remain" value="${cap - progress}"/>
+<c:set var="percent" value="${(progress * 100) / cap}"/>
 
 <div class="page" id="mypage-root">
     <section class="card" id="mypage-card">
@@ -18,15 +27,7 @@
             <section class="card" aria-labelledby="infoTitle">
                 <div class="card-header">
                     <div class="card-title" id="infoTitle">내 정보 상세</div>
-                    <span class="pill" id="levelPill">
-                    LV.
-                    <c:choose>
-                        <c:when test="${not empty userInfo.xp}">
-                            <c:out value="${userInfo.xp / 100}"/>
-                        </c:when>
-                        <c:otherwise>30</c:otherwise>
-                    </c:choose>
-                </span>
+                    <span class="pill" id="levelPill">LV.<fmt:formatNumber value="${level}" maxFractionDigits="0"/></span>
                 </div>
 
                 <div class="kv">
@@ -39,10 +40,20 @@
                     <div class="k">리워드</div>
                     <div><strong id="reward"><c:out value="${userInfo.reward}"/>원</strong></div>
 
-                    <div class="k">경험치</div>
-                    <div>
-                        <span id="exp"><c:out value="${userInfo.xp}"/>xp</span>
-                    </div>
+                    <div class="k">총 경험치</div>
+                    <div><span id="exp"><c:out value="${xp}"/>xp</span></div>
+                </div>
+            </section>
+
+            <section class="card progress" aria-labelledby="xpTitle">
+                <div class="card-title" id="xpTitle">경험치 진행률</div>
+                <div class="bar"><span style="width:${percent}%"></span></div>
+                <div class="legend">
+                    <span><c:out value="${progress}"/> / <c:out value="${cap}"/></span>
+                    <span><c:out value="${percent}"/>%</span>
+                </div>
+                <div class="legend">
+                    <span>다음 레벨까지 <strong><c:out value="${remain}"/>xp</strong> 남음</span>
                 </div>
             </section>
         </div>
