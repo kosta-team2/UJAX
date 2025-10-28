@@ -86,6 +86,8 @@ public class WorkSpaceProblemController implements Controller {
 		String leader = request.getParameter("isLeader");
 		boolean isLeader = "true".equalsIgnoreCase(leader);
 		request.setAttribute("isLeader", isLeader);
+		request.setAttribute("wsProblemId", request.getParameter("wsProblemId"));
+		request.setAttribute("workspaceMemberId", request.getParameter("workspaceMemberId"));
 
 		ProblemInfoResponse detail = service.getProblemDetail(problemId);
 		request.setAttribute("detail", detail);

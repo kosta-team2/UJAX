@@ -24,6 +24,17 @@ public class Solution {
 		this.code = code;
 	}
 
+	public Solution(Long solutionId, Long workspaceProblemId, Long workspaceMemberId, boolean status, int timeMs,
+		int memoryMb, String code) {
+		this.solutionId = solutionId;
+		this.workspaceProblemId = workspaceProblemId;
+		this.workspaceMemberId = workspaceMemberId;
+		this.status = status;
+		this.timeMs = timeMs;
+		this.memoryMb = memoryMb;
+		this.code = code;
+	}
+
 	public Long getSolutionId() {
 		return solutionId;
 	}
