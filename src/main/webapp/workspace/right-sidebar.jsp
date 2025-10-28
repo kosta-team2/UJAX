@@ -1,5 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
+<%@ taglib prefix="fmt" uri="jakarta.tags.fmt" %>
 
 <link rel="stylesheet" href="${pageContext.request.contextPath}/common/css/darkmode.css"/>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/rightSidebar.css">
@@ -11,15 +12,35 @@
     </jsp:include>
 </c:if>
 
+<c:set var="xp" value="${empty userInfo.xp ? 0 : userInfo.xp}" />
+<c:set var="level" value="${xp / 100}" />
+<c:set var="cap" value="${100}" />
+<c:set var="progress" value="${xp % 100}" />
+<c:set var="remain" value="${cap - progress}" />
+<c:set var="percent" value="${(progress * 100) / cap}" />
 
 <aside class="right-sidebar">
     <div class="profile-box" id="profileBox" page="mypage">
         <a href="${pageContext.request.contextPath}/front?key=member&methodName=getInfo" target="mainFrame">
             <div class="profile-header">
-                <div class="nickname">현재 로그인 계정 : <c:out value="${userInfo.nickname}"/></div>
+                <div class="nickname"><c:out value="${userInfo.nickname}"/> 님 오늘도 화이팅!</div>
             </div>
+
             <div class="level">
-                EXP : <c:out value="${userInfo.xp}"/>
+                LV.<fmt:formatNumber value="${level}" maxFractionDigits="0"/>
+            </div>
+
+            <div class="progress">
+                <div class="bar" style="width:${percent}%"></div>
+            </div>
+
+            <div class="stats">
+                <span><c:out value="${progress}"/> / <c:out value="${cap}"/></span>
+                <span> (<c:out value="${percent}"/>%) </span>
+            </div>
+
+            <div class="stats">
+                <span>다음 레벨까지 <strong><c:out value="${remain}"/>xp</strong> 남음</span>
             </div>
         </a>
     </div>

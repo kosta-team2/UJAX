@@ -37,6 +37,7 @@
     <input type="hidden" name="wsId" value="${empty param.wsId ? '' : param.wsId}">
     <input type="hidden" name="noticeTitle">
     <input type="hidden" name="noticeContent">
+    <input type="hidden" name="isLeader" value="${param.isLeader}">
 </form>
 
 <%--공지 삭제용 숨은 폼--%>
@@ -48,4 +49,5 @@
     <input type="hidden" name="methodName" value="deleteNotice"/>
     <input type="hidden" name="wsId" value="${empty param.wsId ? '' : param.wsId}"/>
     <input type="hidden" name="noticeId"/>
+    <input type="hidden" name="isLeader" value="${param.isLeader}">
 </form>

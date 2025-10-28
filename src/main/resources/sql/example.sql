@@ -44,6 +44,10 @@ CREATE TABLE token
     created_at    DATETIME(3)  NOT NULL DEFAULT CURRENT_TIMESTAMP(3)
 );
 
+ALTER TABLE token
+    ADD COLUMN expires_at DATETIME(3) NOT NULL AFTER refresh_token,
+    ADD COLUMN revoked_at DATETIME(3) NULL AFTER expires_at;
+
 CREATE TABLE EmailAlert
 (
     alert_id      BIGINT PRIMARY KEY AUTO_INCREMENT,
@@ -80,6 +84,9 @@ CREATE TABLE workspace_problem
     updated_at    DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
     is_deleted    TINYINT(1)  NOT NULL DEFAULT 0
 );
+
+ALTER TABLE workspace_problem
+    ADD CONSTRAINT uk_ws_problem UNIQUE (ws_id, problem_id);
 
 CREATE TABLE workspace
 (

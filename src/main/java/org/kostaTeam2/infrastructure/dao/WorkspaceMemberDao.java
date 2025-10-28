@@ -262,6 +262,14 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
 			FROM workspace_member
 			WHERE member_id = ?;
 			""";
+    @Override
+    public List<WorkspaceMember> findByMemberId(Connection conn, Long memberId) {
+        List<WorkspaceMember> list = new ArrayList<>();
+        String sql = """
+                SELECT ws_member_id, is_leader, ws_id
+                FROM workspace_member
+                WHERE member_id = ? AND is_deleted = 0;
+                """;
 
 		try (PreparedStatement ps = conn.prepareStatement(sql)) {
 			ps.setLong(1, memberId);

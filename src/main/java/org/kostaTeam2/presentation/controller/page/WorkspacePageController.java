@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.kostaTeam2.application.service.workspace.WorkspaceService;
 import org.kostaTeam2.domain.workspace.Workspace;
+import org.kostaTeam2.dto.request.AcceptInviteRequest;
 import org.kostaTeam2.dto.request.WorkspaceRequest;
 import org.kostaTeam2.dto.request.WorkspaceUserRequest;
 import org.kostaTeam2.dto.response.SidebarInfoResponse;
@@ -34,6 +35,7 @@ public class WorkspacePageController implements Controller {
 			case "kickUser" -> kickUser(request, response);
 			case "exit" -> exitWorkspace(request, response);
 			case "getSidebar" -> getSidebar(request, response);
+            case "acceptInvite" -> acceptInvite(request, response);
 			default -> throw new BadRequestException("workspace methodName이 올바르지 않습니다.");
 		};
 	}
@@ -92,6 +94,8 @@ public class WorkspacePageController implements Controller {
 		SessionUser sessionUser = (SessionUser)request.getSession().getAttribute("SessionUser");
 		var dto = WorkspaceRequest.deleteDto(request, sessionUser);
 
+        workspaceService.deleteWorkspace(dto);
+
 		request.setAttribute("target", request.getContextPath() + "/workspace");
 		return new ModelAndView("common/top-redirect.jsp");
 	}
@@ -137,4 +141,39 @@ public class WorkspacePageController implements Controller {
 		request.setAttribute("workspaces", sidebarInfo);
 		return new ModelAndView("none");
 	}
+
+    private ModelAndView acceptInvite(HttpServletRequest request, HttpServletResponse response) {
+        final String ctx = request.getContextPath();
+
+        String emailParam = request.getParameter("email");
+        String wsIdParam  = request.getParameter("workspaceId");
+
+        SessionUser sessionUser = (SessionUser) request.getSession().getAttribute("SessionUser");
+        if(sessionUser == null) {
+            String acceptUrl = ctx
+                    + "/front?key=workspace&methodName=acceptInvite"
+                    + "&workspaceId=" + urlEncode(wsIdParam)
+                    + "&email=" + urlEncode(emailParam);
+
+            String loginWithRedirect = ctx + "/auth/login.jsp?redirect=" + urlEncode(acceptUrl);
+            return new ModelAndView(loginWithRedirect, true);
+        }
+
+        AcceptInviteRequest dto = AcceptInviteRequest.from(request);
+
+        if(!sessionUser.email().equals(dto.email())) {
+            request.getSession().setAttribute("flashMessageJs",
+                    dto.email() + " 님에게 보내진 초대장 입니다. 해당 계정으로 로그인 후 다시 시도하세요.");
+            return new ModelAndView(ctx + "/workspace", true);
+        }
+
+        workspaceService.acceptInvite(dto);
+        request.getSession().setAttribute("flashMessageJs", "워크스페이스에 합류했습니다!");
+        return new ModelAndView(ctx + "/workspace", true);
+    }
+
+    private static String urlEncode(String s) {
+        try { return java.net.URLEncoder.encode(s == null ? "" : s, java.nio.charset.StandardCharsets.UTF_8); }
+        catch (Exception e) { return s; }
+    }
 }

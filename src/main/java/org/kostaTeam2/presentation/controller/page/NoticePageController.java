@@ -29,6 +29,7 @@ public class NoticePageController implements Controller {
 	}
 
 	private ModelAndView create(HttpServletRequest request, HttpServletResponse response) {
+		String isLeader = request.getParameter("isLeader");
 		SessionUser sessionUser = (SessionUser)request.getSession().getAttribute("SessionUser");
 		Long workspaceId = Long.valueOf(request.getParameter("wsId"));
 		String title = request.getParameter("noticeTitle");
@@ -42,9 +43,11 @@ public class NoticePageController implements Controller {
 				content
 			));
 
+		request.setAttribute("isLeader", isLeader);
+
 		String target =
 			request.getContextPath() + "/front?key=notice&methodName=getNotices&wsId=" + workspaceId
-				+ "&page=1&size=12&sort=latest";
+				+ "&page=1&size=12&isLeader=" + isLeader;
 
 		return new ModelAndView(target, true);
 	}
@@ -83,6 +86,7 @@ public class NoticePageController implements Controller {
 	}
 
 	private ModelAndView delete(HttpServletRequest request, HttpServletResponse response) {
+		String isLeader = request.getParameter("isLeader");
 		SessionUser sessionUser = (SessionUser)request.getSession().getAttribute("SessionUser");
 		Long workspaceId = Long.valueOf(request.getParameter("wsId"));
 		Long noticeId = Long.valueOf(request.getParameter("noticeId"));
@@ -94,9 +98,11 @@ public class NoticePageController implements Controller {
 				noticeId
 			));
 
+		request.setAttribute("isLeader", isLeader);
+
 		String target =
 			request.getContextPath() + "/front?key=notice&methodName=getNotices&wsId=" + workspaceId
-				+ "&page=1&size=12&sort=latest";
+				+ "&page=1&size=12&isLeader=" + isLeader;
 
 		return new ModelAndView(target, true);
 	}
