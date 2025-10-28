@@ -4,6 +4,7 @@
 
 .ws-settings {
     color: var(--text);
+    padding: 0.5rem;
 }
 
 .ws-settings .card {
