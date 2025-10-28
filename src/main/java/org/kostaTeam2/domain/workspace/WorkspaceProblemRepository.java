@@ -15,4 +15,6 @@ public interface WorkspaceProblemRepository {
 	boolean findMemberStatusByWorkspaceProblemIdAndWorkspaceMemberId(Connection con, Long workspaceProblemId, Long workspaceMemberId);
 
 	int countByWorkspaceId(Connection con, Long workspaceId);
+
+	Long findWorkspaceProblemIdByWsIdANDProblemId(Connection con, Long workspaceId, Long problemId);
 }

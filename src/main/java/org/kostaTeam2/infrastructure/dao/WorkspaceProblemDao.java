@@ -126,4 +126,25 @@ public class WorkspaceProblemDao implements WorkspaceProblemRepository {
 		}
 	}
 
+	@Override
+	public Long findWorkspaceProblemIdByWsIdANDProblemId(Connection con, Long workspaceId, Long problemId) {
+		String sql = """
+			SELECT ws_problem_id
+			FROM workspace_problem
+			WHERE ws_id = ? AND problem_id = ? AND is_deleted = 0
+			LIMIT 1
+			""";
+		try (PreparedStatement ps = con.prepareStatement(sql)) {
+			ps.setLong(1, workspaceId);
+			ps.setLong(2, problemId);
+			try (ResultSet rs = ps.executeQuery()) {
+				if (rs.next())
+					return rs.getLong(1);
+				return null;
+			}
+		} catch (SQLException e) {
+			throw new DBException("findWorkspaceProblemIdByWsIdANDProblemId DB 오류", e);
+		}
+	}
+
 }

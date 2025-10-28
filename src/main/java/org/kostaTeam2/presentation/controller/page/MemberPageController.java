@@ -1,5 +1,7 @@
 package org.kostaTeam2.presentation.controller.page;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Optional;
 
 import org.kostaTeam2.application.service.MemberService;
@@ -9,6 +11,8 @@ import org.kostaTeam2.dto.request.LoginUserRequest;
 import org.kostaTeam2.dto.request.SignupUserRequest;
 import org.kostaTeam2.dto.request.UpdateUserRequest;
 import org.kostaTeam2.global.exception.BadRequestException;
+import org.kostaTeam2.infrastructure.jwt.CookieUtil;
+import org.kostaTeam2.infrastructure.jwt.RefreshTokenIssuer;
 import org.kostaTeam2.presentation.controller.dto.SessionUser;
 import org.kostaTeam2.presentation.view.ModelAndView;
 
@@ -40,13 +44,20 @@ public class MemberPageController implements Controller {
 
     public ModelAndView login(HttpServletRequest request, HttpServletResponse response) {
         var dto = LoginUserRequest.from(request);
-        Optional<Member> member = memberService.login(dto.email(), dto.password());
+
+        String raw = RefreshTokenIssuer.issueRaw();
+        Instant exp = RefreshTokenIssuer.calcExpiry();
+
+        Optional<Member> member = memberService.login(dto.email(), dto.password(), raw, exp);
 
         if (member.isEmpty()) {
             request.setAttribute("error", "이메일 또는 비밀번호가 올바르지 않습니다.");
             request.setAttribute("email", dto.email());
             return new ModelAndView("/auth/login.jsp");
         }
+
+        long maxAge = Math.max(0, Duration.between(Instant.now(), exp).getSeconds());
+        CookieUtil.addRefreshCookie(response, raw, maxAge, null, false);
 
         Member m = member.get();
         HttpSession old = request.getSession(false);
@@ -79,6 +90,9 @@ public class MemberPageController implements Controller {
         if (session != null) {
             session.invalidate();
         }
+
+        //쿠키 삭제
+        CookieUtil.clearRefreshCookie(response, /*domain*/ null, /*isDev*/ false);
 
         return new ModelAndView(request.getContextPath() + "/auth/login.jsp", true);
     }
