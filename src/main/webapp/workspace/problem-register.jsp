@@ -31,6 +31,8 @@
             <input type="hidden" name="key" value="problem"/>
             <input type="hidden" name="methodName" value="create"/>
             <input type="hidden" name="workspaceId" value="${param.workspaceId}"/>
+            <input type="hidden" name="workspaceMemberId" value="${param.workspaceMemberId}"/>
+            <input type="hidden" name="isLeader" value="${param.isLeader}"/>
 
             <div class="form-col">
                 <div class="field">

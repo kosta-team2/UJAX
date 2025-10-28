@@ -53,8 +53,16 @@ public class WorkSpaceProblemController implements Controller {
 				"/workspace/problem-register.jsp");
 		}
 
-		return new ModelAndView(
-			"/front?key=problem&methodName=getProblems&workspaceId=1&workspaceMemberId=1&page=1&size=6", true);
+		String ctx = request.getContextPath();
+		String target = String.format(
+			"%s/front?key=problem&methodName=getProblems&workspaceId=%s&workspaceMemberId=%s&isLeader=%s&page=1&size=6",
+			ctx,
+			request.getParameter("workspaceId"),
+			request.getParameter("workspaceMemberId"),
+			request.getParameter("isLeader")
+		);
+
+		return new ModelAndView(target, true);
 	}
 
 	public ModelAndView getProblems(HttpServletRequest request, HttpServletResponse response) {

@@ -16,7 +16,7 @@
     <div class="problem-header">
         <h3>문제 리스트</h3>
         <a class="problem-register-btn"
-           href="${pageContext.request.contextPath}/workspace/problem-register.jsp?workspaceId=${param.workspaceId}"
+           href="${pageContext.request.contextPath}/workspace/problem-register.jsp?workspaceId=${param.workspaceId}&workspaceMemberId=${param.workspaceMemberId}&isLeader=${param.isLeader}"
            target="mainFrame">문제 등록</a>
     </div>
 
