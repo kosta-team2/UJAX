@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.kostaTeam2.domain.member.Member;
+import org.kostaTeam2.domain.workspace.chart.CommentStatVO;
+import org.kostaTeam2.domain.workspace.chart.SolvedStatVO;
 
 public interface WorkspaceMemberRepository {
 	/**
@@ -58,7 +60,17 @@ public interface WorkspaceMemberRepository {
 	List<WorkspaceMember> findByMemberId(Connection conn, Long memberId);
 
 	/**
-	 * 워크스페이스별 레벨 top5를 불러온다
+	 * 워크스페이스별 레벨 높은 n명을 불러온다
 	 */
 	List<Member> findTopNByLevel(Connection conn, long workspaceId, int limit) throws SQLException;
+
+	/**
+	 * 워크스페이스별 풀이가 많은 n명을 불러온다
+	 */
+	List<SolvedStatVO> findTopNBySolved(Connection conn, long workspaceId, int limit) throws SQLException;
+
+	/**
+	 * 워크스페이스별 댓글 많이 남긴 n명을 불러온다
+	 */
+	List<CommentStatVO> findTopByComment(Connection conn, long workspaceId, int limit) throws SQLException;
 }

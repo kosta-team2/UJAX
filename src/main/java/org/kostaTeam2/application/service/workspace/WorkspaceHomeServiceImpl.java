@@ -17,6 +17,8 @@ import org.kostaTeam2.domain.workspace.WorkspaceMemberRepository;
 import org.kostaTeam2.domain.workspace.WorkspaceProblem;
 import org.kostaTeam2.domain.workspace.WorkspaceProblemRepository;
 import org.kostaTeam2.domain.workspace.WorkspaceRepository;
+import org.kostaTeam2.domain.workspace.chart.CommentStatVO;
+import org.kostaTeam2.domain.workspace.chart.SolvedStatVO;
 import org.kostaTeam2.domain.workspace.notice.Notice;
 import org.kostaTeam2.domain.workspace.notice.NoticeRepository;
 import org.kostaTeam2.dto.response.WorkspaceProblemPageResponse;
@@ -136,7 +138,25 @@ public class WorkspaceHomeServiceImpl implements WorkspaceHomeService {
 		try (Connection conn = ds.getConnection()) {
 			return workspaceMemberRepo.findTopNByLevel(conn, workspaceId, limit);
 		} catch (SQLException e) {
-			throw new DBException("멤버 순위를 불러오는 중 db 오류 발생", e);
+			throw new DBException("멤버 레벨 순위를 불러오는 중 db 오류 발생", e);
+		}
+	}
+
+	@Override
+	public List<SolvedStatVO> getWorkspaceMemberSolvedRanking(Long workspaceId, int limit) {
+		try (Connection conn = ds.getConnection()) {
+			return workspaceMemberRepo.findTopNBySolved(conn, workspaceId, limit);
+		} catch (SQLException e) {
+			throw new DBException("멤버 풀이 순위를 불러오는 중 db 오류 발생", e);
+		}
+	}
+
+	@Override
+	public List<CommentStatVO> getWorkspaceMemberCommentCountRanking(Long workspaceId, int limit) {
+		try (Connection conn = ds.getConnection()) {
+			return workspaceMemberRepo.findTopByComment(conn, workspaceId, limit);
+		} catch (SQLException e) {
+			throw new DBException("멤버 댓글 순위를 불러오는 중 db 오류 발생", e);
 		}
 	}
 }

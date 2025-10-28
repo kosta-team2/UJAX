@@ -7,66 +7,53 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/notice.css"/>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/noticeModal.css"/>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/problem.css"/>
-<link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/teamChart.css"/>
 
 <body>
 <main class="main-content">
 
     <section class="section">
-        <h2>팀 차트</h2>
+        <h2>📊 워크스페이스 랭킹</h2>
 
         <div class="chart-grid chart-grid-3">
 
             <section class="teamchar">
-                <!-- 왼쪽: 랭킹 카드 -->
-                <div class="rank-col">
-                    <div class="ranking-card">
-                        <div class="ranking-card__head">
-                            <span class="ranking-card__title">멤버 레벨 TOP 5</span>
-                        </div>
-                        <div class="ranking-card__body">
-                            <c:forEach items="${members}" var="m" varStatus="st">
-                                <c:if test="${st.index lt 5}">
-                                    <div class="rank-row">
-                                        <div class="rank-row__left">
-                  <span class="rank-badge">
-                    <c:choose>
-                        <c:when test="${st.index == 0}"><span class="rank-badge rank-1">1</span></c:when>
-                        <c:when test="${st.index == 1}"><span class="rank-badge rank-1">2</span></c:when>
-                        <c:when test="${st.index == 2}"><span class="rank-badge rank-1">3</span></c:when>
-                        <c:otherwise><c:out value="${st.index + 1}"/></c:otherwise>
-                    </c:choose>
-                  </span>
-                                            <strong class="rank-name"><c:out value="${m.nickname}"
-                                                                             default="익명"/></strong>
-                                        </div>
-                                        <div class="rank-row__right">
-                                            <span class="rank-xp"><fmt:formatNumber value="${m.xp}"
-                                                                                    type="number"/> XP</span>
-                                            <c:if test="${not empty topXp and topXp gt 0}">
-                                                <div class="xpbar">
-                                                    <div class="xpbar__fill"
-                                                         style="width:${ (m.xp * 100.0) / topXp }%;"></div>
-                                                </div>
-                                            </c:if>
-                                        </div>
-                                    </div>
-                                </c:if>
-                            </c:forEach>
-                        </div>
-                    </div>
+                <!-- 멤버 레벨 TOP 5 -->
+                <div class="ranking-card">
+                    <h3>🏆 레벨 TOP 5</h3>
+                    <ul>
+                        <c:forEach var="stat" items="${topLevel}">
+                            <li>
+                                <span>${stat.nickname}</span>
+                                <span>${stat.xp} XP</span>
+                            </li>
+                        </c:forEach>
+                    </ul>
                 </div>
 
-                <!-- 가운데: 이번 주 풀이 수 -->
-                <div class="mini-stat mini-stat--solved">
-                    <span>이번 주 풀이 수</span><br/>
-                    <strong><c:out value="${weeklySolved}" default="0"/></strong>
+                <!-- 문제 많이 푼 멤버 TOP 5 -->
+                <div class="ranking-card">
+                    <h3>🧮 풀이 TOP 5</h3>
+                    <ul>
+                        <c:forEach var="stat" items="${topSolved}">
+                            <li>
+                                <span>${stat.nickname}</span>
+                                <span>${stat.solvedCount}문제</span>
+                            </li>
+                        </c:forEach>
+                    </ul>
                 </div>
 
-                <!-- 오른쪽: 평균 정답률 -->
-                <div class="mini-stat mini-stat--accuracy">
-                    <span>평균 정답률</span><br/>
-                    <strong><c:out value="${avgAccuracy}" default="0"/>%</strong>
+                <!-- 댓글 많이 남긴 멤버 TOP 5 -->
+                <div class="ranking-card ranking-card--comment">
+                    <h3>💬 댓글 TOP 5</h3>
+                    <ul>
+                        <c:forEach var="stat" items="${topComment}">
+                            <li>
+                                <span>${stat.nickname}</span>
+                                <span>${stat.commentCount}개</span>
+                            </li>
+                        </c:forEach>
+                    </ul>
                 </div>
             </section>
 
@@ -98,7 +85,7 @@
 
             <section class="section problem-section">
                 <div class="section-header">
-                    <h3>알고리즘 문제</h3>
+                    <h2>🧩 알고리즘 문제</h2>
                 </div>
                 <c:choose>
                     <c:when test="${empty problems}">

@@ -13,6 +13,8 @@ import java.util.Optional;
 import org.kostaTeam2.domain.member.Member;
 import org.kostaTeam2.domain.workspace.WorkspaceMember;
 import org.kostaTeam2.domain.workspace.WorkspaceMemberRepository;
+import org.kostaTeam2.domain.workspace.chart.CommentStatVO;
+import org.kostaTeam2.domain.workspace.chart.SolvedStatVO;
 
 public class WorkspaceMemberDao implements WorkspaceMemberRepository {
 
@@ -262,14 +264,6 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
 			FROM workspace_member
 			WHERE member_id = ?;
 			""";
-    @Override
-    public List<WorkspaceMember> findByMemberId(Connection conn, Long memberId) {
-        List<WorkspaceMember> list = new ArrayList<>();
-        String sql = """
-                SELECT ws_member_id, is_leader, ws_id
-                FROM workspace_member
-                WHERE member_id = ? AND is_deleted = 0;
-                """;
 
 		try (PreparedStatement ps = conn.prepareStatement(sql)) {
 			ps.setLong(1, memberId);
@@ -314,4 +308,73 @@ public class WorkspaceMemberDao implements WorkspaceMemberRepository {
 			}
 		}
 	}
+
+	@Override
+	public List<SolvedStatVO> findTopNBySolved(Connection conn, long workspaceId, int limit) throws SQLException {
+		List<SolvedStatVO> list = new ArrayList<>();
+		String sql = """
+			SELECT
+			  wm.nickname,
+			  COALESCE(COUNT(DISTINCT CASE WHEN s.status = 1 THEN s.ws_problem_id END), 0) AS solved_count
+			FROM workspace_member wm
+			LEFT JOIN solution s
+			  ON s.ws_member_id = wm.ws_member_id
+			 AND s.is_deleted = 0
+			LEFT JOIN workspace_problem wp
+			  ON wp.ws_problem_id = s.ws_problem_id
+			 AND wp.ws_id = wm.ws_id
+			WHERE wm.ws_id = ?
+			GROUP BY wm.ws_member_id, wm.nickname
+			ORDER BY solved_count DESC, wm.nickname ASC
+			LIMIT ?;
+			""";
+
+		try (PreparedStatement ps = conn.prepareStatement(sql)) {
+			ps.setLong(1, workspaceId);
+			ps.setInt(2, limit);
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					list.add(new SolvedStatVO(
+						rs.getString("nickname"),
+						rs.getInt("solved_count")
+					));
+				}
+			}
+		}
+		return list;
+	}
+
+	@Override
+	public List<CommentStatVO> findTopByComment(Connection conn, long workspaceId, int limit) throws
+		SQLException {
+		List<CommentStatVO> list = new ArrayList<>();
+		String sql = """
+			SELECT
+			    wm.nickname,
+			    COUNT(c.comment_id) AS comment_count
+			FROM workspace_member wm
+			LEFT JOIN comment c
+			    ON wm.ws_member_id = c.ws_member_id
+			WHERE wm.ws_id = ?
+			GROUP BY wm.nickname
+			ORDER BY comment_count DESC
+			LIMIT ?;
+			""";
+
+		try (PreparedStatement ps = conn.prepareStatement(sql)) {
+			ps.setLong(1, workspaceId);
+			ps.setInt(2, limit);
+
+			try (ResultSet rs = ps.executeQuery()) {
+				while (rs.next()) {
+					list.add(new CommentStatVO(
+						rs.getString("nickname"),
+						rs.getInt("comment_count")
+					));
+				}
+			}
+		}
+		return list;
+	}
+
 }

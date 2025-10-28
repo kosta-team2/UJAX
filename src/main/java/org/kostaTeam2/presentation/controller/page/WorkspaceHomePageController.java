@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.kostaTeam2.application.service.workspace.WorkspaceHomeService;
 import org.kostaTeam2.domain.member.Member;
+import org.kostaTeam2.domain.workspace.chart.CommentStatVO;
+import org.kostaTeam2.domain.workspace.chart.SolvedStatVO;
 import org.kostaTeam2.domain.workspace.notice.Notice;
 import org.kostaTeam2.dto.response.WorkspaceProblemPageResponse;
 import org.kostaTeam2.global.exception.BadRequestException;
@@ -39,15 +41,17 @@ public class WorkspaceHomePageController implements Controller {
 		List<Notice> notices = workspaceHomeService.getNoticeList(userId, workspaceId, page, size);
 		List<WorkspaceProblemPageResponse> problems = workspaceHomeService.getWorkspaceProblemList(workspaceId, userId,
 			page, size);
+
 		// 팀 차트 서비스
-		List<Member> members = workspaceHomeService.getWorkspaceMemberRanking(workspaceId, 5);
-		int topXp = members.isEmpty() ? 0 : members.get(0).getXp();
+		List<Member> topLevel = workspaceHomeService.getWorkspaceMemberRanking(workspaceId, 5);
+		List<SolvedStatVO> topSolved = workspaceHomeService.getWorkspaceMemberSolvedRanking(workspaceId, 5);
+		List<CommentStatVO> topComment = workspaceHomeService.getWorkspaceMemberCommentCountRanking(workspaceId, 5);
 
 		request.setAttribute("notices", notices);
 		request.setAttribute("problems", problems);
-		request.setAttribute("members", members);
-		request.setAttribute("topXp", topXp);
-		// todo 팀차트 어트리뷰트
+		request.setAttribute("topLevel", topLevel);
+		request.setAttribute("topSolved", topSolved);
+		request.setAttribute("topComment", topComment);
 
 		String target = request.getContextPath() + "/workspace/home.jsp";
 		return new ModelAndView(target);

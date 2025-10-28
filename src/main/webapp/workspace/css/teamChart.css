@@ -1,188 +1,284 @@
-/* =========================================================
-   teamChart.css — Ranking Card (final, compact)
-   - Left card fixed width
-   - XP right-aligned
-   - Compact paddings & tighter spacing
-   ========================================================= */
-
-/* 좌측 랭킹 카드 폭 (원하면 값만 바꿔) */
-:root {
-    --rank-card-w: 460px;
-}
-
-/* ex) 420~520px 추천 */
-
-/* teamchar(1행 컨테이너) 내부 3열: [랭킹 | 풀이수 | 정답률] */
 .teamchar {
-    grid-template-columns: var(--rank-card-w) 1fr 1fr !important;
-    gap: 16px;
-    align-items: start;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin-top: 20px;
 }
 
-/* 실제 카드 폭 제한 */
-.teamchar > .ranking-card {
-    width: var(--rank-card-w);
-    max-width: 100%;
-}
-
-/* ---------- 카드 베이스 ---------- */
+/* 공통 카드 */
 .ranking-card {
-    border: 1px solid var(--border);
-    border-radius: 16px;
-    background: radial-gradient(1200px 200px at 0% -20%, rgba(255, 255, 255, .05), transparent 60%),
-    var(--surface);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, .25);
-    overflow: hidden;
-}
-
-.ranking-card__head {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    padding: 10px 12px; /* compact */
-    background: linear-gradient(180deg, rgba(255, 255, 255, .05), transparent);
-    border-bottom: 1px solid var(--border);
-}
-
-.ranking-card__title {
-    font-weight: 800;
-    font-size: 16px;
-}
-
-.ranking-card__sub {
-    color: var(--muted);
-    font-size: 12px;
-}
-
-.ranking-card__body {
     display: flex;
     flex-direction: column;
+    justify-content: flex-start;
+    background: linear-gradient(145deg, rgba(35, 38, 48, 0.95), rgba(25, 27, 36, 0.92));
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 18px;
+    padding: 18px 20px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    color: rgba(240, 242, 255, 0.95);
+    transition: all 0.25s ease;
+    min-height: 220px;
 }
 
-/* ---------- 랭킹 행 ---------- */
-.rank-row {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start; /* 왼쪽 정렬 시작 */
-    gap: 10px; /* 좌그룹-우그룹 간격 */
-    padding: 8px 12px; /* compact */
-    min-height: 44px; /* compact */
+.ranking-card:hover {
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4);
+    transform: translateY(-2px);
 }
 
-.rank-row + .rank-row {
-    border-top: 1px dashed var(--border);
-}
-
-/* 왼쪽 그룹: 배지 + 이름 */
-.rank-row__left {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    min-width: 0;
-}
-
-.rank-badge {
-    width: 26px;
-    height: 26px;
-    flex: 0 0 26px; /* compact */
-    display: grid;
-    place-items: center;
-    border-radius: 8px;
-    font-weight: 800;
-    font-size: 14px;
-    line-height: 1;
-    border: 1px solid var(--border);
-    background: linear-gradient(180deg, rgba(255, 255, 255, .06), transparent);
-    color: rgba(255, 255, 255, .92);
-    text-shadow: 0 1px 0 rgba(0, 0, 0, .25);
-}
-
-/* 이름 */
-.rank-name {
-    font-weight: 800;
+/* 제목 통일 */
+.ranking-card h3 {
+    font-weight: 700;
     font-size: 15px;
-    color: rgba(255, 255, 255, .94);
-    white-space: nowrap;
+    color: #aab6ff;
+    margin-bottom: 14px;
+    letter-spacing: 0.3px;
+    text-shadow: 0 0 8px rgba(80, 120, 255, 0.1);
+}
+
+/* 리스트 기본 */
+.ranking-card ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ranking-card li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.02);
+    font-weight: 600;
+    color: rgba(240, 240, 255, 0.9);
+    transition: all 0.25s ease;
+}
+
+.ranking-card li:hover {
+    background: rgba(80, 140, 255, 0.08);
+    transform: translateX(4px);
+}
+
+/* 1~3위 색상 포인트 */
+.ranking-card li:nth-child(1) {
+    color: #fff7c0;
+    background: linear-gradient(90deg, rgba(255, 215, 0, 0.08), rgba(255, 255, 255, 0.02));
+    border-color: rgba(255, 215, 0, 0.2);
+}
+
+.ranking-card li:nth-child(2) {
+    color: #f2f6ff;
+    background: linear-gradient(90deg, rgba(192, 192, 192, 0.08), rgba(255, 255, 255, 0.02));
+    border-color: rgba(192, 192, 192, 0.2);
+}
+
+.ranking-card li:nth-child(3) {
+    color: #ffe9cf;
+    background: linear-gradient(90deg, rgba(205, 127, 50, 0.08), rgba(255, 255, 255, 0.02));
+    border-color: rgba(205, 127, 50, 0.2);
+}
+
+.ranking-card--comment li {
+    background: rgba(255, 255, 255, 0.015);
+}
+
+.ranking-card--comment li:hover {
+    background: rgba(80, 140, 255, 0.1);
+}
+
+/* 반응형 */
+@media (max-width: 1024px) {
+    .teamchar {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===== RESET old fixed-width layout ===== */
+.teamchar {
+    display: grid;
+    /* 3등분 균등 분할 */
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 18px;
+    align-items: stretch;
+    margin-top: 20px;
+}
+
+/* 카드 폭 강제 해제 (이전 코드 무력화) */
+.teamchar > .ranking-card {
+    width: auto !important;
+    max-width: none !important;
+}
+
+/* 카드 공통 */
+.ranking-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background: linear-gradient(145deg, rgba(35, 38, 48, .95), rgba(25, 27, 36, .92));
+    border: 1px solid rgba(255, 255, 255, .05);
+    border-radius: 18px;
+    padding: 18px 20px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .25);
+    color: rgba(240, 242, 255, .95);
+    transition: all .25s ease;
+    min-height: 220px;
+}
+
+.ranking-card:hover {
+    box-shadow: 0 10px 28px rgba(0, 0, 0, .4);
+    transform: translateY(-2px);
+}
+
+.ranking-card h3 {
+    font-weight: 700;
+    font-size: 15px;
+    color: #aab6ff;
+    margin-bottom: 14px;
+}
+
+/* 리스트 */
+.ranking-card ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ranking-card li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, .05);
+    background: rgba(255, 255, 255, .02);
+    font-weight: 600;
+    color: rgba(240, 240, 255, .9);
+    transition: all .25s ease;
+}
+
+.ranking-card li:hover {
+    background: rgba(80, 140, 255, .08);
+    transform: translateX(4px);
+}
+
+/* 1~3위 은은 강조 */
+.ranking-card li:nth-child(1) {
+    color: #fff7c0;
+    background: linear-gradient(90deg, rgba(255, 215, 0, .08), rgba(255, 255, 255, .02));
+    border-color: rgba(255, 215, 0, .2)
+}
+
+.ranking-card li:nth-child(2) {
+    color: #f2f6ff;
+    background: linear-gradient(90deg, rgba(192, 192, 192, .08), rgba(255, 255, 255, .02));
+    border-color: rgba(192, 192, 192, .2)
+}
+
+.ranking-card li:nth-child(3) {
+    color: #ffe9cf;
+    background: linear-gradient(90deg, rgba(205, 127, 50, .08), rgba(255, 255, 255, .02));
+    border-color: rgba(205, 127, 50, .2)
+}
+
+
+.ranking-card--comment li {
+    background: rgba(255, 255, 255, .015);
+}
+
+/* (선택) 카드가 1개뿐이면 전체 너비 사용 */
+.teamchar > :only-child {
+    grid-column: 1 / -1;
+}
+
+/* 반응형 */
+@media (max-width: 1024px) {
+    .teamchar {
+        grid-template-columns: 1fr !important;
+    }
+}
+
+/* chart-grid-3 섹션 전체 기본 글자 크기 살짝 업 */
+.chart-grid.chart-grid-3 {
+    font-size: 1.06rem; /* 약 +6% */
+    line-height: 1.45;
+}
+
+/* 카드 제목 조금 더 크게 */
+.chart-grid-3 .ranking-card h3 {
+    font-size: 18px; /* 기존 15px → 18px */
+    letter-spacing: .2px;
+}
+
+/* 리스트 항목 글자 크기 업 */
+.chart-grid-3 .ranking-card li {
+    font-size: 15.5px; /* 기본 대비 +1.5~2px */
+}
+
+/* 오른쪽 수치(문제 수/XP) 강조 감도 업 */
+.chart-grid-3 .ranking-card li > span:last-child {
+    font-weight: 800;
+    font-size: 16px;
+}
+
+/* 반응형: 태블릿 이하에서는 살짝 낮춰 안정화 */
+@media (max-width: 1024px) {
+    .chart-grid.chart-grid-3 {
+        font-size: 1rem;
+    }
+
+    .chart-grid-3 .ranking-card h3 {
+        font-size: 17px;
+    }
+}
+
+/* ================================
+   teamchar 전용 타이틀, 닉네임 강조
+   ================================ */
+
+/* 1) 팀차트 섹션의 카드 제목(h3) 조금 더 크게 */
+.teamchar .ranking-card h3 {
+    font-size: 19px; /* 기존 15~18 → 19px */
+    line-height: 1.25;
+    letter-spacing: .2px;
+    font-weight: 800;
+}
+
+/* 2) 리스트의 닉네임(왼쪽 첫번째 span) 더 크게/두껍게/가독성 업 */
+.teamchar .ranking-card li > span:first-child {
+    font-size: 16.8px; /* 기존보다 +1.5~2px */
+    font-weight: 800;
+    color: rgba(248, 250, 255, .98);
+    letter-spacing: .1px;
+    text-shadow: 0 0 8px rgba(120, 160, 255, .12);
+    flex: 1 1 auto; /* 닉네임 영역 확보 */
+    min-width: 0; /* ellipsis 작동용 */
+}
+
+/* 닉네임 길면 말줄임 처리(현재 마크업이 span이면 이것도 같이) */
+.teamchar .ranking-card li > span:first-child {
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: clamp(120px, 28vw, 260px);
-    margin-right: 4px;
+    white-space: nowrap;
+    max-width: 72%;
 }
 
-/* 1~3위 배지 채움(금/은/동) — compact 사이즈에 맞춤 */
-.rank-row:nth-child(1) .rank-badge {
-    color: #fff7c0;
-    background: radial-gradient(32px 18px at 30% 25%, rgba(255, 236, 160, .48), rgba(255, 215, 0, .08) 70%),
-    linear-gradient(180deg, rgba(255, 255, 255, .12), transparent);
-    border-color: rgba(255, 215, 0, .55);
-    box-shadow: 0 0 0 2px rgba(255, 215, 0, .32) inset, 0 1px 6px rgba(255, 215, 0, .12);
-}
-
-.rank-row:nth-child(2) .rank-badge {
-    color: #f2f6ff;
-    background: radial-gradient(32px 18px at 30% 25%, rgba(210, 220, 235, .5), rgba(192, 192, 192, .08) 70%),
-    linear-gradient(180deg, rgba(255, 255, 255, .10), transparent);
-    border-color: rgba(192, 192, 192, .55);
-    box-shadow: 0 0 0 2px rgba(192, 192, 192, .3) inset, 0 1px 6px rgba(192, 192, 192, .1);
-}
-
-.rank-row:nth-child(3) .rank-badge {
-    color: #ffe9cf;
-    background: radial-gradient(32px 18px at 30% 25%, rgba(255, 205, 160, .5), rgba(205, 127, 50, .09) 70%),
-    linear-gradient(180deg, rgba(255, 255, 255, .10), transparent);
-    border-color: rgba(205, 127, 50, .55);
-    box-shadow: 0 0 0 2px rgba(205, 127, 50, .3) inset, 0 1px 6px rgba(205, 127, 50, .1);
-}
-
-/* 오른쪽 그룹: XP + 바 (오른쪽 끝 정렬) */
-.rank-row__right {
-    margin-left: auto; /* → 카드 오른쪽 끝 */
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    text-align: right;
-    min-width: 0;
-}
-
-.rank-xp {
+/* 오른쪽 수치(문제 수/XP)는 살짝 덜 강조 */
+.teamchar .ranking-card li > span:last-child {
     font-size: 16px;
-    font-weight: 800;
-    color: rgba(224, 232, 255, .98);
-    letter-spacing: .1px;
-    min-width: 90px; /* 숫자 폭 흔들림 방지 */
+    font-weight: 700;
+    opacity: .9;
 }
 
-.xpbar {
-    width: 80px;
-    height: 6px; /* compact */
-    border-radius: 999px;
-    background: rgba(255, 255, 255, .06);
-    border: 1px solid var(--border);
-    overflow: hidden;
-}
-
-.xpbar__fill {
-    height: 100%;
-    border-radius: 999px;
-    background: linear-gradient(90deg, rgba(255, 255, 255, .35), rgba(255, 255, 255, .1));
-    transform: translateZ(0);
-    transition: width .4s ease;
-}
-
-/* ---------- 모바일 ---------- */
-@media (max-width: 520px) {
-    .rank-row {
-        flex-direction: column;
-        align-items: flex-start;
+/* 반응형에서 살짝 다운스케일 */
+@media (max-width: 1024px) {
+    .teamchar .ranking-card h3 {
+        font-size: 18px;
     }
 
-    .rank-row__right {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    .xpbar {
-        width: 100%;
-        max-width: none;
+    .teamchar .ranking-card li > span:first-child {
+        font-size: 16px;
     }
 }

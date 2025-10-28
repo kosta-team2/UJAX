@@ -21,6 +21,8 @@ import org.kostaTeam2.application.service.jwt.TokenService;
 import org.kostaTeam2.application.service.jwt.TokenServiceImpl;
 import org.kostaTeam2.application.service.workspace.NoticeService;
 import org.kostaTeam2.application.service.workspace.NoticeServiceImpl;
+import org.kostaTeam2.application.service.workspace.WorkspaceHomeService;
+import org.kostaTeam2.application.service.workspace.WorkspaceHomeServiceImpl;
 import org.kostaTeam2.application.service.workspace.WorkspaceProblemService;
 import org.kostaTeam2.application.service.workspace.WorkspaceProblemServiceImpl;
 import org.kostaTeam2.application.service.workspace.WorkspaceService;
@@ -85,8 +87,11 @@ public class HandlerMappingListener implements ServletContextListener {
 			WorkspaceProblemService workspaceProblemSvc = new WorkspaceProblemServiceImpl(ds, workspaceRepo,
 				workspaceProblemRepo, problemRepo);
 			GiftService giftSvc = new GiftServiceImpl(ds, giftRepository, memberRepo, barcodeRepo);
+			WorkspaceHomeService workspaceHomeSvc = new WorkspaceHomeServiceImpl(ds, noticeRepo, workspaceRepo,
+				workspaceProblemRepo, problemRepo, workspaceMemberRepo);
 			TokenService tokenSvc = new TokenServiceImpl(ds, tokenRepo);
-			SubmissionService subSvc = new SubmissionServiceImpl(ds, workspaceMemberRepo ,problemRepo, workspaceProblemRepo, solRepo);
+			SubmissionService subSvc = new SubmissionServiceImpl(ds, workspaceMemberRepo, problemRepo,
+				workspaceProblemRepo, solRepo);
 			SolutionService solSvc = new SolutionServiceImpl(ds, solRepo);
 
 			// 3) properties 파일 로드
@@ -106,11 +111,11 @@ public class HandlerMappingListener implements ServletContextListener {
 				for (var ctor : clazz.getDeclaredConstructors()) {
 					var pts = ctor.getParameterTypes();
 
-                    if (pts.length == 2 && pts[0] == MemberService.class && pts[1] == WorkspaceService.class) {
-                        ctor.setAccessible(true);
-                        controllerInstance = ctor.newInstance(memberSvc, workspaceSvc);
-                        break;
-                    }
+					if (pts.length == 2 && pts[0] == MemberService.class && pts[1] == WorkspaceService.class) {
+						ctor.setAccessible(true);
+						controllerInstance = ctor.newInstance(memberSvc, workspaceSvc);
+						break;
+					}
 
 					if (pts.length == 1 && pts[0] == MemberService.class) {
 						ctor.setAccessible(true);
@@ -181,11 +186,11 @@ public class HandlerMappingListener implements ServletContextListener {
 						controllerInstance = ctor.newInstance(workspaceProblemSvc);
 						break;
 					}
-                    if (pts.length == 1 && pts[0] == WorkspaceService.class) {
-                        ctor.setAccessible(true);
-                        controllerInstance = ctor.newInstance(workspaceSvc);
-                        break;
-                    }
+					if (pts.length == 1 && pts[0] == WorkspaceService.class) {
+						ctor.setAccessible(true);
+						controllerInstance = ctor.newInstance(workspaceSvc);
+						break;
+					}
 
 					if (pts.length == 1 && pts[0] == TokenService.class) {
 						ctor.setAccessible(true);
