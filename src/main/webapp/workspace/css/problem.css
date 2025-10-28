@@ -128,7 +128,7 @@
     min-width: 0;
     font-size: 1.2rem;
     font-weight: 700;
-    color: var(--text);
+    color: rgb(207, 205, 205);
 }
 
 .card-meta {
@@ -148,15 +148,15 @@
 }
 
 .status-badge.not-submitted {
-    background: #f3f4f6;
-    color: #6b7280;
-    border-color: #e5e7eb;
+    background: #dadbdf;
+    color: #68707c;
+    border-color: #4f5053;
 }
 
 .status-badge.submitted {
     background: #dcfce7;
     color: #15803d;
-    border-color: #bbf7d0;
+    border-color: #99fbbd;
 }
 
 .difficulty-level {
@@ -226,7 +226,7 @@
     border-radius: 9999px;
     padding: 0.35rem 0.75rem;
     color: rgba(230, 220, 220, 0.92);
-    border: 1px solid rgba(255,255,255,.16);
+    border: 1px solid rgba(255, 255, 255, .16);
 }
 
 .card-bottom {
