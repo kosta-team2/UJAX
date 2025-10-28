@@ -21,7 +21,7 @@
                             <button class="workspace-name" type="button">${ws.wsName}</button>
                             <div class="workspace-menu">
                                 <a class="nav-btn" target="mainFrame"
-                                   href="${pageContext.request.contextPath}/front?key=workspaceHome&methodName=getWorkspaceHome&workspaceId=${ws.workspaceId}&size=3&page=1">
+                                   href="${pageContext.request.contextPath}/front?key=workspaceHome&methodName=getWorkspaceHome&workspaceId=${ws.workspaceId}&workspaceMemberId=${ws.workspaceMemberId}&isLeader=${ws.leader}&size=3&page=1">
                                     워크스페이스 홈
                                 </a>
                                 <a class="nav-btn" target="mainFrame"

@@ -1,0 +1,71 @@
+.home-page .problem-section {
+    --min-col: 320px;
+    --gap: 1rem;
+    --pad: .9rem;
+    --meta: .86rem;
+    --tag: .82rem;
+    --title: 1.1rem;
+}
+
+/* 그리드 밀도만 조정 */
+.home-page .problem-section .problem-grid {
+    grid-template-columns: repeat(auto-fill, minmax(var(--min-col), 1fr));
+    gap: var(--gap);
+}
+
+.home-page .problem-section .problem-card {
+    padding: var(--pad) calc(var(--pad) * 1.2);
+    height: auto; /* 고정 150px → 내용에 맞게 */
+    min-height: 130px;
+}
+
+/* 타이틀: 줄임표로 1줄 고정, 크기만 약간 축소 */
+.home-page .problem-section .problem-title {
+    font-size: var(--title);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* 상단 메타(배지/난이도)만 약간 축소 */
+.home-page .problem-section .status-badge,
+.home-page .problem-section .difficulty-level {
+    font-size: var(--meta);
+    padding: calc(.3rem * .9) calc(.6rem * .9);
+}
+
+/* 태그는 2개까지만 노출(공간 절약) + 약간 축소 */
+.home-page .problem-section .tags {
+    flex-wrap: wrap;
+    gap: .35rem;
+}
+
+.home-page .problem-section .tags span {
+    font-size: var(--tag);
+    padding: .3rem .6rem;
+}
+
+.home-page .problem-section .tags span:nth-child(n+3) {
+    display: none;
+}
+
+/* 하단 메타/버튼은 살짝만 줄임(가독성 유지) */
+.home-page .problem-section .deadline,
+.home-page .problem-section .submit-count {
+    font-size: .88rem;
+    padding: .22rem .55rem;
+}
+
+.home-page .problem-section .go-btn {
+    font-size: .88rem;
+    padding: .5rem 1rem;
+}
+
+/* 카드 내부 세로 여백 정리 */
+.home-page .problem-section .card-top {
+    margin-bottom: .35rem;
+}
+
+.home-page .problem-section .tags {
+    margin-bottom: .35rem;
+}
