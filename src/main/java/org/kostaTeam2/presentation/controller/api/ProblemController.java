@@ -31,7 +31,8 @@ public class ProblemController implements RestController {
 	}
 
 	@Override
-	public JsonResult handle(String methodName, HttpServletRequest request, HttpServletResponse response) throws Exception {
+	public JsonResult handle(String methodName, HttpServletRequest request, HttpServletResponse response) throws
+		Exception {
 		return switch (methodName) {
 			case "ingest" -> ingest(request, response);
 			default -> new JsonResult("unknown method: " + methodName);
@@ -63,9 +64,17 @@ public class ProblemController implements RestController {
 				.filter(t -> !t.getName().isBlank())
 				.collect(Collectors.toList());
 
+		//TODO: service로 이전
+		String s = dto.getTitle();
+		int tabIdx = s.indexOf('\t');
+		if (tabIdx >= 0)
+			s = s.substring(0, tabIdx);
+		s = s.replace('\r', '\n').replace('\n', ' ');
+		s = s.replaceAll("\\s+", " ").trim();
+
 		Problem p = new Problem(
 			dto.getProblemNum(),
-			dto.getTitle(),
+			s,
 			dto.getTier(),
 			dto.getTimeLimit(),
 			dto.getMemoryLimit(),
