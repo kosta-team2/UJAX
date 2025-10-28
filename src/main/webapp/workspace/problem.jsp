@@ -70,6 +70,7 @@
                                 <c:param name="methodName" value="getProblemDetail"/>
                                 <c:param name="problemId" value="${p.problemId}"/>
                                 <c:param name="wsProblemId" value="${p.wsProblemId}"/>
+                                <c:param name="workspaceId" value="${param.workspaceId}"/>
                                 <c:param name="workspaceMemberId" value="${param.workspaceMemberId}"/>
                                 <c:param name="isLeader" value="${param.isLeader}"/>
                             </c:url>
