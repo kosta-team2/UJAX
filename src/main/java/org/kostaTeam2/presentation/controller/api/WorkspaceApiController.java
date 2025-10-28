@@ -7,6 +7,9 @@ import org.kostaTeam2.global.exception.BadRequestException;
 import org.kostaTeam2.presentation.view.JsonResult;
 import org.kostaTeam2.infrastructure.mail.MailService;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+
 public class WorkspaceApiController implements RestController {
 
     private final MemberService memberService;
@@ -49,11 +52,26 @@ public class WorkspaceApiController implements RestController {
                 return new JsonResult("해당 이메일의 회원이 없습니다.");
             }
 
+            String base = req.getRequestURL().toString()
+                             .replace(req.getRequestURI(), req.getContextPath());
+
+            String acceptLink = base + "/front?key=workspace&methodName=acceptInvite"
+                    + "&workspaceId=" + URLEncoder.encode(wsId, StandardCharsets.UTF_8)
+                    + "&email=" + URLEncoder.encode(trimmed, StandardCharsets.UTF_8);
+
+            String body = """
+                    [ujax] 워크스페이스 초대
+                    
+                    아래 링크를 열면 초대를 수락하고 워크스페이스에 합류합니다.
+                    %s
+                    
+                    (로그인이 필요할 수 있습니다.)
+                    """.formatted(acceptLink);
+
             MailService mail = new MailService(req.getServletContext());
             mail.sendMail(
                     trimmed,
-                    "[ujax] 워크스페이스 초대",
-                    wsId + " 워크스페이스 로부터 초대장이 날라왔습니다."
+                    "[ujax] 워크스페이스 초대", body
             );
 
             resp.setStatus(HttpServletResponse.SC_OK);

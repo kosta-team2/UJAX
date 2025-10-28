@@ -5,6 +5,7 @@ import java.time.Instant;
 import java.util.Optional;
 
 import org.kostaTeam2.application.service.MemberService;
+import org.kostaTeam2.application.service.workspace.WorkspaceService;
 import org.kostaTeam2.domain.member.Member;
 import org.kostaTeam2.dto.request.LoginUserRequest;
 import org.kostaTeam2.dto.request.SignupUserRequest;
@@ -22,7 +23,7 @@ import jakarta.servlet.http.HttpSession;
 public class MemberPageController implements Controller {
     private final MemberService memberService;
 
-    public MemberPageController(MemberService memberService) {
+    public MemberPageController(MemberService memberService, WorkspaceService workspaceService) {
         this.memberService = memberService;
     }
 
@@ -69,6 +70,17 @@ public class MemberPageController implements Controller {
                 m.getNickname()
         ));
 
+        String ctx = request.getContextPath();
+        String redirect = request.getParameter("redirect");
+        if (redirect != null && !redirect.isBlank()) {
+            if (redirect.startsWith(ctx + "/")) {
+                return new ModelAndView(redirect, true);
+            }
+            if (redirect.startsWith("/")) {
+                return new ModelAndView(ctx + redirect, true);
+            }
+        }
+
         String target = request.getContextPath() + "/workspace";
         return new ModelAndView(target, true);
     }
@@ -87,8 +99,22 @@ public class MemberPageController implements Controller {
 
     private ModelAndView signup(HttpServletRequest request, HttpServletResponse response) {
         var dto = SignupUserRequest.from(request);
+
+        var session = request.getSession(false);
+
+        if (session == null
+                || session.getAttribute("SIGNUP_EMAIL_VERIFIED") != Boolean.TRUE
+                || !dto.email().equals(session.getAttribute("SIGNUP_EMAIL"))) {
+            request.setAttribute("error", "이메일 인증이 필요합니다. 인증 후 다시 시도해 주세요.");
+            return new ModelAndView("/auth/signup.jsp");
+        }
+
         try {
             memberService.signup(dto.email(), dto.password(), dto.nickname());
+            session.removeAttribute("SIGNUP_EMAIL_VERIFIED");
+            session.removeAttribute("SIGNUP_EMAIL");
+
+            request.getSession().setAttribute("flashMessageJs", "회원가입 되었습니다. 로그인하고 서비스를 이용해주세요!");
             return new ModelAndView(request.getContextPath() + "/auth/login.jsp", true);
         } catch (BadRequestException e) {
             request.setAttribute("error", e.getMessage());

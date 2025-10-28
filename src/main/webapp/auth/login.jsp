@@ -11,6 +11,12 @@
     <link rel="stylesheet" href="<c:url value='/auth/css/login.css'/>">
 </head>
 <body>
+<c:if test="${not empty sessionScope.flashMessageJs}">
+    <script>
+        alert('${sessionScope.flashMessageJs}');
+    </script>
+    <c:remove var="flashMessageJs" scope="session"/>
+</c:if>
 <main class="page" role="main">
     <section class="stack" aria-label="로그인">
         <div class="img-slot-spacer" aria-hidden="true"><br><br><br></div>
@@ -25,6 +31,9 @@
                   method="post"
                   autocomplete="on">
 
+                <c:if test="${not empty param.redirect}">
+                    <input type="hidden" name="redirect" value="${fn:escapeXml(param.redirect)}"/>
+                </c:if>
                 <input type="hidden" name="key" value="member"/>
                 <input type="hidden" name="methodName" value="login"/>
 

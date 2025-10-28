@@ -24,8 +24,8 @@ public class Member {
 
 	// 로그인
 	public Member(String email, String password, String nickname) {
-		this.memberId = memberId;
 		this.email = email;
+		this.password = password;
 		this.nickname = nickname;
 	}
 

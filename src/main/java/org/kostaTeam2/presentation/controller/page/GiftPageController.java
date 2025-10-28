@@ -5,6 +5,7 @@ import org.kostaTeam2.domain.gift.Gift;
 import org.kostaTeam2.dto.response.GiftPage;
 import org.kostaTeam2.dto.response.PurchaseReceipt;
 import org.kostaTeam2.global.exception.BadRequestException;
+import org.kostaTeam2.infrastructure.mail.MailService;
 import org.kostaTeam2.presentation.controller.dto.SessionUser;
 import org.kostaTeam2.presentation.view.ModelAndView;
 
@@ -134,8 +135,21 @@ public class GiftPageController implements Controller {
 
 		PurchaseReceipt receipt = giftService.confirmPayment(userId, productId);
 
-		// todo SMTP 바코드 이미지 이메일로 전송
-		// smtpSvc(userEmail, receipt.barcodeImage());
+		// smtp: 이메일로 바코드 전송
+		MailService mail = new MailService(request.getServletContext());
+		String html = """
+			<!doctype html>
+			<html><body style="font-family:system-ui,Arial,sans-serif">
+			  <p>주문하신 기프티콘입니다.</p>
+			  <img src="%s" alt="기프티콘" style="max-width:100%%;height:auto;display:block;margin:12px 0;">
+			</body></html>
+			""".formatted(receipt.barcodeImage());
+
+		mail.sendHtml(
+			userEmail,
+			"[ujax] 기프티콘 발송",
+			html
+		);
 
 		String target = request.getContextPath() + "/giftshop/order.jsp";
 		return new ModelAndView(target);
