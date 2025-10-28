@@ -410,3 +410,36 @@ input, select, button, textarea {
 }
 
 /*ㅇㅇ*/
+.ws-settings .table td:nth-child(3),
+.ws-settings .actions-cell {
+    text-align: right;
+    vertical-align: middle;
+    padding-top: 12px;
+    padding-bottom: 12px;
+}
+
+.ws-settings .row-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.ws-settings .row-actions form,
+.ws-settings .leave-zone form,
+.ws-settings .danger-zone form {
+    display: inline-flex;
+    align-items: center;
+    margin: 0;
+}
+
+.ws-settings .btn { width: auto; line-height: 1.2; }
+
+.ws-settings .leave-zone,
+.ws-settings .danger-zone {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.ws-settings .table td { vertical-align: middle; }
