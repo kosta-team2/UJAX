@@ -1,0 +1,150 @@
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+/* ---------- Layout (3 columns) ---------- */
+.teamchar {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-areas: none; /* home.css의 영역 이름 지정 제거 */
+    gap: 18px;
+    align-items: stretch;
+    margin-top: 20px;
+}
+
+.teamchar > * {
+    grid-area: auto;
+}
+
+/* 모든 자식의 영역 강제 초기화 */
+
+/* ---------- Card base ---------- */
+.ranking-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    background: linear-gradient(145deg, rgba(35, 38, 48, .95), rgba(25, 27, 36, .92));
+    border: 1px solid rgba(255, 255, 255, .05);
+    border-radius: 18px;
+    padding: 18px 20px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, .25);
+    color: rgba(240, 242, 255, .95);
+    transition: box-shadow .25s ease, transform .25s ease;
+    min-height: 220px;
+}
+
+.ranking-card:hover {
+    box-shadow: 0 10px 28px rgba(0, 0, 0, .4);
+    transform: translateY(-2px);
+}
+
+/* ---------- Title ---------- */
+.ranking-card h3 {
+    font-weight: 800;
+    font-size: 19px; /* 요청: teamchar 안 h3 조금 더 크게 */
+    line-height: 1.25;
+    letter-spacing: .2px;
+    color: #aab6ff;
+    margin: 0 0 14px;
+    text-shadow: 0 0 8px rgba(80, 120, 255, .10);
+}
+
+/* ---------- List ---------- */
+.ranking-card ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.ranking-card li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    margin-bottom: 6px;
+    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, .05);
+    background: rgba(255, 255, 255, .02);
+    color: rgba(240, 240, 255, .9);
+    font-weight: 600;
+    transition: background .25s ease, transform .25s ease, border-color .25s ease;
+}
+
+.ranking-card li:hover {
+    background: rgba(80, 140, 255, .08);
+    transform: translateX(4px);
+}
+
+/* 닉네임(왼쪽) 강조 */
+.ranking-card li > span:first-child {
+    font-size: 16.8px; /* 요청: 닉네임 더 크게/강조 */
+    font-weight: 800;
+    color: rgba(248, 250, 255, .98);
+    letter-spacing: .1px;
+    text-shadow: 0 0 8px rgba(120, 160, 255, .12);
+    flex: 1 1 auto;
+    min-width: 0; /* ellipsis 작동용 */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 72%;
+}
+
+/* 우측 수치(문제 수/XP) */
+.ranking-card li > span:last-child {
+    font-size: 16px;
+    font-weight: 700;
+    opacity: .9;
+}
+
+/* ---------- Top 3 subtle highlight ---------- */
+.ranking-card li:nth-child(1) {
+    color: #fff7c0;
+    background: linear-gradient(90deg, rgba(255, 215, 0, .08), rgba(255, 255, 255, .02));
+    border-color: rgba(255, 215, 0, .20);
+}
+
+.ranking-card li:nth-child(2) {
+    color: #f2f6ff;
+    background: linear-gradient(90deg, rgba(192, 192, 192, .08), rgba(255, 255, 255, .02));
+    border-color: rgba(192, 192, 192, .20);
+}
+
+.ranking-card li:nth-child(3) {
+    color: #ffe9cf;
+    background: linear-gradient(90deg, rgba(205, 127, 50, .08), rgba(255, 255, 255, .02));
+    border-color: rgba(205, 127, 50, .20);
+}
+
+/* ---------- Variations ---------- */
+/* 댓글 카드만 아주 살짝 톤 다운 */
+.ranking-card--comment li {
+    background: rgba(255, 255, 255, .015);
+}
+
+/* 카드가 1개뿐일 경우 전체 폭 사용 */
+.teamchar > :only-child {
+    grid-column: 1 / -1;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+    .teamchar {
+        grid-template-columns: 1fr;
+    }
+
+    .ranking-card h3 {
+        font-size: 18px;
+    }
+
+    .ranking-card li > span:first-child {
+        font-size: 16px;
+    }
+}
