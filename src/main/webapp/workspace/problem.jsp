@@ -15,23 +15,14 @@
 <section class="section problem-list-section">
     <div class="problem-header">
         <h3>문제 리스트</h3>
-        <a class="problem-register-btn"
-           href="${pageContext.request.contextPath}/workspace/problem-register.jsp?workspaceId=${param.workspaceId}&workspaceMemberId=${param.workspaceMemberId}&isLeader=${param.isLeader}"
-           target="mainFrame">문제 등록</a>
+        <c:if test="${isLeader or param.isLeader eq 'true' or param.isLeader eq '1'}">
+            <a class="problem-register-btn"
+               href="${pageContext.request.contextPath}/workspace/problem-register.jsp?workspaceId=${param.workspaceId}&workspaceMemberId=${param.workspaceMemberId}&isLeader=${param.isLeader}"
+               target="mainFrame">문제 등록</a>
+        </c:if>
     </div>
 
     <hr class="section-divider"/>
-
-    <div class="problem-controls">
-        <div class="search-sort">
-            <form method="get" action="${pageContext.request.contextPath}/workspace/problem.jsp">
-                <input type="hidden" name="workspaceId" value="${param.workspaceId}"/>
-                <input type="hidden" name="workspaceMemberId" value="1"/>
-                <input type="hidden" name="size" value="${empty size ? 6 : size}"/>
-                <button class="sort-btn" type="submit">정렬 ▾</button>
-            </form>
-        </div>
-    </div>
 
     <c:choose>
         <c:when test="${empty problems}">
@@ -85,8 +76,8 @@
     <c:if test="${totalPages > 1}">
         <div class="pagination">
             <a class="page-btn"
-               href="${pageContext.request.contextPath}/front?key=problem&methodName=getProblems&workspaceId=${param.workspaceId}&workspaceMemberId=1&page=1&size=6"
-               aria-label="첫 페이지">&laquo;</a>
+               href="${pageContext.request.contextPath}/front?key=problem&methodName=getProblems&workspaceId=${param.workspaceId}&workspaceMemberId=${param.workspaceMemberId}&page=1&size=6">
+                aria-label="첫 페이지">&laquo;</a>
 
             <c:forEach var="pnum" begin="${1}" end="${totalPages}">
                 <c:choose>
@@ -95,13 +86,14 @@
                     </c:when>
                     <c:otherwise>
                         <a class="page-btn"
-                           href="${pageContext.request.contextPath}/front?key=problem&methodName=getProblems&workspaceId=${param.workspaceId}&workspaceMemberId=1&page=${pnum}&size=6">${pnum}</a>
+                           href="${pageContext.request.contextPath}/front?key=problem&methodName=getProblems&workspaceId=${param.workspaceId}&workspaceMemberId=${param.workspaceMemberId}&page=${pnum}&size=6">
+                                ${pnum}</a>
                     </c:otherwise>
                 </c:choose>
             </c:forEach>
 
             <a class="page-btn"
-               href="${pageContext.request.contextPath}/front?key=problem&methodName=getProblems&workspaceId=${param.workspaceId}&workspaceMemberId=1&page=${totalPages}&size=6"
+               href="${pageContext.request.contextPath}/front?key=problem&methodName=getProblems&workspaceId=${param.workspaceId}&workspaceMemberId=${param.workspaceMemberId}&page=${totalPages}&size=6"
                aria-label="마지막">&raquo;</a>
         </div>
     </c:if>
