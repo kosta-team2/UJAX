@@ -44,4 +44,13 @@
             </div>
         </a>
     </div>
+
+    <!-- 광고 영역 (심사 중 표시용) -->
+    <div class="ads-review-box">
+        <div class="ads-label">광고</div>
+        <div class="ads-review-content">
+            <p>Google Ads 심사 중입니다.</p>
+            <p class="ads-sub">곧 광고가 표시될 예정이에요.</p>
+        </div>
+    </div>
 </aside>

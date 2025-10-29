@@ -114,14 +114,19 @@ public class AuthFilter implements Filter {
 		Long memberId = (session == null) ? null : (Long)session.getAttribute("memberId");
 		Object sessionUser = (session == null) ? null : session.getAttribute("SessionUser");
 
-		if (memberId != null || sessionUser != null) {
-			chain.doFilter(request, response);
-			return;
-		}
+        if (memberId != null || sessionUser != null) {
+            chain.doFilter(request, response);
+            return;
+        }
 
-		res.sendRedirect(req.getContextPath() + "/auth/login.jsp");
+// 원래 요청 URL을 보존하여 로그인으로 보냄
+        String qs = req.getQueryString();
+        String original = ctx + path + (qs != null ? "?" + qs : "");
+        String target = ctx + "/auth/login.jsp?redirect=" +
+                java.net.URLEncoder.encode(original, java.nio.charset.StandardCharsets.UTF_8);
 
-	}
+        res.sendRedirect(target);
+    }
 
 	private boolean isExempt(String path) {
 		if (EXEMPT_EXACT.contains(path))
