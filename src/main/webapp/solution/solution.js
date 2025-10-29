@@ -377,7 +377,12 @@
         // ===== Code modal (코드 전체 보기) =====
         function renderCodeWithLineNumbersFrom(preSrc, preDst, large = false) {
             if (!preSrc || !preDst) return;
-            const lines = (preSrc.textContent || '').replace(/\r\n/g, '\n').split('\n');
+
+            const txs = preSrc.querySelectorAll('.tx');
+            const lines = txs.length
+                ? Array.from(txs, el => el.textContent)
+                : String(preSrc.textContent || '').replace(/\r\n/g, '\n').split('\n');
+
             preDst.innerHTML = '';
             if (large) preDst.classList.add('code-lg'); else preDst.classList.remove('code-lg');
 

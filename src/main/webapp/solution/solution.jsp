@@ -141,7 +141,7 @@
                     <div class="subcard code-card">
                         <div id="signal" class="signal"></div>
                         <div class="muted code-meta" id="codeMeta"></div>
-                        <pre class="code" id="codeBox" title="코드를 클릭하면 전체 보기"></pre>
+                        <div class="code" id="codeBox"></div>
                         <div class="row code-actions">
                             <button class="btn" id="likeBtn">🤍 좋아요</button>
                             <span class="muted" id="likeCount">좋아요 0 ·</span>
@@ -178,7 +178,7 @@
         <div class="row-between mb8"><strong>코드 상세</strong>
             <button class="btn" id="codeClose">닫기</button>
         </div>
-        <pre class="code code-lg" id="codeFull"></pre>
+        <div class="code code-lg" id="codeFull"></div>
     </div>
 </div>
 <div class="modal" id="commentModal">
