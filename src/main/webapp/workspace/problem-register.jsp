@@ -21,7 +21,7 @@
 
         <div class="promo" id="recommendBox">
       <span id="recommendText">
-        추천: <b class="problem-link">백준 11724</b> — 연결 요소의 개수 (유형: graph)
+        추천: <b class="problem-link">맞춤 추천을 준비 중이에요.</b>
       </span>
             <button id="refreshRecommend" class="refresh" aria-label="추천 새로고침">↻</button>
         </div>
@@ -31,6 +31,8 @@
             <input type="hidden" name="key" value="problem"/>
             <input type="hidden" name="methodName" value="create"/>
             <input type="hidden" name="workspaceId" value="${param.workspaceId}"/>
+            <input type="hidden" name="workspaceMemberId" value="${param.workspaceMemberId}"/>
+            <input type="hidden" name="isLeader" value="${param.isLeader}"/>
 
             <div class="form-col">
                 <div class="field">

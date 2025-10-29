@@ -16,7 +16,16 @@ public class WorkspaceProblemDao implements WorkspaceProblemRepository {
 
 	@Override
 	public Integer saveWorkspaceProblem(Connection con, WorkspaceProblem workspaceProblem) {
-		String sql = "INSERT INTO workspace_problem(ws_id, problem_id, deadline, scheduled_at) VALUES (?, ?, ?, ?)";
+		final String sql = """
+        INSERT INTO workspace_problem (
+            ws_id, problem_id, deadline, scheduled_at, is_deleted
+        )
+        VALUES (?, ?, ?, ?, 0)
+        ON DUPLICATE KEY UPDATE
+            is_deleted   = 0,
+            deadline     = VALUES(deadline),
+            scheduled_at = VALUES(scheduled_at)
+        """;
 
 		try (PreparedStatement ps = con.prepareStatement(sql)) {
 			ps.setLong(1, workspaceProblem.getWsId());

@@ -7,8 +7,9 @@
 <link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/notice.css"/>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/noticeModal.css"/>
 <link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/problem.css"/>
+<link rel="stylesheet" href="${pageContext.request.contextPath}/workspace/css/problem.home.compact.css?v=<%=System.currentTimeMillis()%>"/>
 
-<body>
+<body class="home-page">
 <main class="main-content">
 
     <section class="section">
@@ -83,7 +84,7 @@
                 </c:choose>
             </section>
 
-            <section class="section problem-section">
+            <section class="section problem-section problem-section--scaled">
                 <div class="section-header">
                     <h2>🧩 알고리즘 문제</h2>
                 </div>
@@ -123,6 +124,9 @@
                                             <c:param name="key" value="problem"/>
                                             <c:param name="methodName" value="getProblemDetail"/>
                                             <c:param name="problemId" value="${p.problemId}"/>
+                                            <c:param name="wsProblemId" value="${p.wsProblemId}"/>
+                                            <c:param name="workspaceId" value="${param.workspaceId}"/>
+                                            <c:param name="workspaceMemberId" value="${param.workspaceMemberId}"/>
                                             <c:param name="isLeader" value="${param.isLeader}"/>
                                         </c:url>
                                         <a class="go-btn" href="${solveUrl}" target="_top">문제 풀기</a>
@@ -133,7 +137,8 @@
                     </c:otherwise>
                 </c:choose>
             </section>
-
+        </div>
+    </section>
 </main>
 
 <div id="noticeModal" class="ws-modal" aria-hidden="true">
