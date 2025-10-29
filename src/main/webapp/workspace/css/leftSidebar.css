@@ -92,3 +92,40 @@
     border-top: 1px solid var(--border);
     margin: .75rem 0;
 }
+
+.ads-review-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-sub);
+    border: 1px solid var(--border);
+    border-radius: 1rem;
+    margin-top: 1rem;
+    padding: 1.5rem 1rem;
+    min-height: 500px; /* 세로로 긴 배너 느낌 */
+    text-align: center;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.ads-label {
+    align-self: flex-start;
+    background: rgba(255, 255, 255, 0.06);
+    color: var(--muted);
+    font-size: 0.75rem;
+    padding: 2px 10px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    margin-bottom: 1rem;
+}
+
+.ads-review-content p {
+    margin: 0.25rem 0;
+    color: #a8b3cf;
+    font-size: 0.9rem;
+}
+
+.ads-review-content .ads-sub {
+    font-size: 0.8rem;
+    color: var(--muted);
+}
