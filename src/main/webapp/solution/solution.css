@@ -540,3 +540,30 @@ body.modal-open .splitter::before {
     max-height: none;
 }
 
+.code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+    overflow: auto;
+}
+
+.code .line {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    gap: 12px;
+}
+
+.code .ln {
+    width: 3ch;
+    text-align: right;
+    opacity: .6;
+    user-select: none;
+}
+
+.code .tx {
+    white-space: pre;
+}
+
+#codeModal .code {
+    font-size: 17px;
+    max-height: 60vh;
+}
+
