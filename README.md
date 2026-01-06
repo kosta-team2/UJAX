@@ -4,7 +4,8 @@ UJAX는 백준 문제 풀이를 편하게 Notion과 같은 워크스페이스 �
 ## 서비스 화면
 
 ### 메인
-<img width="1512" height="816" alt="image" src="https://github.com/user-attachments/assets/059a8344-530d-49bc-9a90-716f02a642ab" />
+<img width="1055" height="566" alt="image" src="https://github.com/user-attachments/assets/2e4cfeba-764f-428f-8e9f-d9f13d76abaa" />
+
 
 ### 문제 풀이
 <img width="1036" height="574" alt="image" src="https://github.com/user-attachments/assets/c4fc81f3-9a27-4168-b2c0-22df0ffa85c2" />
